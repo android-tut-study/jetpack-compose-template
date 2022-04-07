@@ -21,7 +21,7 @@ object Libs {
         }
 
         object Compose {
-            private const val VERSION = "1.2.0-alpha06"
+            private const val VERSION = SharedVersion.AndroidX.COMPOSE
 
             const val FOUNDATION = "androidx.compose.foundation:foundation:$VERSION"
             const val LAYOUT = "androidx.compose.foundation:foundation-layout:$VERSION"
