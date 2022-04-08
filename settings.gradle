@@ -13,6 +13,9 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "ShrineCompose"
+includeBuild('includeBuild/gradleConfiguration')
+
+
 include ':app'
 include ':ui:ui-common'
 include ':ui:ui-landing'
