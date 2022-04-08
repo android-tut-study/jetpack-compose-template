@@ -16,6 +16,11 @@ gradlePlugin {
         id = "ui-plugins"
         implementationClass = "com.study.compose.gradleconfiguration.UIPlugins"
     }
+
+    plugins.register("hilt-plugins") {
+        id = "hilt-plugins"
+        implementationClass = "com.study.compose.gradleconfiguration.HiltPlugins"
+    }
 }
 
 dependencies {

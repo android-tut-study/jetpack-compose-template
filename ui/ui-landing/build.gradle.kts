@@ -1,5 +1,6 @@
 plugins {
     id("ui-plugins")
+    id("hilt-plugins")
 }
 
 dependencies {

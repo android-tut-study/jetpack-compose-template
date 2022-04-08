@@ -80,5 +80,4 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.test.espresso:espresso-core:3.4.0")
     testImplementation("androidx.compose.ui:ui-test-junit4:1.1.1")
-    testImplementation("androidx.compose.ui:ui-tooling:1.1.1")
 }
