@@ -8,7 +8,9 @@ import androidx.compose.material.rememberDrawerState
 import com.study.compose.shrine.components.ShrineScaffold
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import com.study.compose.shrine.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

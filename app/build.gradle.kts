@@ -3,6 +3,8 @@ import com.example.Libs
 plugins {
     id(com.example.GradlePlugins.Plugins.Android.APPLICATION)
     id(com.example.GradlePlugins.Plugins.Jetbrains.Kotlin.ANDROID)
+    kotlin(com.example.GradlePlugins.Plugins.Kotlin.KAPT)
+    id(com.example.GradlePlugins.Plugins.Hilt.PLUGIN)
 }
 
 project.extensions.configure(com.android.build.gradle.BaseExtension::class.java) {
@@ -45,6 +47,12 @@ project.extensions.configure(com.android.build.gradle.BaseExtension::class.java)
         }
     }
 
+    // Allow references to generated code
+    kapt {
+        correctErrorTypes = true
+    }
+
+
 }
 
 dependencies {
@@ -64,6 +72,10 @@ dependencies {
     // Navigation
     implementation(Libs.AndroidX.Navigation.FRAGMENT_KTX)
     implementation(Libs.AndroidX.Navigation.UI_KTX)
+
+    // Hilt
+    implementation(Libs.Hilt.Core.ANDROID)
+    kapt(Libs.Hilt.Core.ANDROID_COMPILER)
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.test.espresso:espresso-core:3.4.0")

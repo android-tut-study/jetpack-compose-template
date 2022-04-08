@@ -84,6 +84,29 @@ object Libs {
             const val LIVEDATA_KTX = "androidx.lifecycle:lifecycle-livedata-ktx:$VERSION"
             const val VIEWMODEL_COMPOSE = "androidx.lifecycle:lifecycle-viewmodel-compose:$VERSION"
         }
+
+    }
+
+    object Hilt {
+        private const val VERSION = SharedVersion.Hilt.CORE
+
+        object Core {
+            const val KAPT = "com.google.dagger:hilt-compiler:$VERSION"
+            const val ANDROID = "com.google.dagger:hilt-android:$VERSION"
+            const val ANDROID_COMPILER = "com.google.dagger:hilt-android-compiler:$VERSION"
+        }
+
+        object Navigation {
+            private const val VERSION = "1.0.0-beta01"
+            const val FRAGMENT = "androidx.hilt:hilt-navigation-fragment:$VERSION"
+        }
+
+        object ViewModel {
+            private const val VERSION = "1.0.0-alpha03"
+            const val LIFECYCLE = "androidx.hilt:hilt-lifecycle-viewmodel:$VERSION"
+            const val COMPILER = "androidx.hilt:hilt-compiler:$VERSION"
+        }
+
     }
 
 }

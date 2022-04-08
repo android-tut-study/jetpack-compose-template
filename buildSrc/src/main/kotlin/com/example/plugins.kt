@@ -3,7 +3,10 @@ package com.example
 object GradlePlugins {
 
     object Plugins {
-        const val HILT = "dagger.hilt.android.plugin"
+        object Hilt {
+            const val PLUGIN = "dagger.hilt.android.plugin"
+            const val GRADLE = "com.google.dagger.hilt.android"
+        }
 
         object Android {
             const val APPLICATION = "com.android.application"
