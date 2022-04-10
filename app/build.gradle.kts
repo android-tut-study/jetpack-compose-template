@@ -58,6 +58,7 @@ project.extensions.configure(com.android.build.gradle.BaseExtension::class.java)
 dependencies {
     implementation(project(":ui:ui-common"))
     implementation(project(":ui:ui-landing"))
+    implementation(project(":ui:ui-home"))
 
     // Core
     implementation(Libs.AndroidX.Core.KTX)

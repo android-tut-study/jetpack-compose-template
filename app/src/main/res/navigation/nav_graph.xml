@@ -8,4 +8,8 @@
         android:id="@+id/landing"
         android:name="com.study.compose.ui.landing.LandingFragment" />
 
+    <fragment
+        android:id="@+id/home"
+        android:name="com.study.compose.ui.home.HomeFragment" />
+
 </navigation>
