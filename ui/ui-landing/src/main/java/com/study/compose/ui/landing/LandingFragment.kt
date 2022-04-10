@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.Surface
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import com.study.compose.ui.common.components.AppBackground
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,7 +22,11 @@ class LandingFragment : Fragment() {
     ): View = ComposeView(inflater.context).apply {
         setContent {
             ShrineComposeTheme {
-                Text(text = "Landing Page", style = MaterialTheme.typography.h2)
+                AppBackground {
+                    LandingScreen {
+                        // TODO Transit to Home Screen
+                    }
+                }
             }
         }
     }
