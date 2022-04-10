@@ -19,3 +19,4 @@ includeBuild('includeBuild/gradleConfiguration')
 include ':app'
 include ':ui:ui-common'
 include ':ui:ui-landing'
+include ':ui:ui-home'
