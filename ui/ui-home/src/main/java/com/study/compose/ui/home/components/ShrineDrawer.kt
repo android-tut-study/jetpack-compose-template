@@ -1,4 +1,4 @@
-package com.study.compose.shrine.components
+package com.study.compose.ui.home.components
 
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material.MaterialTheme
@@ -6,7 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun ColumnScope.ShrineDrawer() {
+fun ShrineDrawer() {
     // TODO create drawer layout
     // Create Header
     DrawerHeader()
