@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.study.compose.ui.common.components.AppBackground
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,7 +23,7 @@ class LandingFragment : Fragment() {
             ShrineComposeTheme {
                 AppBackground {
                     LandingScreen {
-                        // TODO Transit to Home Screen
+                        findNavController().navigate(com.study.compose.ui.common.R.id.landingToHome)
                     }
                 }
             }

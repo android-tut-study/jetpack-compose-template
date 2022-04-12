@@ -6,7 +6,9 @@
 
     <fragment
         android:id="@+id/landing"
-        android:name="com.study.compose.ui.landing.LandingFragment" />
+        android:name="com.study.compose.ui.landing.LandingFragment" >
+        <action android:id="@+id/landingToHome" app:destination="@id/home"/>
+    </fragment>
 
     <fragment
         android:id="@+id/home"

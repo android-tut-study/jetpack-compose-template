@@ -2,11 +2,13 @@ package com.study.compose.ui.landing.components
 
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.unit.dp
 import com.study.compose.ui.common.components.AppIcon
 import kotlinx.coroutines.delay
 
@@ -14,7 +16,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun LandingIcon(
     modifier: Modifier = Modifier,
-    timeOut: Long = 3000L,
+    timeOut: Long = 1000L,
     onAnimatedEnd: () -> Unit
 ) {
     val scale = remember {
@@ -26,7 +28,7 @@ fun LandingIcon(
             animationSpec = tween(
                 durationMillis = 800,
                 easing = {
-                    OvershootInterpolator(3f).getInterpolation(it)
+                    OvershootInterpolator(2f).getInterpolation(it)
                 }
             )
         )
@@ -35,7 +37,7 @@ fun LandingIcon(
     }
 
     AppIcon(
-        resId = com.study.compose.ui.common.R.drawable.ic_launcher_foreground,
-        modifier = modifier.scale(scale.value)
+        resId = com.study.compose.ui.common.R.drawable.logo,
+        modifier = modifier.size(96.dp).scale(scale.value)
     )
 }
