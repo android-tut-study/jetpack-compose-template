@@ -12,6 +12,7 @@ dependencies {
     api(Libs.AndroidX.Compose.MATERIAL)
     api(Libs.AndroidX.Compose.VIEW_BINDING)
     api(Libs.AndroidX.Compose.TOOLING_PREVIEW)
+    debugApi(Libs.AndroidX.Compose.TOOLING)
     api(Libs.AndroidX.Compose.MATERIAL_ICONS_EXTENDED)
 
     testImplementation("junit:junit:4.13.2")
