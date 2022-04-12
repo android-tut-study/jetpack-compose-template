@@ -26,7 +26,7 @@ class UIPlugins : Plugin<Project> {
             }
 
             composeOptions {
-                kotlinCompilerExtensionVersion = "1.2.0-alpha06"
+                kotlinCompilerExtensionVersion = "1.1.1"
             }
 
             compileOptions {
