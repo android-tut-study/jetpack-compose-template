@@ -4,15 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.Fragment
 import com.study.compose.ui.common.theme.ShrineComposeTheme
-import com.study.compose.ui.home.components.HomeActionIcon
-import com.study.compose.ui.home.components.NavigationIcon
-import com.study.compose.ui.home.components.ShrineScaffold
-import com.study.compose.ui.home.components.ShrineTopBar
-import com.study.compose.ui.home.view.HomeContent
+import com.study.compose.ui.home.components.*
+import com.study.compose.ui.home.view.ProductsContent
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,14 +26,19 @@ class HomeFragment : Fragment() {
     ): View = ComposeView(inflater.context).apply {
         setContent {
             ShrineComposeTheme {
-                HomeScreen()
+                BoxWithConstraints {
+                    HomeContent()
+                    BottomCart(
+                        modifier = Modifier.align(Alignment.BottomEnd)
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun HomeScreen(
+fun HomeContent(
     onNavigationPressed: () -> Unit = {},
     onFilterPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {}
@@ -52,8 +58,24 @@ fun HomeScreen(
                     )
                 }
             )
-        }
-    ) { paddingValues ->
-        HomeContent(paddingValues)
+        },
+        drawerContent = { NavigationMenus() }
+    ) {
+        ProductsContent()
+    }
+}
+
+
+@Composable
+fun NavigationMenus() {
+    ShrineDrawer()
+}
+
+
+@Preview
+@Composable
+fun HomeScreenPreview() {
+    ShrineComposeTheme {
+        HomeContent()
     }
 }

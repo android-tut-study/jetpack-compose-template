@@ -8,18 +8,31 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ShrineScaffold(
     topBar: @Composable () -> Unit = { ShrineTopBar() },
-    drawerContent: @Composable ColumnScope.() -> Unit = { ShrineDrawer() },
-    content: @Composable (PaddingValues) -> Unit
+    drawerContent: @Composable () -> Unit = { ShrineDrawer() },
+    content: @Composable () -> Unit
 ) {
+    val backdropState = rememberBackdropScaffoldState(initialValue = BackdropValue.Concealed)
+    BackdropScaffold(
+        appBar = topBar,
+        scaffoldState = backdropState,
+        backLayerContent = drawerContent,
+        frontLayerContent = content,
+        frontLayerShape = MaterialTheme.shapes.large,
+        frontLayerElevation = 16.dp,
+    )
+}
+
+@Preview
+@Composable
+fun ShrineScaffoldPreview() {
+
     ShrineComposeTheme {
-        Scaffold(
-            topBar = topBar,
-            drawerContent = drawerContent,
-            content = content,
-            drawerElevation = 0.dp
-        )
+        ShrineScaffold {
+            Text(text = "Test Test")
+        }
     }
 }

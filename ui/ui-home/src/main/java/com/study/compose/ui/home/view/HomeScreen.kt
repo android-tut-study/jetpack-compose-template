@@ -10,22 +10,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun HomeContent(paddingValue: PaddingValues) {
-    Surface(
-        modifier = Modifier
-            .background(MaterialTheme.colors.primary)
-            .fillMaxSize(),
-        shape = MaterialTheme.shapes.large,
-        elevation = 4.dp,
-    ) {
-        Box(
-            modifier = Modifier
-                .background(MaterialTheme.colors.surface)
-                .fillMaxSize()
-        ) {
-            // TODO show grid layout items
-            Text(text = "HomeContent")
-        }
+fun ProductsContent() {
+    Column(modifier = Modifier.fillMaxSize().padding(20.dp)) {
+        Text(text = "HomeContent")
+
     }
+//    Surface(
+//        modifier = Modifier
+//            .background(MaterialTheme.colors.primary)
+//            .fillMaxSize(),
+//        shape = MaterialTheme.shapes.large,
+//        elevation = 4.dp,
+//    ) {
+//        Box(
+//            modifier = Modifier
+//                .background(MaterialTheme.colors.surface)
+//                .fillMaxSize()
+//        ) {
+//            // TODO show grid layout items
+//            Text(text = "HomeContent")
+//        }
+//    }
 
 }
