@@ -1,5 +1,8 @@
 package com.study.compose.ui.home.components
 
+import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,16 +19,84 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 import com.study.compose.ui.home.data.Cart
 import com.study.compose.ui.home.data.SampleCartItems
+import com.study.compose.ui.home.interactor.state.CartUiState
+import kotlin.math.min
 
 @Composable
-fun BottomCart(modifier: Modifier) {
+fun BottomCart(
+    modifier: Modifier,
+    hidden: Boolean = false,
+    carts: List<Cart>,
+    maxWidth: Dp,
+    maxHeight: Dp
+) {
     var expanded by remember { mutableStateOf(false) }
     Row(modifier = modifier) {
-        Surface(color = MaterialTheme.colors.secondary, shape = MaterialTheme.shapes.large) {
+
+        // Add updateTransition
+        var currentCartState by remember {
+            mutableStateOf(CartUiState.Hidden)
+        }
+        val cartTransition = updateTransition(
+            targetState = when {
+                hidden -> CartUiState.Hidden
+                expanded -> CartUiState.Expanded
+                else -> CartUiState.Collapsed
+            },
+            label = "CartTransition",
+        )
+
+        val cartXOffset by cartTransition.animateDp(label = "CartWidth", transitionSpec = {
+            when {
+                CartUiState.Expanded isTransitioningTo CartUiState.Collapsed -> tween(
+                    450,
+                    delayMillis = 150
+                )
+                CartUiState.Collapsed isTransitioningTo CartUiState.Expanded -> tween(200)
+                else -> tween(600)
+            }
+        }) { state ->
+            when (state) {
+                CartUiState.Expanded -> 0.dp
+                CartUiState.Hidden -> maxWidth
+                CartUiState.Collapsed -> {
+                    val size = min(2, carts.size)
+                    // Collapse Cart Size paddingStart: 24, CartIcon: 40, each CartItem: 40, paddingEnd 16
+                    // 16 * size: Spacer
+                    val width = 24 + 40 * (size + 1) + 16 * size + 16
+                    (maxWidth.value - (width)).dp
+                }
+            }
+        }
+
+        val cartHeightOffset by cartTransition.animateDp(
+            label = "CartHeight",
+            transitionSpec = {
+                when {
+                    CartUiState.Expanded isTransitioningTo CartUiState.Collapsed -> tween(
+                        durationMillis = 300
+                    )
+                    else -> tween(500)
+                }
+            }
+        ) { state ->
+            if (state == CartUiState.Expanded) maxHeight else 56.dp
+        }
+
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .offset(x = cartXOffset)
+                .height(cartHeightOffset),
+            color = MaterialTheme.colors.secondary,
+            shape = MaterialTheme.shapes.large,
+            elevation = 8.dp
+        ) {
             if (expanded) {
                 ExpandedCarts {
                     expanded = false

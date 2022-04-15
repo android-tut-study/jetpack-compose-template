@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.Fragment
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 import com.study.compose.ui.home.components.*
+import com.study.compose.ui.home.data.SampleCartItems
 import com.study.compose.ui.home.view.ProductsContent
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,7 +30,11 @@ class HomeFragment : Fragment() {
                 BoxWithConstraints {
                     HomeContent()
                     BottomCart(
-                        modifier = Modifier.align(Alignment.BottomEnd)
+                        modifier = Modifier.align(Alignment.BottomEnd),
+                        maxHeight = maxHeight,
+                        maxWidth = maxWidth,
+                        carts = SampleCartItems
+
                     )
                 }
             }
