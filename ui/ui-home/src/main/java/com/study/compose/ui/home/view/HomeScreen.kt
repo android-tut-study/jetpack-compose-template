@@ -26,11 +26,12 @@ fun ProductsContent() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp)
+
     ) {
         Row(
             modifier = Modifier
                 .fillMaxHeight()
+                .padding(bottom = 20.dp)
                 .horizontalScroll(rememberScrollState())
         ) {
             StaggeredProductGrid(
@@ -89,7 +90,7 @@ fun StaggeredProductGrid(
             val spanHeight = if (index % 3 == 2) 2 else 1
 
             Constraints.fixed(
-                width = baseConstraints.maxWidth / spanHeight,
+                width = baseConstraints.maxWidth * spanHeight,
                 height = baseConstraints.maxHeight * spanHeight
             )
         }
@@ -127,12 +128,16 @@ fun StaggeredProductGrid(
 fun ProductChip(cart: Cart) {
     Box(contentAlignment = Alignment.Center) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
+                modifier = Modifier.fillMaxWidth(),
                 painter = painterResource(id = cart.photoResId),
                 contentDescription = "Chip",
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(text = cart.vendor.name, style = MaterialTheme.typography.subtitle1)
