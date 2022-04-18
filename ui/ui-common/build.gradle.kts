@@ -4,6 +4,10 @@ plugins {
     id("app-plugin")
 }
 
+uiConfiguration {
+    applyCompose()
+}
+
 dependencies {
     api(Libs.AndroidX.Core.KTX)
     api(Libs.AndroidX.AppCompat.APPCOMPAT)

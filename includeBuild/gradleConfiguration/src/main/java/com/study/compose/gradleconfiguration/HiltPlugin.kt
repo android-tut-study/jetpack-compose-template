@@ -8,7 +8,7 @@ class HiltPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.pluginManager.apply("dagger.hilt.android.plugin")
         target.pluginManager.apply("kotlin-kapt")
-        target.extensions.create("configuration", HiltPluginExtension::class.java, target)
+        target.extensions.create("hiltConfiguration", HiltPluginExtension::class.java, target)
 
 
         target.dependencies.apply {

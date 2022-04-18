@@ -10,6 +10,7 @@ class AppPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.pluginManager.apply("com.android.library")
         target.pluginManager.apply("org.jetbrains.kotlin.android")
+        target.extensions.create("uiConfiguration", UiExtension::class.java, target)
 
         target.extensions.configure(BaseExtension::class.java) {
             compileSdkVersion(32)
@@ -18,11 +19,6 @@ class AppPlugin : Plugin<Project> {
                 targetSdk = 32
                 testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                 consumerProguardFiles("consumer-rules.pro")
-            }
-
-            buildFeatures.apply {
-                compose = true
-                viewBinding = true
             }
 
             composeOptions {
