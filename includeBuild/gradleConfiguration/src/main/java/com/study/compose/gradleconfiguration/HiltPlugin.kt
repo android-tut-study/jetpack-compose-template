@@ -4,7 +4,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.create
 
-class HiltPlugins : Plugin<Project> {
+class HiltPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.pluginManager.apply("dagger.hilt.android.plugin")
         target.pluginManager.apply("kotlin-kapt")

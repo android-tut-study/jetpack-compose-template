@@ -12,14 +12,14 @@ repositories {
 }
 
 gradlePlugin {
-    plugins.register("ui-plugins") {
-        id = "ui-plugins"
-        implementationClass = "com.study.compose.gradleconfiguration.UIPlugins"
+    plugins.register("app-plugin") {
+        id = "app-plugin"
+        implementationClass = "com.study.compose.gradleconfiguration.AppPlugin"
     }
 
-    plugins.register("hilt-plugins") {
-        id = "hilt-plugins"
-        implementationClass = "com.study.compose.gradleconfiguration.HiltPlugins"
+    plugins.register("hilt-plugin") {
+        id = "hilt-plugin"
+        implementationClass = "com.study.compose.gradleconfiguration.HiltPlugin"
     }
 }
 

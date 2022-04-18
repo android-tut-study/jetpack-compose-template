@@ -1,7 +1,7 @@
 import com.example.Libs
 
 plugins {
-    id("ui-plugins")
+    id("app-plugin")
 }
 
 dependencies {
