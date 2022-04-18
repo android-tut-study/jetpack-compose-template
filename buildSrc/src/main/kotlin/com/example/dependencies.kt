@@ -109,4 +109,12 @@ object Libs {
 
     }
 
+    object Kotlinx {
+        object Coroutines {
+            private const val VERSION = SharedVersion.KotlinX.COROUTINES
+            const val CORE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$VERSION"
+            const val ANDROID = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$VERSION"
+        }
+    }
+
 }

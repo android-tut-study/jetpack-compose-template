@@ -17,4 +17,8 @@ object SharedVersion {
     object AndroidPlugins {
         const val CORE = "7.1.2"
     }
+
+    object KotlinX {
+        const val COROUTINES = "1.6.0"
+    }
 }
