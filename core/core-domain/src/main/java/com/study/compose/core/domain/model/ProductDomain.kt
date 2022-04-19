@@ -1,5 +1,7 @@
 package com.study.compose.core.domain.model
 
+import com.study.compose.core.domain.DomainModel
+
 data class ProductDomain(
     val id: Int,
     val title: String,
@@ -8,4 +10,4 @@ data class ProductDomain(
     val category: String,
     val imageUrl: String,
     val rating: ProductRatingDomain
-)
+): DomainModel
