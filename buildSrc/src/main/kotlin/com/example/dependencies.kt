@@ -117,4 +117,22 @@ object Libs {
         }
     }
 
+    object Square {
+        object OkHttp {
+            private const val VERSION = "4.9.3"
+            const val OKHTTP = "com.squareup.okhttp3:okhttp:$VERSION"
+            const val LOGGING_INTERCEPTOR = "com.squareup.okhttp3:logging-interceptor:$VERSION"
+        }
+
+        object Retrofit {
+            private const val VERSION = "2.9.0"
+            const val RETROFIT = "com.squareup.retrofit2:retrofit:$VERSION"
+
+            object Converters {
+                const val GSON = "com.squareup.retrofit2:converter-gson:$VERSION"
+                const val MOSHI = "com.squareup.retrofit2:converter-moshi:$VERSION"
+            }
+        }
+    }
+
 }
