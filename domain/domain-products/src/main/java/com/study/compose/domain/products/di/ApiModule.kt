@@ -1,5 +1,13 @@
 package com.study.compose.domain.products.di
 
+import com.study.compose.core.dispatcher.CoroutineDispatchers
+import com.study.compose.core.domain.Mapper
+import com.study.compose.core.domain.model.ProductDomain
+import com.study.compose.core.domain.model.ProductRatingDomain
+import com.study.compose.domain.products.mapper.ProductResponseToDomainMapper
+import com.study.compose.domain.products.mapper.RatingResponseToDomainMapper
+import com.study.compose.domain.products.model.response.ProductRatingResponse
+import com.study.compose.domain.products.model.response.ProductsResponse
 import com.study.compose.domain.products.repository.ProductRepo
 import com.study.compose.domain.products.repository.ProductRepoImpl
 import dagger.Module
@@ -46,8 +54,26 @@ object ApiModule {
     fun providesProductApiService(retrofit: Retrofit): ProductApiService =
         retrofit.create(ProductApiService::class.java)
 
-    @Singleton
-    fun providesProductRepository(productApiService: ProductApiService): ProductRepo =
-        ProductRepoImpl(apiService = productApiService)
+    @Provides
+    fun providesRatingResponseToDomainMapper(): Mapper<ProductRatingResponse, ProductRatingDomain> =
+        RatingResponseToDomainMapper()
 
+    @Provides
+    fun providesProductResponseToDomainMapper(
+        ratingResponseToDomainMapper: Mapper<ProductRatingResponse, ProductRatingDomain>
+    ): Mapper<ProductsResponse, ProductDomain> =
+        ProductResponseToDomainMapper(ratingResponseToDomainMapper)
+
+    @Singleton
+    @Provides
+    fun providesProductRepository(
+        productApiService: ProductApiService,
+        dispatcher: CoroutineDispatchers,
+        mapper: Mapper<ProductsResponse, ProductDomain>
+    ): ProductRepo =
+        ProductRepoImpl(
+            apiService = productApiService,
+            dispatcher = dispatcher,
+            productDomainMapper = mapper
+        )
 }

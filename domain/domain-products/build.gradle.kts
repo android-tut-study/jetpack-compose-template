@@ -7,10 +7,12 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":core:core-domain"))
+    implementation(project(":core:core-dispatcher"))
+
     implementation(Libs.Kotlinx.Coroutines.CORE)
     implementation(Libs.Hilt.Core.ANDROID)
     kapt(Libs.Hilt.Core.ANDROID_COMPILER)
-    implementation(project(":core:core-domain"))
 
     // Retrofit
     implementation(Libs.Square.OkHttp.OKHTTP)
