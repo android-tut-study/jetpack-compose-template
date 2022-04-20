@@ -12,7 +12,7 @@ class FetchProductsUseCase(
     private val repo: ProductRepo
 ) : FlowUseCase<Nothing, List<ProductDomain>>(dispatcher.io) {
 
-    override fun execute(params: Nothing): Flow<Result<List<ProductDomain>>> {
+    override fun execute(params: Nothing?): Flow<Result<List<ProductDomain>>> {
         return flow {
             repo.fetchProducts()
                 .onEach { emit(Result.Success(data = it)) }
