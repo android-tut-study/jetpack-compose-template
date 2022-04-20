@@ -10,9 +10,6 @@ import com.study.compose.ui.landing.components.LandingIcon
 @Composable
 fun LandingScreen(onLoadedEnd: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        LandingIcon {
-            // TODO navigate Landing to Home
-            onLoadedEnd()
-        }
+        LandingIcon { onLoadedEnd() }
     }
 }

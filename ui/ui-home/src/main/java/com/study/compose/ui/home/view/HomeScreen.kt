@@ -46,23 +46,6 @@ fun ProductsContent() {
 
 
     }
-//    Surface(
-//        modifier = Modifier
-//            .background(MaterialTheme.colors.primary)
-//            .fillMaxSize(),
-//        shape = MaterialTheme.shapes.large,
-//        elevation = 4.dp,
-//    ) {
-//        Box(
-//            modifier = Modifier
-//                .background(MaterialTheme.colors.surface)
-//                .fillMaxSize()
-//        ) {
-//            // TODO show grid layout items
-//            Text(text = "HomeContent")
-//        }
-//    }
-
 }
 
 @Composable
