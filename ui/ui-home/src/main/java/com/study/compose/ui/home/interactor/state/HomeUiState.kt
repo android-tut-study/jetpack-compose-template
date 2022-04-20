@@ -1,7 +1,8 @@
 package com.study.compose.ui.home.interactor.state
 
-class HomeUiState {
-}
+data class HomeViewState(
+    val drawerOpened: Boolean = false
+)
 
 enum class CartUiState {
     Collapsed,
