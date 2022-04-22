@@ -59,20 +59,18 @@ dependencies {
     implementation(project(":ui:ui-common"))
     implementation(project(":ui:ui-landing"))
     implementation(project(":ui:ui-home"))
+    implementation(project(":ui:ui-detail"))
 
     // Core
     implementation(Libs.AndroidX.Core.KTX)
     implementation(Libs.AndroidX.Activity.ACTIVITY_COMPOSE)
+    implementation(Libs.AndroidX.Navigation.COMPOSE)
     implementation(Libs.AndroidX.AppCompat.APPCOMPAT)
 
     // LifeCycle
     implementation(Libs.AndroidX.LifeCycle.VIEWMODEL_COMPOSE)
     implementation(Libs.AndroidX.LifeCycle.LIVEDATA_KTX)
 //    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
-
-    // Navigation
-    implementation(Libs.AndroidX.Navigation.FRAGMENT_KTX)
-    implementation(Libs.AndroidX.Navigation.UI_KTX)
 
     // Hilt
     implementation(Libs.Hilt.Core.ANDROID)

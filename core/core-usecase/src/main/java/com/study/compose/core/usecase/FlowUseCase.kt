@@ -12,5 +12,10 @@ abstract class FlowUseCase<Params : Any, Type : Any>(private val coroutineDispat
         execute(params).catch { e -> emit(Result.Failure(Exception(e))) }
             .flowOn(coroutineDispatcher)
 
-    protected abstract fun execute(params: Params): Flow<Result<Type>>
+    operator fun invoke(): Flow<Result<Type>> =
+        execute(null).catch { e -> emit(Result.Failure(Exception(e))) }
+            .flowOn(coroutineDispatcher)
+
+
+    protected abstract fun execute(params: Params?): Flow<Result<Type>>
 }

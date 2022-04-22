@@ -2,12 +2,13 @@ package com.study.compose.domain.products.mapper
 
 import com.study.compose.core.domain.Mapper
 import com.study.compose.core.domain.model.ProductDomain
-import com.study.compose.core.domain.model.ProductRatingDomain
-import com.study.compose.domain.products.model.response.ProductRatingResponse
 import com.study.compose.domain.products.model.response.ProductsResponse
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ProductResponseToDomainMapper(
-    private val ratingMapper: Mapper<ProductRatingResponse, ProductRatingDomain>
+@Singleton
+class ProductResponseToDomainMapper @Inject constructor(
+    private val ratingMapper: RatingResponseToDomainMapper
 ) : Mapper<ProductsResponse, ProductDomain> {
     override fun invoke(response: ProductsResponse): ProductDomain {
         return ProductDomain(

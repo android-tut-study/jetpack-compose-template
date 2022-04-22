@@ -47,7 +47,7 @@ object Libs {
         }
 
         object Navigation {
-            private const val VERSION = "2.3.5"
+            private const val VERSION = "2.4.2"
 
             // JAVA
             const val FRAGMENT = "androidx.navigation:navigation-fragment:$VERSION"
@@ -56,6 +56,7 @@ object Libs {
             // Kotlin
             const val FRAGMENT_KTX = "androidx.navigation:navigation-fragment-ktx:$VERSION"
             const val UI_KTX = "androidx.navigation:navigation-ui-ktx:$VERSION"
+            const val COMPOSE = "androidx.navigation:navigation-compose:$VERSION"
 
             const val RUNTIME = "androidx.navigation:navigation-runtime:$VERSION"
             const val RUNTIME_KTX = "androidx.navigation:navigation-runtime-ktx:$VERSION"

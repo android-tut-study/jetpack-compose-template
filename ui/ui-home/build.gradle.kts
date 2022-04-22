@@ -13,6 +13,7 @@ uiConfiguration {
 
 dependencies {
     implementation(project(":ui:ui-common"))
+    implementation(project(":usecase:usecase-products"))
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")

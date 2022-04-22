@@ -7,9 +7,9 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":core:core-usecase"))
+    api(project(":core:core-usecase"))
     implementation(project(":core:core-dispatcher"))
-    implementation(project(":core:core-result"))
+    api(project(":core:core-result"))
     implementation(project(":core:core-domain"))
     implementation(project(":domain:domain-products"))
     implementation(Libs.Kotlinx.Coroutines.CORE)

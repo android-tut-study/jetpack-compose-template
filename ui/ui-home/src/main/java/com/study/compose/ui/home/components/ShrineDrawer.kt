@@ -17,8 +17,6 @@ fun ShrineDrawer(
     modifier: Modifier = Modifier,
     onMenuSelected: () -> Unit = {},
 ) {
-    // TODO create drawer layout
-    // Create Header
     Column(
         modifier = Modifier
             .fillMaxWidth()
