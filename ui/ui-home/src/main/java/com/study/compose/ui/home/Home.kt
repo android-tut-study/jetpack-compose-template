@@ -1,14 +1,11 @@
 package com.study.compose.ui.home
 
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 import com.study.compose.ui.home.components.*
-import com.study.compose.ui.home.data.SampleCartItems
+import com.study.compose.ui.home.data.Cart
 import com.study.compose.ui.home.interactor.state.HomeViewState
 import com.study.compose.ui.home.view.ProductsContent
 import com.study.compose.ui.home.viewmodel.HomeViewModel
@@ -16,12 +13,14 @@ import com.study.compose.ui.home.viewmodel.HomeViewModel
 @Composable
 fun HomeScreen(
     onFilterPressed: () -> Unit = {},
-    onSearchPressed: () -> Unit = {}
+    onSearchPressed: () -> Unit = {},
+    onProductSelect: (cart: Cart) -> Unit
 ) {
     HomeScreen(
         viewModel = hiltViewModel(),
         onFilterPressed = onFilterPressed,
-        onSearchPressed = onSearchPressed
+        onSearchPressed = onSearchPressed,
+        onProductSelect = onProductSelect,
     )
 }
 
@@ -29,12 +28,14 @@ fun HomeScreen(
 fun HomeScreen(
     viewModel: HomeViewModel,
     onFilterPressed: () -> Unit = {},
-    onSearchPressed: () -> Unit = {}
+    onSearchPressed: () -> Unit = {},
+    onProductSelect: (cart: Cart) -> Unit
 ) {
     HomeScreen(
         viewState = HomeViewState(),
         onFilterPressed = onFilterPressed,
-        onSearchPressed = onSearchPressed
+        onSearchPressed = onSearchPressed,
+        onProductSelect = onProductSelect,
     )
 }
 
@@ -42,26 +43,30 @@ fun HomeScreen(
 fun HomeScreen(
     viewState: HomeViewState,
     onFilterPressed: () -> Unit = {},
-    onSearchPressed: () -> Unit = {}
+    onSearchPressed: () -> Unit = {},
+    onProductSelect: (cart: Cart) -> Unit
 ) {
-    BoxWithConstraints {
-        Products(
-            onFilterPressed = onFilterPressed,
-            onSearchPressed = onSearchPressed,
-        )
-        BottomCart(
-            modifier = Modifier.align(Alignment.BottomEnd),
-            maxHeight = maxHeight,
-            maxWidth = maxWidth,
-            carts = SampleCartItems
-        )
-    }
+    Products(
+        onFilterPressed = onFilterPressed,
+        onSearchPressed = onSearchPressed,
+        onProductSelect = onProductSelect,
+    )
+//    BoxWithConstraints(Modifier.fillMaxSize()) {
+
+//        BottomCart(
+//            modifier = Modifier.align(Alignment.BottomEnd),
+//            maxHeight = maxHeight,
+//            maxWidth = maxWidth,
+//            carts = SampleCartItems
+//        )
+//    }
 }
 
 @Composable
 fun Products(
     onFilterPressed: () -> Unit = {},
-    onSearchPressed: () -> Unit = {}
+    onSearchPressed: () -> Unit = {},
+    onProductSelect: (cart: Cart) -> Unit
 ) {
     ShrineScaffold(
         topBar = {
@@ -85,7 +90,7 @@ fun Products(
         },
         drawerContent = { NavigationMenus() }
     ) {
-        ProductsContent()
+        ProductsContent(onProductSelect = onProductSelect)
     }
 }
 
@@ -100,6 +105,6 @@ fun NavigationMenus() {
 @Composable
 fun HomeScreenPreview() {
     ShrineComposeTheme {
-        Products()
+        Products(onProductSelect = {})
     }
 }

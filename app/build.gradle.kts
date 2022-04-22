@@ -59,6 +59,7 @@ dependencies {
     implementation(project(":ui:ui-common"))
     implementation(project(":ui:ui-landing"))
     implementation(project(":ui:ui-home"))
+    implementation(project(":ui:ui-detail"))
 
     // Core
     implementation(Libs.AndroidX.Core.KTX)

@@ -1,6 +1,7 @@
 package com.study.compose.ui.home.view
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -22,7 +23,9 @@ import com.study.compose.ui.home.data.Cart
 import com.study.compose.ui.home.data.SampleCartItems
 
 @Composable
-fun ProductsContent() {
+fun ProductsContent(
+    onProductSelect: (cart: Cart) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -39,7 +42,7 @@ fun ProductsContent() {
                 screenHeight = LocalConfiguration.current.screenHeightDp.dp
             ) {
                 SampleCartItems.forEach {
-                    ProductChip(cart = it)
+                    ProductChip(cart = it, onClick = onProductSelect)
                 }
             }
         }
@@ -108,10 +111,11 @@ fun StaggeredProductGrid(
 }
 
 @Composable
-fun ProductChip(cart: Cart) {
+fun ProductChip(cart: Cart, onClick: (cart: Cart) -> Unit) {
     Box(contentAlignment = Alignment.Center) {
         Column(
             modifier = Modifier
+                .clickable { onClick(cart) }
                 .fillMaxWidth()
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -133,7 +137,7 @@ fun ProductChip(cart: Cart) {
 @Composable
 fun ProductChipPreview() {
     ShrineComposeTheme {
-        ProductChip(SampleCartItems[0])
+        ProductChip(SampleCartItems[0]) {}
     }
 }
 
@@ -146,7 +150,7 @@ fun StaggeredProductGridPreview() {
             screenHeight = LocalConfiguration.current.screenHeightDp.dp,
         ) {
             SampleCartItems.forEach {
-                ProductChip(it)
+                ProductChip(it, onClick = {})
             }
         }
     }
