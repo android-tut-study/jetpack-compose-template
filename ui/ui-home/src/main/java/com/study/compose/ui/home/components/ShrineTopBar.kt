@@ -39,14 +39,76 @@ fun ShrineTopBar(
     actions = actions
 )
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TopHeader(
     backdropRevealed: Boolean
 ) {
-    if (backdropRevealed) {
-        TopHeaderSearch()
-    } else {
-        TopHeaderText()
+    val density = LocalDensity.current
+    AnimatedContent(
+        targetState = backdropRevealed,
+        contentAlignment = Alignment.CenterStart,
+        transitionSpec = {
+            if (targetState) {
+                fadeIn(
+                    animationSpec = tween(
+                        durationMillis = 240,
+                        delayMillis = 120,
+                        easing = LinearEasing
+                    )
+                ) + slideInHorizontally(
+                    initialOffsetX = { with(density) { 30.dp.roundToPx() } },
+                    animationSpec = tween(durationMillis = 270, easing = LinearEasing)
+                ) with
+                        fadeOut(
+                            animationSpec = tween(
+                                durationMillis = 120,
+                                easing = LinearEasing
+                            )
+                        ) + slideOutHorizontally(
+                    targetOffsetX = { with(density) { (-30).dp.roundToPx() } },
+                    animationSpec = tween(durationMillis = 120, easing = LinearEasing)
+                )
+            } else {
+                fadeIn(
+                    animationSpec = tween(
+                        durationMillis = 180,
+                        delayMillis = 90,
+                        easing = LinearEasing
+                    )
+                ) + slideInHorizontally(
+                    initialOffsetX = { with(density) { (-30).dp.roundToPx() } },
+                    animationSpec = tween(durationMillis = 270, easing = LinearEasing)
+                ) with
+                        fadeOut(
+                            animationSpec = tween(
+                                durationMillis = 90,
+                                easing = LinearEasing
+                            )
+                        ) +
+                        slideOutHorizontally(
+                            targetOffsetX = { with(density) { 30.dp.roundToPx() } },
+                            animationSpec = tween(durationMillis = 90, easing = LinearEasing)
+                        )
+            }.using(SizeTransform(clip = false))
+        }
+    ) { revealed ->
+        if (revealed) {
+            TopHeaderSearch()
+        } else {
+            TopHeaderText()
+        }
+    }
+
+}
+
+@Preview
+@Composable
+fun TopHeaderPreview() {
+    ShrineComposeTheme {
+        Column(Modifier.fillMaxWidth()) {
+            TopHeader(false)
+        }
     }
 }
 
