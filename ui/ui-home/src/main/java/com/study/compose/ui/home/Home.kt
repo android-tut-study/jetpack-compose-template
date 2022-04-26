@@ -75,10 +75,9 @@ fun Products(
                 navIcon = {
                     NavigationIcon(
                         backdropRevealed = backdropRevealed,
-                        onNavIconPressed = {
-                            // TODO open drawer
-                            backdropRevealed = !backdropRevealed
+                        onRevealed = { revealed ->
                             if (!scaffoldState.isAnimationRunning) {
+                                backdropRevealed = revealed
                                 scope.launch {
                                     if (scaffoldState.isConcealed) {
                                         scaffoldState.reveal()

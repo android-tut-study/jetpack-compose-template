@@ -7,9 +7,12 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -90,15 +93,19 @@ fun TopHeaderSearchPreview() {
 @Composable
 fun NavigationIcon(
     backdropRevealed: Boolean,
-    onNavIconPressed: () -> Unit = {}
+    onRevealed: (Boolean) -> Unit = {}
 ) {
     val density = LocalDensity.current
-    Box(modifier = Modifier
-        .clickable {
-            onNavIconPressed()
-        }
-        .padding(12.dp)
-        .fillMaxHeight(),
+    Box(
+        modifier = Modifier
+            .padding(12.dp)
+            .fillMaxHeight()
+            .toggleable(
+                value = backdropRevealed,
+                onValueChange = { onRevealed(it) },
+                indication = rememberRipple(bounded = false, radius = 64.dp),
+                interactionSource = remember { MutableInteractionSource() }
+            ),
         contentAlignment = Alignment.Center
     ) {
         AnimatedVisibility(
@@ -119,10 +126,12 @@ fun NavigationIcon(
                     easing = LinearEasing
                 )
             ) + slideOutHorizontally(
+                targetOffsetX = { with(density) { (-20).dp.roundToPx() } },
                 animationSpec = tween(
                     durationMillis = 120,
                     easing = LinearEasing
-                ), targetOffsetX = { with(density) { (-20).dp.roundToPx() } }),
+                ),
+            ),
             label = "Navigation Menu Icon"
         ) {
             Icon(
@@ -160,7 +169,11 @@ fun NavigationIcon(
 fun NavigationIconPreviews() {
     ShrineComposeTheme {
         Surface {
-            Column(Modifier.fillMaxWidth().height(64.dp)) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .height(64.dp)
+            ) {
                 NavigationIcon(false) {
 
                 }
