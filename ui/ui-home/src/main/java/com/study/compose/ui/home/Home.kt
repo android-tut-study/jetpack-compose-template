@@ -1,6 +1,9 @@
 package com.study.compose.ui.home
 
-import androidx.compose.runtime.Composable
+import androidx.compose.material.BackdropValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberBackdropScaffoldState
+import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.study.compose.ui.common.theme.ShrineComposeTheme
@@ -9,6 +12,7 @@ import com.study.compose.ui.home.data.Cart
 import com.study.compose.ui.home.interactor.state.HomeViewState
 import com.study.compose.ui.home.view.ProductsContent
 import com.study.compose.ui.home.viewmodel.HomeViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -51,30 +55,39 @@ fun HomeScreen(
         onSearchPressed = onSearchPressed,
         onProductSelect = onProductSelect,
     )
-//    BoxWithConstraints(Modifier.fillMaxSize()) {
-
-//        BottomCart(
-//            modifier = Modifier.align(Alignment.BottomEnd),
-//            maxHeight = maxHeight,
-//            maxWidth = maxWidth,
-//            carts = SampleCartItems
-//        )
-//    }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Products(
     onFilterPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
     onProductSelect: (cart: Cart) -> Unit
 ) {
+    val scaffoldState = rememberBackdropScaffoldState(initialValue = BackdropValue.Concealed)
+    var backdropRevealed by remember { mutableStateOf(scaffoldState.isRevealed) }
+    val scope = rememberCoroutineScope()
+
     ShrineScaffold(
         topBar = {
             ShrineTopBar(
+                backdropRevealed = backdropRevealed,
                 navIcon = {
-                    NavigationIcon(onNavIconPressed = {
-                        // TODO open drawer
-                    })
+                    NavigationIcon(
+                        backdropRevealed = backdropRevealed,
+                        onNavIconPressed = {
+                            // TODO open drawer
+                            backdropRevealed = !backdropRevealed
+                            if (!scaffoldState.isAnimationRunning) {
+                                scope.launch {
+                                    if (scaffoldState.isConcealed) {
+                                        scaffoldState.reveal()
+                                    } else {
+                                        scaffoldState.conceal()
+                                    }
+                                }
+                            }
+                        })
                 },
                 actions = {
                     HomeActionIcon(
@@ -88,7 +101,8 @@ fun Products(
                 }
             )
         },
-        drawerContent = { NavigationMenus() }
+        drawerContent = { NavigationMenus() },
+        scaffoldState = scaffoldState
     ) {
         ProductsContent(onProductSelect = onProductSelect)
     }
