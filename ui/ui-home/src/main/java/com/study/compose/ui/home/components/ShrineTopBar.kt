@@ -160,7 +160,7 @@ fun NavigationIcon(
     val density = LocalDensity.current
     Box(
         modifier = Modifier
-            .padding(12.dp)
+            .padding(horizontal = 12.dp)
             .fillMaxHeight()
             .toggleable(
                 value = backdropRevealed,
@@ -234,7 +234,7 @@ fun NavigationIconPreviews() {
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .height(64.dp)
+                    .height(56.dp)
             ) {
                 NavigationIcon(false) {
 

@@ -1,10 +1,13 @@
 package com.study.compose.ui.home
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BackdropValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.rememberBackdropScaffoldState
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 import com.study.compose.ui.home.components.*
@@ -100,7 +103,7 @@ fun Products(
                 }
             )
         },
-        drawerContent = { NavigationMenus() },
+        drawerContent = { NavigationMenus(backdropRevealed = backdropRevealed) },
         scaffoldState = scaffoldState
     ) {
         ProductsContent(onProductSelect = onProductSelect)
@@ -109,8 +112,12 @@ fun Products(
 
 
 @Composable
-fun NavigationMenus() {
-    ShrineDrawer()
+fun NavigationMenus(backdropRevealed: Boolean) {
+    ShrineDrawer(
+        backdropRevealed = backdropRevealed,
+        // This padding so useful. It prevent crash in BackdropScaffold caused by peekheight
+        modifier = Modifier.padding(top = 12.dp, bottom = 32.dp),
+    )
 }
 
 

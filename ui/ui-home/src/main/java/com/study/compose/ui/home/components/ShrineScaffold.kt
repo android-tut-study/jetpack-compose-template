@@ -13,7 +13,7 @@ import com.study.compose.ui.common.theme.ShrineComposeTheme
 @Composable
 fun ShrineScaffold(
     topBar: @Composable () -> Unit = { ShrineTopBar() },
-    drawerContent: @Composable () -> Unit = { ShrineDrawer() },
+    drawerContent: @Composable () -> Unit = {},
     scaffoldState: BackdropScaffoldState = rememberBackdropScaffoldState(initialValue = BackdropValue.Concealed),
     content: @Composable () -> Unit
 ) {
@@ -32,7 +32,7 @@ fun ShrineScaffold(
 @Composable
 fun ShrineScaffoldPreview() {
     ShrineComposeTheme {
-        ShrineScaffold {
+        ShrineScaffold(drawerContent = {}) {
             Text(text = "Test Test")
         }
     }
