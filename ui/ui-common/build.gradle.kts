@@ -9,6 +9,7 @@ uiConfiguration {
 }
 
 dependencies {
+    api(project(":ui:ui-state"))
     api(Libs.AndroidX.Core.KTX)
     api(Libs.AndroidX.AppCompat.APPCOMPAT)
     api(Libs.AndroidX.Compose.LAYOUT)

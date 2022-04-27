@@ -67,6 +67,10 @@ dependencies {
     implementation(Libs.AndroidX.Navigation.COMPOSE)
     implementation(Libs.AndroidX.AppCompat.APPCOMPAT)
 
+    implementation("com.google.dagger:hilt-android:2.41")
+    kapt("com.google.dagger:hilt-android-compiler:2.41")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
     // LifeCycle
     implementation(Libs.AndroidX.LifeCycle.VIEWMODEL_COMPOSE)
     implementation(Libs.AndroidX.LifeCycle.LIVEDATA_KTX)
