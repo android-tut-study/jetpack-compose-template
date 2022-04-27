@@ -73,14 +73,14 @@ fun BottomCart(
 
     val state by appStateViewModel.state.collectAsState()
     if (currentRoute.value?.destination?.route != Screen.Landing.route) {
-        if (state.showBottomCart)
-            BottomCart(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .then(modifier),
-                maxHeight = config.screenHeightDp.dp,
-                maxWidth = config.screenWidthDp.dp,
-                carts = SampleCartItems
-            )
+        BottomCart(
+            modifier = Modifier
+                .fillMaxWidth()
+                .then(modifier),
+            maxHeight = config.screenHeightDp.dp,
+            maxWidth = config.screenWidthDp.dp,
+            carts = SampleCartItems,
+            hidden = !state.showBottomCart
+        )
     }
 }

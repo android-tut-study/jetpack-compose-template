@@ -6,6 +6,7 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -39,9 +40,6 @@ fun BottomCart(
     Row(modifier = modifier) {
 
         // Add updateTransition
-        var currentCartState by remember {
-            mutableStateOf(CartUiState.Hidden)
-        }
         val cartTransition = updateTransition(
             targetState = when {
                 hidden -> CartUiState.Hidden
@@ -58,7 +56,7 @@ fun BottomCart(
                     delayMillis = 150
                 )
                 CartUiState.Collapsed isTransitioningTo CartUiState.Expanded -> tween(200)
-                else -> tween(600)
+                else -> tween(400)
             }
         }) { state ->
             when (state) {
@@ -88,13 +86,25 @@ fun BottomCart(
             if (state == CartUiState.Expanded) maxHeight else 56.dp
         }
 
+        val cornerSize by cartTransition.animateDp(label = "cartCorner", transitionSpec = {
+            when {
+                CartUiState.Expanded isTransitioningTo CartUiState.Collapsed -> tween(
+                    durationMillis = 433,
+                    delayMillis = 67
+                )
+                else -> tween(durationMillis = 150)
+            }
+        }) {
+            if (it == CartUiState.Expanded) 0.dp else 24.dp
+        }
+
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .offset(x = cartXOffset)
                 .height(cartHeightOffset),
             color = MaterialTheme.colors.secondary,
-            shape = MaterialTheme.shapes.large,
+            shape = CutCornerShape(topStart = cornerSize),
             elevation = 8.dp
         ) {
             if (expanded) {
