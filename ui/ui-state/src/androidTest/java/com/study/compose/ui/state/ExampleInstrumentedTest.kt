@@ -1,4 +1,4 @@
-package com.study.compose.ui_state
+package com.study.compose.ui.state
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
