@@ -1,4 +1,4 @@
-package com.study.compose.ui_state
+package com.study.compose.ui.state
 
 import org.junit.Test
 
