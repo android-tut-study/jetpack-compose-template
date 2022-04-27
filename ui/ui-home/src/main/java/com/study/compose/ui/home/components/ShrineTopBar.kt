@@ -24,20 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 
-@Composable
-fun ShrineTopBar(
-    modifier: Modifier = Modifier,
-    title: @Composable () -> Unit = { TopHeader(backdropRevealed = backdropRevealed) },
-    navIcon: @Composable () -> Unit = { },
-    backdropRevealed: Boolean = false,
-    actions: @Composable RowScope.() -> Unit = { }
-) = TopAppBar(
-    title = title,
-    navigationIcon = navIcon,
-    modifier = modifier,
-    elevation = 0.dp,
-    actions = actions
-)
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -260,13 +246,5 @@ fun HomeActionIcon(
             .clickable { onPressed() }
             .padding(12.dp)
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ShrineTopBarPreview() {
-    ShrineComposeTheme {
-        ShrineTopBar()
-    }
 }
 
