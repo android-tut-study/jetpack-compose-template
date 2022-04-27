@@ -10,15 +10,7 @@ import androidx.navigation.compose.rememberNavController
 class AppState(
     val scaffoldState: BackdropScaffoldState,
     val navController: NavHostController,
-    var shouldShowBottomCart: MutableState<Boolean> = mutableStateOf(false)
 ) {
-
-    @OptIn(ExperimentalMaterialApi::class)
-    @Composable
-    fun rememberShowBottomCart() =
-        remember {
-            mutableStateOf(true)
-        }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
