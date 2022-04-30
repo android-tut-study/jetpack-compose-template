@@ -113,7 +113,7 @@ fun Products(
                     title= { TopHeader(backdropRevealed = backdropRevealed) }
                 )
             },
-            drawerContent = { NavigationMenus(backdropRevealed = backdropRevealed) },
+            backLayerContent = { NavigationMenus(backdropRevealed = backdropRevealed) },
             scaffoldState = scaffoldState
         ) {
             ProductsContent(onProductSelect = onProductSelect)

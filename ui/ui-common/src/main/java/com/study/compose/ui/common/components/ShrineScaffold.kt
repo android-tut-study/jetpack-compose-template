@@ -1,5 +1,7 @@
 package com.study.compose.ui.common.components
 
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -13,7 +15,7 @@ import com.study.compose.ui.common.theme.ShrineComposeTheme
 @Composable
 fun ShrineScaffold(
     topBar: @Composable () -> Unit = { },
-    drawerContent: @Composable () -> Unit = {},
+    backLayerContent: @Composable () -> Unit = {},
     scaffoldState: BackdropScaffoldState = rememberBackdropScaffoldState(initialValue = BackdropValue.Concealed),
     gesturesEnabled: Boolean = false,
     content: @Composable () -> Unit
@@ -21,11 +23,28 @@ fun ShrineScaffold(
     BackdropScaffold(
         appBar = topBar,
         scaffoldState = scaffoldState,
-        backLayerContent = drawerContent,
+        backLayerContent = backLayerContent,
         frontLayerContent = content,
         frontLayerShape = MaterialTheme.shapes.large,
         frontLayerElevation = 16.dp,
         gesturesEnabled = gesturesEnabled
+    )
+}
+
+@Composable
+fun ShrineScaffold(
+    modifier: Modifier = Modifier,
+    topBar: @Composable () -> Unit = { },
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    drawerContent: @Composable ColumnScope.() -> Unit = {},
+    content: @Composable (paddingValue: PaddingValues) -> Unit
+) {
+    Scaffold(
+        modifier = modifier,
+        topBar = topBar,
+        scaffoldState = scaffoldState,
+        drawerContent = drawerContent,
+        content = content
     )
 }
 
@@ -48,7 +67,7 @@ fun ShrineTopBar(
 @Composable
 fun ShrineScaffoldPreview() {
     ShrineComposeTheme {
-        ShrineScaffold(drawerContent = {}) {
+        ShrineScaffold(backLayerContent = {}) {
             Text(text = "Test Test")
         }
     }
