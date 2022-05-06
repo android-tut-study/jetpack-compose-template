@@ -1,9 +1,10 @@
 plugins {
-    `java-gradle-plugin`
     `kotlin-dsl`
+    `java-gradle-plugin`
 }
 
 repositories {
+    mavenCentral()
     jcenter()
 }
 
