@@ -44,6 +44,13 @@ object Libs {
                 private const val VERSION = "1.0.0-alpha09"
                 const val MATERIAL3 = "androidx.compose.material3:material3:$VERSION"
             }
+
+            // https://github.com/google/accompanist
+            object Accompanist {
+                private const val VERSION = "0.23.1"
+                const val SYSTEM_UI_CONTROL = "com.google.accompanist:accompanist-systemuicontroller:$VERSION"
+                const val FLOW_LAYOUTS = "com.google.accompanist:accompanist-flowlayout:$VERSION"
+            }
         }
 
         object Navigation {
