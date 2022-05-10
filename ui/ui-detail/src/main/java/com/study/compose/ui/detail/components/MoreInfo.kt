@@ -54,37 +54,37 @@ fun MoreDetail(
 @OptIn(ExperimentalUnitApi::class)
 @Composable
 fun SelectSize(size: List<Int>, selectedSize: Int = 1, onSizeSelected: (size: Int) -> Unit) {
-    Surface(color = MaterialTheme.colors.surface) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)
+//    Surface(color = MaterialTheme.colors.surface) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(text = "Select Size", style = MaterialTheme.typography.h6)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(text = "Select Size", style = MaterialTheme.typography.h6)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                size.forEach {
-                    Box(
-                        modifier = Modifier
-                            .size(36.dp)
-                            .border(
-                                1.5.dp,
-                                color = Color(if (selectedSize == it) 0xFFBDBDBD else 0xFFFCB8AB),
-                                shape = RoundedCornerShape(10.dp)
-                            )
-                            .background(color = MaterialTheme.colors.surface)
-                            .clickable { onSizeSelected(it) },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = it.toString(),
-                            style = MaterialTheme.typography.body1,
-                            fontSize = TextUnit(12f, TextUnitType.Sp),
+            size.forEach {
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .border(
+                            1.5.dp,
+                            color = Color(if (selectedSize == it) 0xFFBDBDBD else 0xFFFCB8AB),
+                            shape = RoundedCornerShape(10.dp)
                         )
-                    }
+                        .background(color = MaterialTheme.colors.surface)
+                        .clickable { onSizeSelected(it) },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = it.toString(),
+                        style = MaterialTheme.typography.body1,
+                        fontSize = TextUnit(12f, TextUnitType.Sp),
+                    )
                 }
+//                }
             }
         }
     }
@@ -97,30 +97,30 @@ fun SelectColor(
     selectedColor: Long = 0xFFA5E7E8,
     colorSelected: (color: Long) -> Unit
 ) {
-    Surface(color = MaterialTheme.colors.surface) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Text(text = "Select Color", style = MaterialTheme.typography.h6)
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                colors.forEach {
-                    Box(
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clip(CircleShape)
-                            .border(
-                                width = 1.dp,
-                                color = Color(if (selectedColor == it) 0xFFBDBDBD else 0xFFFCB8AB),
-                                shape = CircleShape
-                            )
-                            .background(color = Color(it))
-                    )
-                }
+//    Surface(color = MaterialTheme.colors.surface) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(text = "Select Color", style = MaterialTheme.typography.h6)
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            colors.forEach {
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 1.dp,
+                            color = Color(if (selectedColor == it) 0xFFBDBDBD else 0xFFFCB8AB),
+                            shape = CircleShape
+                        )
+                        .background(color = Color(it))
+                )
             }
-
         }
+
+//        }
     }
 }
 
