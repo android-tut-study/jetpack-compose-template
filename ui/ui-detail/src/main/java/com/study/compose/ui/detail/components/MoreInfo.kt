@@ -1,6 +1,9 @@
 package com.study.compose.ui.detail.components
 
-import androidx.annotation.ColorRes
+import androidx.compose.animation.*
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -8,7 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,6 +22,7 @@ import androidx.compose.ui.unit.*
 import com.study.compose.ui.common.components.ShrineDivider
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MoreDetail(
     sizes: List<Int> = listOf(1, 2, 3, 4, 5, 6),
@@ -26,35 +30,77 @@ fun MoreDetail(
     colors: List<Long> = listOf(0xFFA5E7E8, 0xFFDAD5D5, 0xFFF9D8AC),
     onColorSelected: (color: Long) -> Unit
 ) {
+    var expandedState by remember { mutableStateOf(true) }
+
     Surface(color = MaterialTheme.colors.surface) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(
                 modifier = Modifier
+                    .clickable { expandedState = !expandedState }
                     .fillMaxWidth()
                     .padding(12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "More Details".uppercase())
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(
-                        painter = painterResource(id = com.study.compose.ui.common.R.drawable.ic_drop_down_24),
-                        contentDescription = "MoreDetail"
-                    )
+                Crossfade(
+                    targetState = expandedState,
+                    animationSpec = tween(durationMillis = 150, easing = FastOutLinearInEasing)
+                ) { expanded ->
+                    if (expanded) {
+                        Icon(
+                            painter = painterResource(id = com.study.compose.ui.common.R.drawable.ic_drop_down_24),
+                            contentDescription = "MoreDetail"
+                        )
+                    } else {
+                        Icon(
+                            painter = painterResource(id = com.study.compose.ui.common.R.drawable.ic_drop_up_24),
+                            contentDescription = "MoreDetail"
+                        )
+                    }
+
                 }
             }
-            ShrineDivider()
-            SelectSize(size = sizes) { onSizeSelected(it) }
-            ShrineDivider(modifier = Modifier.padding(top = 10.dp))
-            SelectColor(colors = colors) { onColorSelected(it) }
+            AnimatedContent(
+                targetState = expandedState,
+                transitionSpec = {
+                    fadeIn(animationSpec = tween(150, 150)) with
+                            fadeOut(animationSpec = tween(150)) using
+                            SizeTransform { initialSize, targetSize ->
+                                if (targetState) {
+                                    keyframes {
+                                        // Expand horizontally first.
+                                        IntSize(targetSize.width, initialSize.height) at 100
+                                        durationMillis = 200
+                                    }
+                                } else {
+                                    keyframes {
+                                        // Shrink vertically first.
+                                        IntSize(initialSize.width, targetSize.height) at 100
+                                        durationMillis = 200
+                                    }
+                                }
+                            }
+
+                }
+            ) { expanded ->
+                if (expanded) {
+                    Column {
+                        ShrineDivider()
+                        SelectSize(size = sizes) { onSizeSelected(it) }
+                        ShrineDivider(modifier = Modifier.padding(top = 10.dp))
+                        SelectColor(colors = colors) { onColorSelected(it) }
+                    }
+                }
+            }
         }
+
     }
 }
 
 @OptIn(ExperimentalUnitApi::class)
 @Composable
 fun SelectSize(size: List<Int>, selectedSize: Int = 1, onSizeSelected: (size: Int) -> Unit) {
-//    Surface(color = MaterialTheme.colors.surface) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -84,7 +130,6 @@ fun SelectSize(size: List<Int>, selectedSize: Int = 1, onSizeSelected: (size: In
                         fontSize = TextUnit(12f, TextUnitType.Sp),
                     )
                 }
-//                }
             }
         }
     }
@@ -97,7 +142,6 @@ fun SelectColor(
     selectedColor: Long = 0xFFA5E7E8,
     colorSelected: (color: Long) -> Unit
 ) {
-//    Surface(color = MaterialTheme.colors.surface) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -116,11 +160,10 @@ fun SelectColor(
                             shape = CircleShape
                         )
                         .background(color = Color(it))
+                        .clickable { colorSelected(it) }
                 )
             }
         }
-
-//        }
     }
 }
 
