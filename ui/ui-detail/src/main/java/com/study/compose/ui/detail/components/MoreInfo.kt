@@ -4,19 +4,25 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.study.compose.ui.common.components.ShrineDivider
@@ -34,32 +40,40 @@ fun MoreDetail(
     var expandedState by remember { mutableStateOf(true) }
 
     Surface(color = MaterialTheme.colors.surface) {
-        Column(modifier = Modifier.fillMaxWidth().then(modifier)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .then(modifier)
+        ) {
             Row(
                 modifier = Modifier
-                    .clickable { expandedState = !expandedState }
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "More Details".uppercase(), style = MaterialTheme.typography.h6)
-                Crossfade(
-                    targetState = expandedState,
-                    animationSpec = tween(durationMillis = 150, easing = FastOutLinearInEasing)
-                ) { expanded ->
-                    if (expanded) {
-                        Icon(
-                            painter = painterResource(id = com.study.compose.ui.common.R.drawable.ic_drop_down_24),
-                            contentDescription = "MoreDetail"
-                        )
-                    } else {
-                        Icon(
-                            painter = painterResource(id = com.study.compose.ui.common.R.drawable.ic_drop_up_24),
-                            contentDescription = "MoreDetail"
-                        )
-                    }
+                Text(
+                    text = "More Details".uppercase(),
+                    style = MaterialTheme.typography.subtitle2,
+                    fontWeight = FontWeight(500)
+                )
+                IconButton(onClick = { expandedState = !expandedState }) {
+                    Crossfade(
+                        targetState = expandedState,
+                        animationSpec = tween(durationMillis = 150, easing = FastOutLinearInEasing)
+                    ) { expanded ->
+                        if (expanded) {
+                            Icon(
+                                painter = painterResource(id = com.study.compose.ui.common.R.drawable.ic_drop_down_24),
+                                contentDescription = "MoreDetail"
+                            )
+                        } else {
+                            Icon(
+                                painter = painterResource(id = com.study.compose.ui.common.R.drawable.ic_drop_up_24),
+                                contentDescription = "MoreDetail"
+                            )
+                        }
 
+                    }
                 }
             }
             AnimatedContent(
@@ -123,6 +137,7 @@ fun SelectSize(
                 Box(
                     modifier = Modifier
                         .size(36.dp)
+                        .clip(RoundedCornerShape(10.dp))
                         .border(
                             1.5.dp,
                             color = Color(if (selectedSize == it) 0xFFBDBDBD else 0xFFFCB8AB),
@@ -158,7 +173,11 @@ fun SelectColor(
             .then(modifier),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(text = "Select Color", style = MaterialTheme.typography.h6)
+        Text(
+            text = "Select Color",
+            style = MaterialTheme.typography.subtitle1,
+            fontWeight = FontWeight(500)
+        )
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             colors.forEach {
                 Box(
@@ -190,7 +209,10 @@ fun SelectSizePreview() {
 @Composable
 fun SelectColorPreview() {
     ShrineComposeTheme {
-        SelectColor(colors = listOf(0xFFA5E7E8, 0xFFDAD5D5, 0xFFF9D8AC), selectedColor = 0xFFA5E7E8) {}
+        SelectColor(
+            colors = listOf(0xFFA5E7E8, 0xFFDAD5D5, 0xFFF9D8AC),
+            selectedColor = 0xFFA5E7E8
+        ) {}
     }
 }
 

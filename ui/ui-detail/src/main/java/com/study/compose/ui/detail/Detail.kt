@@ -10,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
@@ -33,7 +32,7 @@ import kotlin.math.min
 private val MinTitleOffset = 56.dp
 private val ExpandedImageHeight = 180.dp
 private val CollapsedImageHeight = 60.dp
-private val TitleHeight = 120.dp
+private val TitleHeight = 110.dp
 private val ScreenPadding = 12.dp
 
 @Composable
@@ -41,8 +40,6 @@ fun Detail() {
     ShrineComposeTheme {
         Surface(color = MaterialTheme.colors.surface) {
             val scrollState = rememberScrollState(0)
-//            val maxOffset = with(LocalDensity.current) { ExpandedImageHeight.toPx() }
-//            val offset = (maxOffset - scrollState.value).coerceAtLeast(0f)
             val scroll = scrollState.value
             val collapseRange = with(LocalDensity.current) { (ExpandedImageHeight).toPx() }
             val collapseFraction = (scroll / collapseRange).coerceIn(0f, 1f)
@@ -79,13 +76,17 @@ fun ConcealedTitle(modifier: Modifier = Modifier, scroll: Int) {
         ) {
             Column {
                 Box(modifier = Modifier.fillMaxWidth()) {
-                    ProductInfo(Modifier.height(TitleHeight).padding(horizontal = ScreenPadding))
+                    ProductInfo(
+                        modifier = Modifier
+                            .height(TitleHeight)
+                            .padding(horizontal = ScreenPadding)
+                    )
                     Image(
                         modifier = Modifier
-                            .padding(10.dp)
+                            .padding(bottom = 20.dp, top = 10.dp, end = ScreenPadding)
                             .size(CollapsedImageHeight)
                             .clip(CircleShape)
-                            .align(Alignment.CenterEnd),
+                            .align(Alignment.BottomEnd),
                         painter = painterResource(id = R.drawable.fake),
                         contentDescription = "Fake1",
                         contentScale = ContentScale.Crop,
@@ -112,13 +113,16 @@ fun Title(scroll: Int) {
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        ProductInfo(Modifier.height(TitleHeight).padding(horizontal = ScreenPadding))
+        ProductInfo(
+            Modifier
+                .height(TitleHeight)
+                .padding(horizontal = ScreenPadding))
         Image(
             modifier = Modifier
-                .padding(10.dp)
+                .padding(bottom = 20.dp, top = 10.dp, end = ScreenPadding)
                 .size(CollapsedImageHeight)
                 .clip(CircleShape)
-                .align(Alignment.CenterEnd)
+                .align(Alignment.BottomEnd)
                 .alpha(1 - alpha),
             painter = painterResource(id = R.drawable.fake),
             contentDescription = "Fake2",

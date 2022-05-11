@@ -9,9 +9,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.ExperimentalUnitApi
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import com.study.compose.ui.common.theme.ShrineComposeTheme
 
+@OptIn(ExperimentalUnitApi::class)
 @Composable
 fun ProductInfo(modifier: Modifier = Modifier) {
     Surface(color = MaterialTheme.colors.surface) {
@@ -28,9 +34,21 @@ fun ProductInfo(modifier: Modifier = Modifier) {
                     .fillMaxWidth()
             ) {
                 Text(text = "LMBRJK")
-                Text(text = "$240", modifier = Modifier.padding(end = 8.dp))
+                Text(
+                    text = "$240",
+                    style = MaterialTheme.typography.h4.copy(
+                        fontSize = TextUnit(
+                            24f,
+                            TextUnitType.Sp
+                        )
+                    )
+                )
             }
-            Text(text = "Flow Shirt Blouse", style = MaterialTheme.typography.h6)
+            Text(
+                text = "Flow Shirt Blouse",
+                style = MaterialTheme.typography.h5,
+                fontWeight = FontWeight(500)
+            )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = "This is Description \n ......", style = MaterialTheme.typography.body2.copy(
@@ -46,7 +64,9 @@ fun ProductInfo(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun ProductInfoPreview() {
-    Surface(modifier = Modifier.fillMaxWidth()) {
-        ProductInfo()
+    ShrineComposeTheme {
+        Surface(modifier = Modifier.fillMaxWidth()) {
+            ProductInfo()
+        }
     }
 }
