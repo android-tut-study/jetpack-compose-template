@@ -4,13 +4,13 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
@@ -23,6 +23,7 @@ import androidx.compose.ui.util.lerp
 import androidx.compose.ui.unit.lerp
 import com.study.compose.ui.common.components.ShrineDivider
 import com.study.compose.ui.common.theme.ShrineComposeTheme
+import com.study.compose.ui.detail.components.AlsoLikes
 import com.study.compose.ui.detail.components.DetailHeader
 import com.study.compose.ui.detail.components.MoreDetail
 import com.study.compose.ui.detail.components.ProductInfo
@@ -30,9 +31,10 @@ import kotlin.math.max
 import kotlin.math.min
 
 private val MinTitleOffset = 56.dp
-private val ExpandedImageHeight = 150.dp
+private val ExpandedImageHeight = 180.dp
 private val CollapsedImageHeight = 60.dp
 private val TitleHeight = 120.dp
+private val ScreenPadding = 12.dp
 
 @Composable
 fun Detail() {
@@ -48,13 +50,14 @@ fun Detail() {
             Box(modifier = Modifier.fillMaxSize()) {
                 ProductImage(scroll = scrollState.value)
                 Body(scrollState, scroll)
-                ConcealedTitle(scroll)
+                ConcealedTitle(scroll = scroll)
                 DetailHeader(
-                    modifier = Modifier.background(
-                        color = MaterialTheme.colors.surface.copy(
-                            alpha = (collapseFraction * 1.4f).coerceIn(0f, 1f)
+                    modifier = Modifier
+                        .background(
+                            color = MaterialTheme.colors.surface.copy(
+                                alpha = (collapseFraction * 1.4f).coerceIn(0f, 1f)
+                            )
                         )
-                    )
                 )
             }
         }
@@ -62,7 +65,7 @@ fun Detail() {
 }
 
 @Composable
-fun ConcealedTitle(scroll: Int) {
+fun ConcealedTitle(modifier: Modifier = Modifier, scroll: Int) {
     val maxOffset = with(LocalDensity.current) { (ExpandedImageHeight).toPx() }
     val minOffset = with(LocalDensity.current) { MinTitleOffset.toPx() }
     val offset = (maxOffset - scroll).coerceAtLeast(minOffset)
@@ -71,10 +74,12 @@ fun ConcealedTitle(scroll: Int) {
             .fillMaxWidth()
             .graphicsLayer {
                 translationY = offset
-            }) {
+            }
+            .then(modifier)
+        ) {
             Column {
                 Box(modifier = Modifier.fillMaxWidth()) {
-                    ProductInfo(Modifier.height(TitleHeight))
+                    ProductInfo(Modifier.height(TitleHeight).padding(horizontal = ScreenPadding))
                     Image(
                         modifier = Modifier
                             .padding(10.dp)
@@ -87,7 +92,9 @@ fun ConcealedTitle(scroll: Int) {
                     )
                 }
                 ShrineDivider(
-                    modifier = Modifier.padding(top = 2.dp)
+                    modifier = Modifier
+                        .padding(top = 2.dp)
+                        .padding(horizontal = ScreenPadding)
                 )
             }
         }
@@ -105,7 +112,7 @@ fun Title(scroll: Int) {
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        ProductInfo(Modifier.height(TitleHeight))
+        ProductInfo(Modifier.height(TitleHeight).padding(horizontal = ScreenPadding))
         Image(
             modifier = Modifier
                 .padding(10.dp)
@@ -130,12 +137,15 @@ fun Body(scrollState: ScrollState, scroll: Int) {
     ) {
         Spacer(Modifier.height(ExpandedImageHeight))
         Title(scroll)
-        MoreDetail(onSizeSelected = {}, onColorSelected = {})
+        MoreDetail(
+            modifier = Modifier.padding(horizontal = ScreenPadding),
+            onSizeSelected = {},
+            onColorSelected = {})
         Spacer(modifier = Modifier.height(10.dp))
         AddToCart()
+        Spacer(modifier = Modifier.height(20.dp))
+        AlsoLikes(modifier = Modifier.padding(horizontal = ScreenPadding))
         Spacer(modifier = Modifier.height(64.dp))
-        //TODO Create Also Like list
-        Spacer(modifier = Modifier.height(180.dp))
     }
 
 }
@@ -152,16 +162,17 @@ fun ProductImage(modifier: Modifier = Modifier, scroll: Int) {
             .alpha(1f - collapseFraction)
             .graphicsLayer {
                 translationY = offset
-            }
+            },
+        contentAlignment = Alignment.Center
     ) {
         Image(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxSize(),
             painter = painterResource(id = R.drawable.fake),
             contentDescription = "Fake",
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.FillBounds,
+            alignment = Alignment.Center,
         )
     }
-
 }
 
 @Composable

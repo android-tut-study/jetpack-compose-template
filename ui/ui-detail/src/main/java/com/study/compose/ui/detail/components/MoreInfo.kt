@@ -25,6 +25,7 @@ import com.study.compose.ui.common.theme.ShrineComposeTheme
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MoreDetail(
+    modifier: Modifier = Modifier,
     sizes: List<Int> = listOf(1, 2, 3, 4, 5, 6),
     onSizeSelected: (size: Int) -> Unit,
     colors: List<Long> = listOf(0xFFA5E7E8, 0xFFDAD5D5, 0xFFF9D8AC),
@@ -33,16 +34,16 @@ fun MoreDetail(
     var expandedState by remember { mutableStateOf(true) }
 
     Surface(color = MaterialTheme.colors.surface) {
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.fillMaxWidth().then(modifier)) {
             Row(
                 modifier = Modifier
                     .clickable { expandedState = !expandedState }
                     .fillMaxWidth()
-                    .padding(12.dp),
+                    .padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "More Details".uppercase())
+                Text(text = "More Details".uppercase(), style = MaterialTheme.typography.h6)
                 Crossfade(
                     targetState = expandedState,
                     animationSpec = tween(durationMillis = 150, easing = FastOutLinearInEasing)
@@ -100,11 +101,18 @@ fun MoreDetail(
 
 @OptIn(ExperimentalUnitApi::class)
 @Composable
-fun SelectSize(size: List<Int>, selectedSize: Int = 1, onSizeSelected: (size: Int) -> Unit) {
+fun SelectSize(
+    modifier: Modifier = Modifier,
+    size: List<Int>,
+    selectedSize: Int = 1,
+    onSizeSelected: (size: Int) -> Unit
+) {
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)
+            .padding(vertical = 12.dp)
+            .then(modifier),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(text = "Select Size", style = MaterialTheme.typography.h6)
         Row(
@@ -138,6 +146,7 @@ fun SelectSize(size: List<Int>, selectedSize: Int = 1, onSizeSelected: (size: In
 
 @Composable
 fun SelectColor(
+    modifier: Modifier = Modifier,
     colors: List<Long>,
     selectedColor: Long = 0xFFA5E7E8,
     colorSelected: (color: Long) -> Unit
@@ -145,7 +154,9 @@ fun SelectColor(
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)
+            .padding(vertical = 12.dp)
+            .then(modifier),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(text = "Select Color", style = MaterialTheme.typography.h6)
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -179,7 +190,7 @@ fun SelectSizePreview() {
 @Composable
 fun SelectColorPreview() {
     ShrineComposeTheme {
-        SelectColor(listOf(0xFFA5E7E8, 0xFFDAD5D5, 0xFFF9D8AC), selectedColor = 0xFFA5E7E8) {}
+        SelectColor(colors = listOf(0xFFA5E7E8, 0xFFDAD5D5, 0xFFF9D8AC), selectedColor = 0xFFA5E7E8) {}
     }
 }
 

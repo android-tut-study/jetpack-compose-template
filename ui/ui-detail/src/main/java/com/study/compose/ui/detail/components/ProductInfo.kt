@@ -18,7 +18,7 @@ fun ProductInfo(modifier: Modifier = Modifier) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp)
+                .padding(vertical = 12.dp)
                 .then(modifier),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
