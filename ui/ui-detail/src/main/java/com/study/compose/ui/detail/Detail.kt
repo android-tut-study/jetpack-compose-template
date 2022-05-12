@@ -12,14 +12,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.lerp
-import androidx.compose.ui.unit.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.study.compose.ui.common.components.ShrineDivider
 import com.study.compose.ui.common.theme.ShrineComposeTheme
@@ -28,8 +24,6 @@ import com.study.compose.ui.detail.components.DetailHeader
 import com.study.compose.ui.detail.components.MoreDetail
 import com.study.compose.ui.detail.components.ProductInfo
 import com.study.compose.ui.detail.viewmodel.DetailViewModel
-import kotlin.math.max
-import kotlin.math.min
 
 private val MinTitleOffset = 56.dp
 private val ExpandedImageHeight = 180.dp
@@ -201,34 +195,6 @@ fun ProductImage(modifier: Modifier = Modifier, scroll: Int) {
             contentScale = ContentScale.FillBounds,
             alignment = Alignment.Center,
         )
-    }
-}
-
-@Composable
-fun CollapsingImageLayout(
-    modifier: Modifier = Modifier,
-    collapseFraction: Float,
-    content: @Composable () -> Unit
-) {
-    Layout(modifier = modifier, content = content) { measureables, constraints ->
-        check(measureables.size == 1)
-        // calculate image size by collapseFraction
-        val imageMaxSize = min(ExpandedImageHeight.roundToPx(), constraints.maxWidth)
-        val imageMinSize = max(CollapsedImageHeight.roundToPx(), constraints.minWidth)
-        val imageWidth = lerp(imageMaxSize, imageMinSize, collapseFraction)
-        val placeable = measureables[0].measure(Constraints.fixed(constraints.maxWidth, imageWidth))
-
-        // calculate image coordination
-        val imageY = lerp(0.dp, 56.dp, collapseFraction).roundToPx()
-        val imageX = lerp(
-            (constraints.maxWidth - imageWidth) / 2,
-            constraints.maxWidth - imageWidth - 10.dp.roundToPx(),
-            collapseFraction
-        )
-
-        layout(width = constraints.maxWidth, height = imageY + imageWidth) {
-            placeable.placeRelative(imageX, imageY)
-        }
     }
 }
 
