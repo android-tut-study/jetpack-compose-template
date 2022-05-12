@@ -53,7 +53,11 @@ fun NavGraphBuilder.addShowProductDetail(
     root: Screen
 ) {
     composable(route = ProductScreen.ShowDetail.createRoute(root)) {
-        Detail()
+        Detail(
+            onClosePressed = { navController.popBackStack() },
+            onCartAddPressed = { /* TODO Process Add Cart */ },
+            onFavoritePressed = { /* TODO Process Favorite */ }
+        )
     }
 }
 
@@ -84,7 +88,11 @@ fun NavGraphBuilder.addProductTopLevel(
         route = Screen.Products.route,
         startDestination = ProductScreen.Products.createRoute(Screen.Products)
     ) {
-        addProducts(navController = navController, root = Screen.Products, viewModelStoreOwner = viewModelStoreOwner)
+        addProducts(
+            navController = navController,
+            root = Screen.Products,
+            viewModelStoreOwner = viewModelStoreOwner
+        )
         addShowProductDetail(navController = navController, root = Screen.Products)
     }
 }

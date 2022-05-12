@@ -10,6 +10,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.study.compose.ui.common.components.ShrineScaffold
+import com.study.compose.ui.common.components.ShrineTopBar
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 import com.study.compose.ui.home.components.*
 import com.study.compose.ui.home.data.Cart
@@ -81,14 +83,12 @@ fun Products(
         ShrineScaffold(
             topBar = {
                 ShrineTopBar(
-                    backdropRevealed = backdropRevealed,
                     navIcon = {
                         NavigationIcon(
                             backdropRevealed = backdropRevealed,
                             onRevealed = { revealed ->
                                 if (!scaffoldState.isAnimationRunning) {
                                     backdropRevealed = revealed
-//                                    shouldShow.value = !revealed
                                     appViewStateVM.shouldShowBottomCart(!revealed)
                                     scope.launch {
                                         if (scaffoldState.isConcealed) {
@@ -109,10 +109,11 @@ fun Products(
                             com.study.compose.ui.common.R.drawable.shr_filter,
                             onPressed = onFilterPressed
                         )
-                    }
+                    },
+                    title= { TopHeader(backdropRevealed = backdropRevealed) }
                 )
             },
-            drawerContent = { NavigationMenus(backdropRevealed = backdropRevealed) },
+            backLayerContent = { NavigationMenus(backdropRevealed = backdropRevealed) },
             scaffoldState = scaffoldState
         ) {
             ProductsContent(onProductSelect = onProductSelect)

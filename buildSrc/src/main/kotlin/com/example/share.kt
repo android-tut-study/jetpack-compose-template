@@ -3,7 +3,7 @@ package com.example
 object SharedVersion {
 
     object AndroidX {
-        const val COMPOSE = "1.1.1"
+        const val COMPOSE = "1.2.0-alpha08"
     }
 
     object Hilt {
@@ -11,7 +11,7 @@ object SharedVersion {
     }
 
     object KotlinPlugins {
-        const val ANDROID = "1.6.10"
+        const val ANDROID = "1.6.20"
     }
 
     object AndroidPlugins {

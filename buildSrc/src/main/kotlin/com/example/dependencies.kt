@@ -9,7 +9,7 @@ object Libs {
         }
 
         object Activity {
-            private const val VERSION = "1.4.0"
+            private const val VERSION = "1.6.0-alpha03"
             const val ACTIVITY_KTX = "androidx.activity:activity-ktx:$VERSION"
             const val ACTIVITY = "androidx.activity:activity:$VERSION"
             const val ACTIVITY_COMPOSE = "androidx.activity:activity-compose:$VERSION"
@@ -39,10 +39,18 @@ object Libs {
             const val UI_UTIL = "androidx.compose.ui:ui-util:$VERSION"
             const val VIEW_BINDING = "androidx.compose.ui:ui-viewbinding:$VERSION"
             const val COMPILER = "androidx.compose.compiler:compiler:$VERSION"
+            const val POOLING_CONTAINER = "androidx.customview:customview-poolingcontainer:$VERSION"
 
             object Material3 {
                 private const val VERSION = "1.0.0-alpha09"
                 const val MATERIAL3 = "androidx.compose.material3:material3:$VERSION"
+            }
+
+            // https://github.com/google/accompanist
+            object Accompanist {
+                private const val VERSION = "0.23.1"
+                const val SYSTEM_UI_CONTROL = "com.google.accompanist:accompanist-systemuicontroller:$VERSION"
+                const val FLOW_LAYOUTS = "com.google.accompanist:accompanist-flowlayout:$VERSION"
             }
         }
 
