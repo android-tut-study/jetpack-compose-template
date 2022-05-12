@@ -1,6 +1,5 @@
 package com.study.compose.ui.detail.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
@@ -87,7 +86,7 @@ fun DetailHeaderActions(onCartAddPressed: () -> Unit, onFavoritePressed: () -> U
 
 @Preview
 @Composable
-fun DetailHeaderPreview() {
+private fun DetailHeaderPreview() {
     ShrineComposeTheme {
         DetailHeader()
     }

@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import com.study.compose.ui.common.components.ShrineDivider
 import com.study.compose.ui.detail.R
 import com.study.compose.ui.detail.data.AlsoLike
-import kotlin.math.ceil
 
 @Composable
 fun AlsoLikes(
