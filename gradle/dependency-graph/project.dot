@@ -1,0 +1,42 @@
+digraph {
+  graph [label="ShrineCompose\n ",labelloc=t,fontsize=30,ranksep=1.4];
+  node [style=filled, fillcolor="#bbbbbb"];
+  rankdir=TB;
+
+  # Projects
+
+  ":app" [shape=box, fillcolor="#baffc9"];
+  ":core:core-dispatcher" [fillcolor="#baffc9"];
+  ":core:core-domain" [fillcolor="#baffc9"];
+  ":core:core-result" [fillcolor="#baffc9"];
+  ":core:core-usecase" [fillcolor="#baffc9"];
+  ":domain:domain-products" [fillcolor="#baffc9"];
+  ":ui:ui-common" [fillcolor="#baffc9"];
+  ":ui:ui-detail" [fillcolor="#baffc9"];
+  ":ui:ui-home" [fillcolor="#baffc9"];
+  ":ui:ui-landing" [fillcolor="#baffc9"];
+  ":ui:ui-state" [fillcolor="#baffc9"];
+  ":usecase:usecase-products" [fillcolor="#baffc9"];
+
+  {rank = same; ":app";}
+
+  # Dependencies
+
+  ":app" -> ":ui:ui-common" [style=dotted]
+  ":app" -> ":ui:ui-landing" [style=dotted]
+  ":app" -> ":ui:ui-home" [style=dotted]
+  ":app" -> ":ui:ui-detail" [style=dotted]
+  ":core:core-usecase" -> ":core:core-result" [style=dotted]
+  ":domain:domain-products" -> ":core:core-domain" [style=dotted]
+  ":domain:domain-products" -> ":core:core-dispatcher" [style=dotted]
+  ":ui:ui-common" -> ":ui:ui-state"
+  ":ui:ui-detail" -> ":ui:ui-common" [style=dotted]
+  ":ui:ui-home" -> ":ui:ui-common" [style=dotted]
+  ":ui:ui-home" -> ":usecase:usecase-products" [style=dotted]
+  ":ui:ui-landing" -> ":ui:ui-common" [style=dotted]
+  ":usecase:usecase-products" -> ":core:core-usecase"
+  ":usecase:usecase-products" -> ":core:core-result"
+  ":usecase:usecase-products" -> ":core:core-dispatcher" [style=dotted]
+  ":usecase:usecase-products" -> ":core:core-domain" [style=dotted]
+  ":usecase:usecase-products" -> ":domain:domain-products" [style=dotted]
+}
