@@ -3,7 +3,7 @@ name: Dependency Graph
 on:
   push:
     branches:
-      - dependency-graph
+      - main
   workflow_dispatch:
 
 jobs:
