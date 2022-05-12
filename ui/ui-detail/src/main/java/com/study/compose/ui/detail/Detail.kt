@@ -20,12 +20,14 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.unit.lerp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.study.compose.ui.common.components.ShrineDivider
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 import com.study.compose.ui.detail.components.AlsoLikes
 import com.study.compose.ui.detail.components.DetailHeader
 import com.study.compose.ui.detail.components.MoreDetail
 import com.study.compose.ui.detail.components.ProductInfo
+import com.study.compose.ui.detail.viewmodel.DetailViewModel
 import kotlin.math.max
 import kotlin.math.min
 
@@ -36,7 +38,26 @@ private val TitleHeight = 110.dp
 private val ScreenPadding = 12.dp
 
 @Composable
-fun Detail() {
+fun Detail(
+    onCartAddPressed: () -> Unit = {},
+    onClosePressed: () -> Unit = {},
+    onFavoritePressed: () -> Unit = {}
+) {
+    Detail(
+        viewModel = hiltViewModel(),
+        onCartAddPressed = onCartAddPressed,
+        onClosePressed = onClosePressed,
+        onFavoritePressed = onFavoritePressed
+    )
+}
+
+@Composable
+fun Detail(
+    viewModel: DetailViewModel,
+    onCartAddPressed: () -> Unit = {},
+    onClosePressed: () -> Unit = {},
+    onFavoritePressed: () -> Unit = {}
+) {
     ShrineComposeTheme {
         Surface(color = MaterialTheme.colors.surface) {
             val scrollState = rememberScrollState(0)
@@ -54,7 +75,10 @@ fun Detail() {
                             color = MaterialTheme.colors.surface.copy(
                                 alpha = (collapseFraction * 1.4f).coerceIn(0f, 1f)
                             )
-                        )
+                        ),
+                    onNavigationPressed = onClosePressed,
+                    onFavoritePressed = onFavoritePressed,
+                    onCartAddPressed = onCartAddPressed
                 )
             }
         }
@@ -116,7 +140,8 @@ fun Title(scroll: Int) {
         ProductInfo(
             Modifier
                 .height(TitleHeight)
-                .padding(horizontal = ScreenPadding))
+                .padding(horizontal = ScreenPadding)
+        )
         Image(
             modifier = Modifier
                 .padding(bottom = 20.dp, top = 10.dp, end = ScreenPadding)
