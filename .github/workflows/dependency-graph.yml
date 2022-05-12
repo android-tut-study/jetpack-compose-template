@@ -1,0 +1,36 @@
+name: Dependency Graph
+
+on:
+  push:
+    branches:
+      - dependency-graph
+  workflow_dispatch:
+
+jobs:
+  generate-dependency-graph:
+    name: Generate Dependency Graph
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Graphviz
+        uses: ts-graphviz/setup-graphviz@v1a
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Generate Dependency Graph
+        run: ./gradlew projectDependencyGraph
+
+      - name: Commmit
+        run: |
+          git config --local user.email 'NXAN2901@github.com'
+          git config --local user.name 'NXAN2901'
+          git add ./gradle/dependency-graph/*
+          git diff --quiet && git diff --staged --quiet || git commit -am 'Update dependency graph'
+      - name: Push
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
