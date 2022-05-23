@@ -27,7 +27,7 @@ import com.study.compose.ui.detail.data.AlsoLike
 fun AlsoLikes(
     modifier: Modifier = Modifier,
     items: List<AlsoLike> = (0..2).map {
-        if (it == 0 || it > 2) AlsoLike(it.toLong(), R.drawable.fake) else AlsoLike(
+        if (it == 0 || it > 2) AlsoLike(it.toLong(), com.study.compose.ui.common.R.drawable.fake) else AlsoLike(
             it.toLong(),
             LocalContext.current.resources.getIdentifier(
                 "fake$it",
