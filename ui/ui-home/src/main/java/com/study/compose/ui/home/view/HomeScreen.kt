@@ -39,7 +39,8 @@ fun ProductsContent(
                 .horizontalScroll(rememberScrollState())
         ) {
             StaggerProduct(
-                dividerSpace = with(LocalDensity.current) { 20.dp.roundToPx() }
+                dividerSpace = with(LocalDensity.current) { 10.dp.roundToPx() },
+                offsetInColumn = with(LocalDensity.current) { 20.dp.roundToPx() }
             ) {
                 SampleCartItems.forEach {
                     ProductChip(cart = it, onClick = onProductSelect)
@@ -54,11 +55,11 @@ fun ProductsContent(
 fun StaggerProduct(
     modifier: Modifier = Modifier,
     dividerSpace: Int,
+    offsetInColumn: Int,
     content: @Composable () -> Unit
 ) {
     val screenWidth =
         with(LocalDensity.current) { LocalConfiguration.current.screenWidthDp.dp.roundToPx() }
-//    val offsetInColumn = with(LocalDensity.current) { 20.dp.roundToPx() }
 
     Layout(modifier = modifier, content = content) { measureables, constraints ->
         val baseConstraints = Constraints.fixedWidth(width = screenWidth)
@@ -95,8 +96,10 @@ fun StaggerProduct(
                 }
             } else {
                 if (previousSpaceExist) {
-                    if (currentHeight >= baseHeight) {
-                        totalWidth += currentPlaceable.width + dividerSpace
+                    totalWidth += if (currentHeight >= baseHeight) {
+                        currentPlaceable.width + dividerSpace
+                    } else {
+                        offsetInColumn
                     }
                     previousSpaceExist = false
                 } else {
@@ -112,8 +115,10 @@ fun StaggerProduct(
                 val nextHeight = next.height
 
                 if (previousSpaceExist) {
-                    if (nextHeight >= baseHeight) {
-                        totalWidth += next.width + dividerSpace
+                    totalWidth += if (nextHeight >= baseHeight) {
+                        next.width + dividerSpace
+                    } else {
+                        offsetInColumn
                     }
                     previousSpaceExist = false
                 } else {
@@ -125,11 +130,11 @@ fun StaggerProduct(
             }
         }
 
-        previousSpaceExist = false
-        val placeableSize = placeables.size
         // remove redundant divider at the end
         totalWidth -= dividerSpace
 
+        previousSpaceExist = false
+        val placeableSize = placeables.size
         layout(width = totalWidth, height = constraints.maxHeight) {
             var xPosition = 0
             for (index in 0 until placeableSize step 2) {
@@ -159,6 +164,7 @@ fun StaggerProduct(
                     }
                 } else {
                     if (previousSpaceExist) {
+                        xPosition += offsetInColumn
                         currentPlaceable.placeRelative(xPosition, baseHeight)
                         xPosition += currentPlaceable.width + dividerSpace
                         nextPlaceable?.let { next ->
@@ -179,6 +185,7 @@ fun StaggerProduct(
                                 next.placeRelative(xPosition + next.width, maxHeight - next.height)
                                 xPosition += 2 * (next.width + dividerSpace)
                             } else {
+                                xPosition += offsetInColumn
                                 next.placeRelative(xPosition, baseHeight)
                                 xPosition += next.width + dividerSpace
                             }
@@ -218,10 +225,12 @@ fun ProductChip(cart: Cart, onClick: (cart: Cart) -> Unit) {
 @Composable
 private fun StaggerLayoutPreview() {
     ShrineComposeTheme {
-        StaggerProduct(dividerSpace = with(LocalDensity.current) { 20.dp.roundToPx() }) {
-            SampleCartItems.forEach {
-                ProductChip(it, onClick = {})
-            }
+        StaggerProduct(
+            dividerSpace = with(LocalDensity.current) { 20.dp.roundToPx() },
+            offsetInColumn = with(LocalDensity.current) { 20.dp.roundToPx() }) {
+        SampleCartItems.forEach {
+            ProductChip(it, onClick = {})
         }
+    }
     }
 }
