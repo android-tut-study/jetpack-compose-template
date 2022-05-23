@@ -116,7 +116,7 @@ fun Products(
             backLayerContent = { NavigationMenus(backdropRevealed = backdropRevealed) },
             scaffoldState = scaffoldState
         ) {
-            ProductsContent(onProductSelect = onProductSelect)
+            ProductsContent(onProductSelect = onProductSelect, modifier = Modifier.padding(vertical = 56.dp))
         }
 
 
@@ -135,7 +135,7 @@ fun NavigationMenus(backdropRevealed: Boolean) {
 }
 
 
-@Preview
+@Preview(widthDp = 360, heightDp = 640)
 @Composable
 fun HomeScreenPreview() {
     ShrineComposeTheme {

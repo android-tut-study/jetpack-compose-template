@@ -12,11 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 import com.study.compose.ui.home.data.Cart
@@ -24,22 +25,21 @@ import com.study.compose.ui.home.data.SampleCartItems
 
 @Composable
 fun ProductsContent(
+    modifier: Modifier = Modifier,
     onProductSelect: (cart: Cart) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-
+            .then(modifier),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(bottom = 20.dp)
                 .horizontalScroll(rememberScrollState())
         ) {
-            StaggeredProductGrid(
-                screenWidth = LocalConfiguration.current.screenWidthDp.dp,
-                screenHeight = LocalConfiguration.current.screenHeightDp.dp
+            StaggerProduct(
+                dividerSpace = with(LocalDensity.current) { 20.dp.roundToPx() }
             ) {
                 SampleCartItems.forEach {
                     ProductChip(cart = it, onClick = onProductSelect)
@@ -47,63 +47,135 @@ fun ProductsContent(
             }
         }
 
-
     }
 }
 
 @Composable
-fun StaggeredProductGrid(
+fun StaggerProduct(
     modifier: Modifier = Modifier,
-    rows: Int = 2,
-    screenHeight: Dp,
-    screenWidth: Dp,
-    content: @Composable () -> Unit,
+    dividerSpace: Int,
+    content: @Composable () -> Unit
 ) {
-    Layout(
-        modifier = modifier,
-        content = content
-    ) { measureables, constraints ->
+    val screenWidth =
+        with(LocalDensity.current) { LocalConfiguration.current.screenWidthDp.dp.roundToPx() }
+//    val offsetInColumn = with(LocalDensity.current) { 20.dp.roundToPx() }
+
+    Layout(modifier = modifier, content = content) { measureables, constraints ->
+        val baseConstraints = Constraints.fixedWidth(width = screenWidth)
+
+        val cellConstraints = measureables.map {
+            Constraints.fixedWidth(width = baseConstraints.maxWidth / 2)
+        }
         var totalWidth = 0
-        val screenWidthPx = screenWidth.roundToPx()
-        val screenHeightPx = screenHeight.roundToPx()
-
-        val baseConstraints = Constraints.fixed(
-            width = screenWidthPx / rows,
-            height = screenHeightPx / rows,
-        )
-
-        val cellConstraints = measureables.mapIndexed { index, _ ->
-            val spanHeight = if (index % 3 == 2) 2 else 1
-
-            Constraints.fixed(
-                width = baseConstraints.maxWidth * spanHeight,
-                height = baseConstraints.maxHeight * spanHeight
-            )
-        }
-
-        val placeables = measureables.mapIndexed { index, measurable ->
-            val spanHeight = if (index % 3 == 2) 2 else 1
-            val placeable = measurable.measure(cellConstraints[index])
-            if (spanHeight == 2 || index % 3 == 0) {
-                totalWidth += placeable.width
-            }
-            placeable
-        }
         val maxHeight = constraints.maxHeight
+        val baseHeight = maxHeight / 2
+        val placeables = mutableListOf<Placeable>()
+        val size = measureables.size
+        var previousSpaceExist = false
+        for (index in 0 until size step 2) {
+            val measurable = measureables[index]
+            val currentPlaceable = measurable.measure(cellConstraints[index])
+            val currentHeight = currentPlaceable.height
+            placeables.add(currentPlaceable)
 
-        val width = totalWidth.coerceIn(constraints.minWidth.rangeTo(constraints.maxWidth))
+            var nextPlaceable: Placeable? = null
+            if (index + 1 < size) {
+                nextPlaceable = measureables[index + 1].measure(cellConstraints[index + 1])
+            }
 
-        layout(width, maxHeight) {
-            var x = 0
-            placeables.forEachIndexed { index, placeable ->
-                val y = if (index % 3 == 1) maxHeight / 2 else 0
-                placeable.placeRelative(
-                    x = x,
-                    y = y
-                )
+            if (totalWidth == 0) {
+                totalWidth += currentPlaceable.width
+                if (currentHeight < baseHeight) {
+                    previousSpaceExist = true
+                }
+            } else {
+                if (previousSpaceExist) {
+                    if (currentHeight >= baseHeight) {
+                        totalWidth += currentPlaceable.width
+                    }
+                    previousSpaceExist = false
+                } else {
+                    totalWidth += currentPlaceable.width
+                    if (currentHeight < baseHeight) {
+                        previousSpaceExist = true
+                    }
+                }
+            }
 
-                if (index % 3 != 0) {
-                    x += placeable.width
+            nextPlaceable?.let { next ->
+                placeables.add(next)
+                val nextHeight = next.height
+
+                if (previousSpaceExist) {
+                    if (nextHeight >= baseHeight) {
+                        totalWidth += next.width
+                    }
+                    previousSpaceExist = false
+                } else {
+                    if (nextHeight < baseHeight) {
+                        previousSpaceExist = true
+                    }
+                    totalWidth += next.width
+                }
+            }
+        }
+
+        previousSpaceExist = false
+        val placeableSize = placeables.size
+        layout(width = totalWidth, height = constraints.maxHeight) {
+            var xPosition = 0
+            for (index in 0 until placeableSize step 2) {
+                val currentPlaceable = placeables[index]
+                var nextPlaceable: Placeable? = null
+                if (index + 1 < placeableSize) {
+                    nextPlaceable = placeables[index + 1]
+                }
+                val currentHeight = currentPlaceable.height
+
+                if (currentHeight >= baseHeight) {
+                    if (previousSpaceExist) {
+                        xPosition += currentPlaceable.width
+                        previousSpaceExist = false
+                    }
+                    currentPlaceable.placeRelative(xPosition, maxHeight - currentHeight)
+                    xPosition += currentPlaceable.width
+
+                    nextPlaceable?.let { next ->
+                        if (next.height >= baseHeight) {
+                            next.placeRelative(xPosition, maxHeight - next.height)
+                            xPosition += next.width
+                        } else {
+                            next.placeRelative(xPosition, 0)
+                            previousSpaceExist = true
+                        }
+                    }
+                } else {
+                    if (previousSpaceExist) {
+                        currentPlaceable.placeRelative(xPosition, baseHeight)
+                        xPosition += currentPlaceable.width
+                        nextPlaceable?.let { next ->
+                            if (next.height >= baseHeight) {
+                                next.placeRelative(xPosition, maxHeight - next.height)
+                                xPosition += next.width
+                                previousSpaceExist = false
+                            } else {
+                                next.placeRelative(xPosition, 0)
+                                previousSpaceExist = true
+                            }
+                        }
+
+                    } else {
+                        currentPlaceable.placeRelative(xPosition, 0)
+                        nextPlaceable?.let { next ->
+                            if (next.height >= baseHeight) {
+                                next.placeRelative(xPosition + next.width, maxHeight - next.height)
+                                xPosition += 2 * next.width
+                            } else {
+                                next.placeRelative(xPosition, baseHeight)
+                                xPosition += next.width
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -133,22 +205,12 @@ fun ProductChip(cart: Cart, onClick: (cart: Cart) -> Unit) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ProductChipPreview() {
-    ShrineComposeTheme {
-        ProductChip(SampleCartItems[0]) {}
-    }
-}
 
-@Preview
+@Preview(widthDp = 480, heightDp = 560)
 @Composable
-fun StaggeredProductGridPreview() {
+private fun StaggerLayoutPreview() {
     ShrineComposeTheme {
-        StaggeredProductGrid(
-            screenWidth = LocalConfiguration.current.screenWidthDp.dp,
-            screenHeight = LocalConfiguration.current.screenHeightDp.dp,
-        ) {
+        StaggerProduct(dividerSpace = with(LocalDensity.current) { 20.dp.roundToPx() }) {
             SampleCartItems.forEach {
                 ProductChip(it, onClick = {})
             }
