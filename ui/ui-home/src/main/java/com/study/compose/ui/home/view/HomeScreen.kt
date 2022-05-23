@@ -71,7 +71,11 @@ fun StaggerProduct(
         val baseHeight = maxHeight / 2
         val placeables = mutableListOf<Placeable>()
         val size = measureables.size
+
+        // Flag used to determine still have bottom space/slot after place item to previous column
         var previousSpaceExist = false
+
+        // Calculate placeable items
         for (index in 0 until size step 2) {
             val measurable = measureables[index]
             val currentPlaceable = measurable.measure(cellConstraints[index])
@@ -83,19 +87,20 @@ fun StaggerProduct(
                 nextPlaceable = measureables[index + 1].measure(cellConstraints[index + 1])
             }
 
+            // Beginning item
             if (totalWidth == 0) {
-                totalWidth += currentPlaceable.width
+                totalWidth += currentPlaceable.width + dividerSpace
                 if (currentHeight < baseHeight) {
                     previousSpaceExist = true
                 }
             } else {
                 if (previousSpaceExist) {
                     if (currentHeight >= baseHeight) {
-                        totalWidth += currentPlaceable.width
+                        totalWidth += currentPlaceable.width + dividerSpace
                     }
                     previousSpaceExist = false
                 } else {
-                    totalWidth += currentPlaceable.width
+                    totalWidth += currentPlaceable.width + dividerSpace
                     if (currentHeight < baseHeight) {
                         previousSpaceExist = true
                     }
@@ -108,20 +113,23 @@ fun StaggerProduct(
 
                 if (previousSpaceExist) {
                     if (nextHeight >= baseHeight) {
-                        totalWidth += next.width
+                        totalWidth += next.width + dividerSpace
                     }
                     previousSpaceExist = false
                 } else {
                     if (nextHeight < baseHeight) {
                         previousSpaceExist = true
                     }
-                    totalWidth += next.width
+                    totalWidth += next.width + dividerSpace
                 }
             }
         }
 
         previousSpaceExist = false
         val placeableSize = placeables.size
+        // remove redundant divider at the end
+        totalWidth -= dividerSpace
+
         layout(width = totalWidth, height = constraints.maxHeight) {
             var xPosition = 0
             for (index in 0 until placeableSize step 2) {
@@ -134,16 +142,16 @@ fun StaggerProduct(
 
                 if (currentHeight >= baseHeight) {
                     if (previousSpaceExist) {
-                        xPosition += currentPlaceable.width
+                        xPosition += currentPlaceable.width + dividerSpace
                         previousSpaceExist = false
                     }
                     currentPlaceable.placeRelative(xPosition, maxHeight - currentHeight)
-                    xPosition += currentPlaceable.width
+                    xPosition += currentPlaceable.width + dividerSpace
 
                     nextPlaceable?.let { next ->
                         if (next.height >= baseHeight) {
                             next.placeRelative(xPosition, maxHeight - next.height)
-                            xPosition += next.width
+                            xPosition += next.width + dividerSpace
                         } else {
                             next.placeRelative(xPosition, 0)
                             previousSpaceExist = true
@@ -152,11 +160,11 @@ fun StaggerProduct(
                 } else {
                     if (previousSpaceExist) {
                         currentPlaceable.placeRelative(xPosition, baseHeight)
-                        xPosition += currentPlaceable.width
+                        xPosition += currentPlaceable.width + dividerSpace
                         nextPlaceable?.let { next ->
                             if (next.height >= baseHeight) {
                                 next.placeRelative(xPosition, maxHeight - next.height)
-                                xPosition += next.width
+                                xPosition += next.width + dividerSpace
                                 previousSpaceExist = false
                             } else {
                                 next.placeRelative(xPosition, 0)
@@ -169,10 +177,10 @@ fun StaggerProduct(
                         nextPlaceable?.let { next ->
                             if (next.height >= baseHeight) {
                                 next.placeRelative(xPosition + next.width, maxHeight - next.height)
-                                xPosition += 2 * next.width
+                                xPosition += 2 * (next.width + dividerSpace)
                             } else {
                                 next.placeRelative(xPosition, baseHeight)
-                                xPosition += next.width
+                                xPosition += next.width + dividerSpace
                             }
                         }
                     }
