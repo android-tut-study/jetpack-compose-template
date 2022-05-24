@@ -5,17 +5,22 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
@@ -150,12 +155,12 @@ fun StaggerProduct(
                         xPosition += currentPlaceable.width + dividerSpace
                         previousSpaceExist = false
                     }
-                    currentPlaceable.placeRelative(xPosition, maxHeight - currentHeight)
+                    currentPlaceable.placeRelative(xPosition, (maxHeight - currentHeight) / 2)
                     xPosition += currentPlaceable.width + dividerSpace
 
                     nextPlaceable?.let { next ->
                         if (next.height >= baseHeight) {
-                            next.placeRelative(xPosition, maxHeight - next.height)
+                            next.placeRelative(xPosition, (maxHeight - next.height) / 2)
                             xPosition += next.width + dividerSpace
                         } else {
                             next.placeRelative(xPosition, 0)
@@ -169,7 +174,7 @@ fun StaggerProduct(
                         xPosition += currentPlaceable.width + dividerSpace
                         nextPlaceable?.let { next ->
                             if (next.height >= baseHeight) {
-                                next.placeRelative(xPosition, maxHeight - next.height)
+                                next.placeRelative(xPosition, (maxHeight - next.height) / 2)
                                 xPosition += next.width + dividerSpace
                                 previousSpaceExist = false
                             } else {
@@ -182,7 +187,10 @@ fun StaggerProduct(
                         currentPlaceable.placeRelative(xPosition, 0)
                         nextPlaceable?.let { next ->
                             if (next.height >= baseHeight) {
-                                next.placeRelative(xPosition + next.width, maxHeight - next.height)
+                                next.placeRelative(
+                                    xPosition + next.width,
+                                    (maxHeight - next.height) / 2
+                                )
                                 xPosition += 2 * (next.width + dividerSpace)
                             } else {
                                 xPosition += offsetInColumn
@@ -207,15 +215,38 @@ fun ProductChip(cart: Cart, onClick: (cart: Cart) -> Unit) {
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Image(
-                modifier = Modifier.fillMaxWidth(),
-                painter = painterResource(id = cart.photoResId),
-                contentDescription = "Chip",
-                contentScale = ContentScale.Crop,
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Image(
+                    modifier = Modifier.fillMaxWidth(),
+                    painter = painterResource(id = cart.photoResId),
+                    contentDescription = "Chip",
+                    contentScale = ContentScale.Crop,
+                )
+                Image(
+                    painter = painterResource(id = com.study.compose.ui.common.R.drawable.fake_brand),
+                    contentDescription = "fake brand",
+                    modifier = Modifier.align(Alignment.BottomCenter).size(36.dp).offset(y = 12.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(18.dp))
+            Text(
+                text = cart.vendor.name,
+                style = MaterialTheme.typography.subtitle2.copy(fontWeight = FontWeight.Bold),
             )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(text = cart.vendor.name, style = MaterialTheme.typography.subtitle1)
-            Text(text = "$${cart.price}", style = MaterialTheme.typography.caption)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = "$${cart.price}", style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.W500))
+        }
+        IconButton(
+            onClick = { /*TODO*/ }, modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(8.dp)
+                .clip(CircleShape)
+        ) {
+            Image(
+                painter = painterResource(id = com.study.compose.ui.common.R.drawable.ic_add_cart_24),
+                contentDescription = "Cart",
+                modifier = Modifier.padding(8.dp)
+            )
         }
     }
 }
@@ -228,9 +259,9 @@ private fun StaggerLayoutPreview() {
         StaggerProduct(
             dividerSpace = with(LocalDensity.current) { 20.dp.roundToPx() },
             offsetInColumn = with(LocalDensity.current) { 20.dp.roundToPx() }) {
-        SampleCartItems.forEach {
-            ProductChip(it, onClick = {})
+            SampleCartItems.forEach {
+                ProductChip(it, onClick = {})
+            }
         }
-    }
     }
 }
