@@ -58,13 +58,11 @@ fun HomeScreen(
     onSearchPressed: () -> Unit = {},
     onProductSelect: (cart: Cart) -> Unit
 ) {
-    ShrineComposeTheme {
-        Products(
-            onFilterPressed = onFilterPressed,
-            onSearchPressed = onSearchPressed,
-            onProductSelect = onProductSelect,
-        )
-    }
+    Products(
+        onFilterPressed = onFilterPressed,
+        onSearchPressed = onSearchPressed,
+        onProductSelect = onProductSelect,
+    )
 }
 
 @OptIn(ExperimentalMaterialApi::class)
