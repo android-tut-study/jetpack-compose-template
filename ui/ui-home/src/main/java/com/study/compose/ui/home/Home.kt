@@ -78,8 +78,8 @@ fun Products(
     var backdropRevealed by remember { mutableStateOf(scaffoldState.isRevealed) }
     val scope = rememberCoroutineScope()
 
-    Box(modifier = Modifier.fillMaxSize()) {
 
+    Box(modifier = Modifier.fillMaxSize()) {
         ShrineScaffold(
             topBar = {
                 ShrineTopBar(
@@ -110,16 +110,17 @@ fun Products(
                             onPressed = onFilterPressed
                         )
                     },
-                    title= { TopHeader(backdropRevealed = backdropRevealed) }
+                    title = { TopHeader(backdropRevealed = backdropRevealed) }
                 )
             },
             backLayerContent = { NavigationMenus(backdropRevealed = backdropRevealed) },
             scaffoldState = scaffoldState
         ) {
-            ProductsContent(onProductSelect = onProductSelect)
+            ProductsContent(
+                onProductSelect = onProductSelect,
+                modifier = Modifier.padding(vertical = 56.dp)
+            )
         }
-
-
     }
 
 }
@@ -135,7 +136,7 @@ fun NavigationMenus(backdropRevealed: Boolean) {
 }
 
 
-@Preview
+@Preview(widthDp = 360, heightDp = 640)
 @Composable
 fun HomeScreenPreview() {
     ShrineComposeTheme {

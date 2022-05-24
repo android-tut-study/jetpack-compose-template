@@ -23,7 +23,7 @@ dependencies {
 
     // TODO Remove them after jetpack compose stable
     debugApi("androidx.customview:customview:1.2.0-alpha01")
-    debugApi("androidx.customview:customview-poolingcontainer:1.0.0-alpha01")
+    debugApi("androidx.customview:customview-poolingcontainer:1.0.0-beta02")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")

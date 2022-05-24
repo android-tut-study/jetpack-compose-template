@@ -41,6 +41,27 @@ val SampleCartItems = listOf(
         photoResId = R.drawable.photo_1
     ),
     Cart(
+        id = 0,
+        title = "Vagabond sack",
+        price = 120,
+        vendor = Vendor.Squiggle,
+        photoResId = com.study.compose.ui.common.R.drawable.fake1
+    ),
+    Cart(
+        id = 1,
+        title = "Stella sunglasses",
+        price = 58,
+        vendor = Vendor.Mal,
+        photoResId = R.drawable.photo_1
+    ),
+    Cart(
+        id = 0,
+        title = "Vagabond sack",
+        price = 120,
+        vendor = Vendor.Squiggle,
+        photoResId = com.study.compose.ui.common.R.drawable.fake1
+    ),
+    Cart(
         id = 2,
         title = "Whitney belt",
         price = 35,

@@ -105,7 +105,7 @@ fun ConcealedTitle(modifier: Modifier = Modifier, scroll: Int) {
                             .size(CollapsedImageHeight)
                             .clip(CircleShape)
                             .align(Alignment.BottomEnd),
-                        painter = painterResource(id = R.drawable.fake),
+                        painter = painterResource(id = com.study.compose.ui.common.R.drawable.fake),
                         contentDescription = "Fake1",
                         contentScale = ContentScale.Crop,
                     )
@@ -143,7 +143,7 @@ fun Title(scroll: Int) {
                 .clip(CircleShape)
                 .align(Alignment.BottomEnd)
                 .alpha(1 - alpha),
-            painter = painterResource(id = R.drawable.fake),
+            painter = painterResource(id = com.study.compose.ui.common.R.drawable.fake),
             contentDescription = "Fake2",
             contentScale = ContentScale.Crop,
         )
@@ -190,7 +190,7 @@ fun ProductImage(modifier: Modifier = Modifier, scroll: Int) {
     ) {
         Image(
             modifier = Modifier.fillMaxSize(),
-            painter = painterResource(id = R.drawable.fake),
+            painter = painterResource(id = com.study.compose.ui.common.R.drawable.fake),
             contentDescription = "Fake",
             contentScale = ContentScale.FillBounds,
             alignment = Alignment.Center,

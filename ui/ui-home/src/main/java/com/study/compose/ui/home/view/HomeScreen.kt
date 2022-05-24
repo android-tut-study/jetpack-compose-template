@@ -5,18 +5,24 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 import com.study.compose.ui.home.data.Cart
@@ -24,22 +30,22 @@ import com.study.compose.ui.home.data.SampleCartItems
 
 @Composable
 fun ProductsContent(
+    modifier: Modifier = Modifier,
     onProductSelect: (cart: Cart) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-
+            .then(modifier),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(bottom = 20.dp)
                 .horizontalScroll(rememberScrollState())
         ) {
-            StaggeredProductGrid(
-                screenWidth = LocalConfiguration.current.screenWidthDp.dp,
-                screenHeight = LocalConfiguration.current.screenHeightDp.dp
+            StaggerProduct(
+                dividerSpace = with(LocalDensity.current) { 10.dp.roundToPx() },
+                offsetInColumn = with(LocalDensity.current) { 20.dp.roundToPx() }
             ) {
                 SampleCartItems.forEach {
                     ProductChip(cart = it, onClick = onProductSelect)
@@ -47,63 +53,152 @@ fun ProductsContent(
             }
         }
 
-
     }
 }
 
 @Composable
-fun StaggeredProductGrid(
+fun StaggerProduct(
     modifier: Modifier = Modifier,
-    rows: Int = 2,
-    screenHeight: Dp,
-    screenWidth: Dp,
-    content: @Composable () -> Unit,
+    dividerSpace: Int,
+    offsetInColumn: Int,
+    content: @Composable () -> Unit
 ) {
-    Layout(
-        modifier = modifier,
-        content = content
-    ) { measureables, constraints ->
+    val screenWidth =
+        with(LocalDensity.current) { LocalConfiguration.current.screenWidthDp.dp.roundToPx() }
+
+    Layout(modifier = modifier, content = content) { measureables, constraints ->
+        val baseConstraints = Constraints.fixedWidth(width = screenWidth)
+
+        val cellConstraints = measureables.map {
+            Constraints.fixedWidth(width = baseConstraints.maxWidth / 2)
+        }
         var totalWidth = 0
-        val screenWidthPx = screenWidth.roundToPx()
-        val screenHeightPx = screenHeight.roundToPx()
-
-        val baseConstraints = Constraints.fixed(
-            width = screenWidthPx / rows,
-            height = screenHeightPx / rows,
-        )
-
-        val cellConstraints = measureables.mapIndexed { index, _ ->
-            val spanHeight = if (index % 3 == 2) 2 else 1
-
-            Constraints.fixed(
-                width = baseConstraints.maxWidth * spanHeight,
-                height = baseConstraints.maxHeight * spanHeight
-            )
-        }
-
-        val placeables = measureables.mapIndexed { index, measurable ->
-            val spanHeight = if (index % 3 == 2) 2 else 1
-            val placeable = measurable.measure(cellConstraints[index])
-            if (spanHeight == 2 || index % 3 == 0) {
-                totalWidth += placeable.width
-            }
-            placeable
-        }
         val maxHeight = constraints.maxHeight
+        val baseHeight = maxHeight / 2
+        val placeables = mutableListOf<Placeable>()
+        val size = measureables.size
 
-        val width = totalWidth.coerceIn(constraints.minWidth.rangeTo(constraints.maxWidth))
+        // Flag used to determine still have bottom space/slot after place item to previous column
+        var previousSpaceExist = false
 
-        layout(width, maxHeight) {
-            var x = 0
-            placeables.forEachIndexed { index, placeable ->
-                val y = if (index % 3 == 1) maxHeight / 2 else 0
-                placeable.placeRelative(
-                    x = x,
-                    y = y
-                )
+        // Calculate placeable items
+        for (index in 0 until size step 2) {
+            val measurable = measureables[index]
+            val currentPlaceable = measurable.measure(cellConstraints[index])
+            val currentHeight = currentPlaceable.height
+            placeables.add(currentPlaceable)
 
-                if (index % 3 != 0) {
-                    x += placeable.width
+            var nextPlaceable: Placeable? = null
+            if (index + 1 < size) {
+                nextPlaceable = measureables[index + 1].measure(cellConstraints[index + 1])
+            }
+
+            // Beginning item
+            if (totalWidth == 0) {
+                totalWidth += currentPlaceable.width + dividerSpace
+                if (currentHeight < baseHeight) {
+                    previousSpaceExist = true
+                }
+            } else {
+                if (previousSpaceExist) {
+                    totalWidth += if (currentHeight >= baseHeight) {
+                        currentPlaceable.width + dividerSpace
+                    } else {
+                        offsetInColumn
+                    }
+                    previousSpaceExist = false
+                } else {
+                    totalWidth += currentPlaceable.width + dividerSpace
+                    if (currentHeight < baseHeight) {
+                        previousSpaceExist = true
+                    }
+                }
+            }
+
+            nextPlaceable?.let { next ->
+                placeables.add(next)
+                val nextHeight = next.height
+
+                if (previousSpaceExist) {
+                    totalWidth += if (nextHeight >= baseHeight) {
+                        next.width + dividerSpace
+                    } else {
+                        offsetInColumn
+                    }
+                    previousSpaceExist = false
+                } else {
+                    if (nextHeight < baseHeight) {
+                        previousSpaceExist = true
+                    }
+                    totalWidth += next.width + dividerSpace
+                }
+            }
+        }
+
+        // remove redundant divider at the end
+        totalWidth -= dividerSpace
+
+        previousSpaceExist = false
+        val placeableSize = placeables.size
+        layout(width = totalWidth, height = constraints.maxHeight) {
+            var xPosition = 0
+            for (index in 0 until placeableSize step 2) {
+                val currentPlaceable = placeables[index]
+                var nextPlaceable: Placeable? = null
+                if (index + 1 < placeableSize) {
+                    nextPlaceable = placeables[index + 1]
+                }
+                val currentHeight = currentPlaceable.height
+
+                if (currentHeight >= baseHeight) {
+                    if (previousSpaceExist) {
+                        xPosition += currentPlaceable.width + dividerSpace
+                        previousSpaceExist = false
+                    }
+                    currentPlaceable.placeRelative(xPosition, (maxHeight - currentHeight) / 2)
+                    xPosition += currentPlaceable.width + dividerSpace
+
+                    nextPlaceable?.let { next ->
+                        if (next.height >= baseHeight) {
+                            next.placeRelative(xPosition, (maxHeight - next.height) / 2)
+                            xPosition += next.width + dividerSpace
+                        } else {
+                            next.placeRelative(xPosition, 0)
+                            previousSpaceExist = true
+                        }
+                    }
+                } else {
+                    if (previousSpaceExist) {
+                        xPosition += offsetInColumn
+                        currentPlaceable.placeRelative(xPosition, baseHeight)
+                        xPosition += currentPlaceable.width + dividerSpace
+                        nextPlaceable?.let { next ->
+                            if (next.height >= baseHeight) {
+                                next.placeRelative(xPosition, (maxHeight - next.height) / 2)
+                                xPosition += next.width + dividerSpace
+                                previousSpaceExist = false
+                            } else {
+                                next.placeRelative(xPosition, 0)
+                                previousSpaceExist = true
+                            }
+                        }
+
+                    } else {
+                        currentPlaceable.placeRelative(xPosition, 0)
+                        nextPlaceable?.let { next ->
+                            if (next.height >= baseHeight) {
+                                next.placeRelative(
+                                    xPosition + next.width,
+                                    (maxHeight - next.height) / 2
+                                )
+                                xPosition += 2 * (next.width + dividerSpace)
+                            } else {
+                                xPosition += offsetInColumn
+                                next.placeRelative(xPosition, baseHeight)
+                                xPosition += next.width + dividerSpace
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -120,35 +215,50 @@ fun ProductChip(cart: Cart, onClick: (cart: Cart) -> Unit) {
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Image(
-                modifier = Modifier.fillMaxWidth(),
-                painter = painterResource(id = cart.photoResId),
-                contentDescription = "Chip",
-                contentScale = ContentScale.Crop,
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Image(
+                    modifier = Modifier.fillMaxWidth(),
+                    painter = painterResource(id = cart.photoResId),
+                    contentDescription = "Chip",
+                    contentScale = ContentScale.Crop,
+                )
+                Image(
+                    painter = painterResource(id = com.study.compose.ui.common.R.drawable.fake_brand),
+                    contentDescription = "fake brand",
+                    modifier = Modifier.align(Alignment.BottomCenter).size(36.dp).offset(y = 12.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(18.dp))
+            Text(
+                text = cart.vendor.name,
+                style = MaterialTheme.typography.subtitle2.copy(fontWeight = FontWeight.Bold),
             )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(text = cart.vendor.name, style = MaterialTheme.typography.subtitle1)
-            Text(text = "$${cart.price}", style = MaterialTheme.typography.caption)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = "$${cart.price}", style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.W500))
+        }
+        IconButton(
+            onClick = { /*TODO*/ }, modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(8.dp)
+                .clip(CircleShape)
+        ) {
+            Image(
+                painter = painterResource(id = com.study.compose.ui.common.R.drawable.ic_add_cart_24),
+                contentDescription = "Cart",
+                modifier = Modifier.padding(8.dp)
+            )
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ProductChipPreview() {
-    ShrineComposeTheme {
-        ProductChip(SampleCartItems[0]) {}
-    }
-}
 
-@Preview
+@Preview(widthDp = 480, heightDp = 560)
 @Composable
-fun StaggeredProductGridPreview() {
+private fun StaggerLayoutPreview() {
     ShrineComposeTheme {
-        StaggeredProductGrid(
-            screenWidth = LocalConfiguration.current.screenWidthDp.dp,
-            screenHeight = LocalConfiguration.current.screenHeightDp.dp,
-        ) {
+        StaggerProduct(
+            dividerSpace = with(LocalDensity.current) { 20.dp.roundToPx() },
+            offsetInColumn = with(LocalDensity.current) { 20.dp.roundToPx() }) {
             SampleCartItems.forEach {
                 ProductChip(it, onClick = {})
             }
