@@ -58,11 +58,13 @@ fun HomeScreen(
     onSearchPressed: () -> Unit = {},
     onProductSelect: (cart: Cart) -> Unit
 ) {
-    Products(
-        onFilterPressed = onFilterPressed,
-        onSearchPressed = onSearchPressed,
-        onProductSelect = onProductSelect,
-    )
+    ShrineComposeTheme {
+        Products(
+            onFilterPressed = onFilterPressed,
+            onSearchPressed = onSearchPressed,
+            onProductSelect = onProductSelect,
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -78,8 +80,8 @@ fun Products(
     var backdropRevealed by remember { mutableStateOf(scaffoldState.isRevealed) }
     val scope = rememberCoroutineScope()
 
-    Box(modifier = Modifier.fillMaxSize()) {
 
+    Box(modifier = Modifier.fillMaxSize()) {
         ShrineScaffold(
             topBar = {
                 ShrineTopBar(
@@ -110,16 +112,17 @@ fun Products(
                             onPressed = onFilterPressed
                         )
                     },
-                    title= { TopHeader(backdropRevealed = backdropRevealed) }
+                    title = { TopHeader(backdropRevealed = backdropRevealed) }
                 )
             },
             backLayerContent = { NavigationMenus(backdropRevealed = backdropRevealed) },
             scaffoldState = scaffoldState
         ) {
-            ProductsContent(onProductSelect = onProductSelect, modifier = Modifier.padding(vertical = 56.dp))
+            ProductsContent(
+                onProductSelect = onProductSelect,
+                modifier = Modifier.padding(vertical = 56.dp)
+            )
         }
-
-
     }
 
 }
