@@ -49,7 +49,8 @@ object Libs {
             // https://github.com/google/accompanist
             object Accompanist {
                 private const val VERSION = "0.23.1"
-                const val SYSTEM_UI_CONTROL = "com.google.accompanist:accompanist-systemuicontroller:$VERSION"
+                const val SYSTEM_UI_CONTROL =
+                    "com.google.accompanist:accompanist-systemuicontroller:$VERSION"
                 const val FLOW_LAYOUTS = "com.google.accompanist:accompanist-flowlayout:$VERSION"
             }
         }
@@ -141,6 +142,13 @@ object Libs {
                 const val GSON = "com.squareup.retrofit2:converter-gson:$VERSION"
                 const val MOSHI = "com.squareup.retrofit2:converter-moshi:$VERSION"
             }
+        }
+    }
+
+    object IO {
+        object Coil {
+            private const val VERSION = "2.1.0"
+            const val COIL_COMPOSE = "io.coil-kt:coil-compose:$VERSION"
         }
     }
 
