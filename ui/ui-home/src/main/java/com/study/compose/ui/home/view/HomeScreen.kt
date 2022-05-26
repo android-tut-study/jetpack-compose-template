@@ -19,19 +19,17 @@ import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
-import com.study.compose.ui.common.theme.ShrineComposeTheme
-import com.study.compose.ui.home.data.Cart
-import com.study.compose.ui.home.data.SampleCartItems
+import coil.compose.AsyncImage
+import com.study.compose.ui.home.data.Product
 
 @Composable
 fun ProductsContent(
     modifier: Modifier = Modifier,
-    onProductSelect: (cart: Cart) -> Unit
+    onProductSelect: (product: Product) -> Unit,
+    products: List<Product> = emptyList()
 ) {
     Column(
         modifier = Modifier
@@ -44,11 +42,11 @@ fun ProductsContent(
                 .horizontalScroll(rememberScrollState())
         ) {
             StaggerProduct(
-                dividerSpace = with(LocalDensity.current) { 10.dp.roundToPx() },
+                dividerSpace = with(LocalDensity.current) { 30.dp.roundToPx() },
                 offsetInColumn = with(LocalDensity.current) { 20.dp.roundToPx() }
             ) {
-                SampleCartItems.forEach {
-                    ProductChip(cart = it, onClick = onProductSelect)
+                products.forEach {
+                    ProductChip(product = it, onClick = onProductSelect)
                 }
             }
         }
@@ -206,35 +204,38 @@ fun StaggerProduct(
 }
 
 @Composable
-fun ProductChip(cart: Cart, onClick: (cart: Cart) -> Unit) {
+fun ProductChip(product: Product, onClick: (product: Product) -> Unit) {
     Box(contentAlignment = Alignment.Center) {
         Column(
             modifier = Modifier
-                .clickable { onClick(cart) }
+                .clickable { onClick(product) }
                 .fillMaxWidth()
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Box(modifier = Modifier.fillMaxWidth()) {
-                Image(
+                AsyncImage(
                     modifier = Modifier.fillMaxWidth(),
-                    painter = painterResource(id = cart.photoResId),
-                    contentDescription = "Chip",
+                    model = product.imageUrl,
+                    contentDescription = "${product.id}",
                     contentScale = ContentScale.Crop,
                 )
                 Image(
                     painter = painterResource(id = com.study.compose.ui.common.R.drawable.fake_brand),
                     contentDescription = "fake brand",
-                    modifier = Modifier.align(Alignment.BottomCenter).size(36.dp).offset(y = 12.dp)
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .size(36.dp)
+                        .offset(y = 12.dp)
                 )
             }
             Spacer(modifier = Modifier.height(18.dp))
             Text(
-                text = cart.vendor.name,
+                text = product.title,
                 style = MaterialTheme.typography.subtitle2.copy(fontWeight = FontWeight.Bold),
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "$${cart.price}", style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.W500))
+            Text(text = "$${product.price}", style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.W500))
         }
         IconButton(
             onClick = { /*TODO*/ }, modifier = Modifier
@@ -252,16 +253,16 @@ fun ProductChip(cart: Cart, onClick: (cart: Cart) -> Unit) {
 }
 
 
-@Preview(widthDp = 480, heightDp = 560)
-@Composable
-private fun StaggerLayoutPreview() {
-    ShrineComposeTheme {
-        StaggerProduct(
-            dividerSpace = with(LocalDensity.current) { 20.dp.roundToPx() },
-            offsetInColumn = with(LocalDensity.current) { 20.dp.roundToPx() }) {
-            SampleCartItems.forEach {
-                ProductChip(it, onClick = {})
-            }
-        }
-    }
-}
+//@Preview(widthDp = 480, heightDp = 560)
+//@Composable
+//private fun StaggerLayoutPreview() {
+//    ShrineComposeTheme {
+//        StaggerProduct(
+//            dividerSpace = with(LocalDensity.current) { 20.dp.roundToPx() },
+//            offsetInColumn = with(LocalDensity.current) { 20.dp.roundToPx() }) {
+//            SampleCartItems.forEach {
+//                ProductChip(it, onClick = {})
+//            }
+//        }
+//    }
+//}
