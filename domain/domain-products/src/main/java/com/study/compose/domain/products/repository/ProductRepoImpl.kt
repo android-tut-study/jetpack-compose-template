@@ -18,16 +18,14 @@ class ProductRepoImpl(
 
     override fun fetchProducts(): Flow<List<ProductDomain>> = flow {
         val remoteProducts = fetchRemoteProducts()
-        _productsState.asStateFlow()
-            .scan(remoteProducts) { _, value ->
+        _productsState
+            .scan(Change.Refresh(remoteProducts)) { acc, value ->
                 when (value) {
-                    is Change.Refresh -> value.products
+                    is Change.Refresh -> value.copy(products = acc.products)
                 }
-            }.onEach {
-                emit(it)
             }
+            .onEach { emit(it.products) }
             .collect()
-
     }
 
     private suspend fun fetchRemoteProducts(): List<ProductDomain> = withContext(dispatcher.io) {
