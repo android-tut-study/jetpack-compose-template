@@ -6,15 +6,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.study.compose.ui.common.components.ShrineScaffold
 import com.study.compose.ui.common.components.ShrineTopBar
-import com.study.compose.ui.common.theme.ShrineComposeTheme
 import com.study.compose.ui.home.components.*
-import com.study.compose.ui.home.data.Cart
+import com.study.compose.ui.home.data.Product
+import com.study.compose.ui.home.interactor.intent.HomeIntent
 import com.study.compose.ui.home.interactor.state.HomeViewState
 import com.study.compose.ui.home.view.ProductsContent
 import com.study.compose.ui.home.viewmodel.HomeViewModel
@@ -26,7 +25,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     onFilterPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
-    onProductSelect: (cart: Cart) -> Unit
+    onProductSelect: (product: Product) -> Unit
 ) {
     HomeScreen(
         viewModel = hiltViewModel(),
@@ -41,44 +40,35 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     onFilterPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
-    onProductSelect: (cart: Cart) -> Unit
+    onProductSelect: (product: Product) -> Unit
 ) {
-    HomeScreen(
-        viewState = HomeViewState(),
+    val homeViewState = viewModel.viewState.collectAsState()
+    // TODO Test
+    LaunchedEffect(key1 = homeViewState) {
+        viewModel.processIntent(HomeIntent.FetchProducts)
+    }
+    Products(
+        viewState = homeViewState.value,
         onFilterPressed = onFilterPressed,
         onSearchPressed = onSearchPressed,
         onProductSelect = onProductSelect,
     )
 }
 
-@Composable
-fun HomeScreen(
-    viewState: HomeViewState,
-    onFilterPressed: () -> Unit = {},
-    onSearchPressed: () -> Unit = {},
-    onProductSelect: (cart: Cart) -> Unit
-) {
-    Products(
-        onFilterPressed = onFilterPressed,
-        onSearchPressed = onSearchPressed,
-        onProductSelect = onProductSelect,
-    )
-}
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Products(
+    viewState: HomeViewState,
     onFilterPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
-    onProductSelect: (cart: Cart) -> Unit,
+    onProductSelect: (product: Product) -> Unit,
 ) {
     val appState = rememberAppState()
     val appViewStateVM: AppStateViewModel = viewModel()
     val scaffoldState = appState.scaffoldState
     var backdropRevealed by remember { mutableStateOf(scaffoldState.isRevealed) }
     val scope = rememberCoroutineScope()
-
-
     Box(modifier = Modifier.fillMaxSize()) {
         ShrineScaffold(
             topBar = {
@@ -118,7 +108,8 @@ fun Products(
         ) {
             ProductsContent(
                 onProductSelect = onProductSelect,
-                modifier = Modifier.padding(vertical = 56.dp)
+                modifier = Modifier.padding(vertical = 56.dp),
+                products = viewState.product.products
             )
         }
     }
@@ -136,10 +127,10 @@ fun NavigationMenus(backdropRevealed: Boolean) {
 }
 
 
-@Preview(widthDp = 360, heightDp = 640)
-@Composable
-fun HomeScreenPreview() {
-    ShrineComposeTheme {
-        Products(onProductSelect = {})
-    }
-}
+//@Preview(widthDp = 360, heightDp = 640)
+//@Composable
+//fun HomeScreenPreview() {
+//    ShrineComposeTheme {s
+//        Products(onProductSelect = {})
+//    }
+//}
