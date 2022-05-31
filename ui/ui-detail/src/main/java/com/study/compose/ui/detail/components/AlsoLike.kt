@@ -1,6 +1,5 @@
 package com.study.compose.ui.detail.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -12,30 +11,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.study.compose.ui.common.components.ShrineDivider
-import com.study.compose.ui.detail.R
-import com.study.compose.ui.detail.data.AlsoLike
+import com.study.compose.ui.detail.data.ProductDetail
 
 @Composable
 fun AlsoLikes(
     modifier: Modifier = Modifier,
-    items: List<AlsoLike> = (0..2).map {
-        if (it == 0 || it > 2) AlsoLike(it.toLong(), com.study.compose.ui.common.R.drawable.fake) else AlsoLike(
-            it.toLong(),
-            LocalContext.current.resources.getIdentifier(
-                "fake$it",
-                "drawable",
-                LocalContext.current.packageName
-            )
-        )
-    }
+    items: List<ProductDetail>
 ) {
     Column(
         modifier = Modifier
@@ -58,8 +45,8 @@ fun AlsoLikes(
             dividerSpace = with(LocalDensity.current) { 20.dp.roundToPx() }
         ) {
             items.forEach { item ->
-                Image(
-                    painter = painterResource(id = item.imgRes),
+                AsyncImage(
+                    model =  item.imageUrl,
                     contentDescription = "Also ${item.id}",
                     contentScale = ContentScale.FillWidth,
                     modifier = Modifier.fillMaxSize(),
@@ -112,8 +99,8 @@ fun AlsoLikeLayout(
     }
 }
 
-@Preview
-@Composable
-fun AlsoLikesPreview() {
-    AlsoLikes()
-}
+//@Preview
+//@Composable
+//fun AlsoLikesPreview() {
+//    AlsoLikes(listOf<>())
+//}
