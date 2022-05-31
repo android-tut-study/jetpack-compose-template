@@ -13,4 +13,6 @@ hiltConfiguration {
 
 dependencies {
     implementation(project(":ui:ui-common"))
+    implementation(project(":usecase:usecase-products"))
+    implementation(com.example.Libs.IO.Coil.COIL_COMPOSE)
 }
