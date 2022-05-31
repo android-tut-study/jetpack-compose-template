@@ -14,18 +14,32 @@ class ProductRepoImpl(
     private val productDomainMapper: Mapper<ProductsResponse, ProductDomain>
 ) : ProductRepo {
 
-    private val _productsState = MutableStateFlow<Change>(Change.Refresh(emptyList()))
+    private val _productsState = MutableStateFlow<Change>(Change.Fetch(emptyList()))
+
+    private val _products = MutableStateFlow<List<ProductDomain>>(emptyList())
+    val products: StateFlow<List<ProductDomain>>
+        get() = _products
 
     override fun fetchProducts(): Flow<List<ProductDomain>> = flow {
         val remoteProducts = fetchRemoteProducts()
         _productsState
-            .scan(Change.Refresh(remoteProducts)) { acc, value ->
+            .scan(Change.Fetch(remoteProducts)) { acc, value ->
                 when (value) {
-                    is Change.Refresh -> value.copy(products = acc.products)
+                    is Change.Fetch -> value.copy(products = acc.products)
                 }
             }
-            .onEach { emit(it.products) }
+            .onEach {
+                val products = it.products
+                _products.value = products
+                emit(products)
+            }
             .collect()
+    }
+
+    override fun getCurrentProducts() = flow {
+        _products.onEach {
+            emit(it)
+        }.collect()
     }
 
     private suspend fun fetchRemoteProducts(): List<ProductDomain> = withContext(dispatcher.io) {
@@ -34,6 +48,6 @@ class ProductRepoImpl(
     }
 
     private sealed class Change {
-        data class Refresh(val products: List<ProductDomain>) : Change()
+        data class Fetch(val products: List<ProductDomain>) : Change()
     }
 }

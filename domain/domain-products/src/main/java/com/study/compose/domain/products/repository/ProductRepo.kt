@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProductRepo {
     fun fetchProducts(): Flow<List<ProductDomain>>
+
+    fun getCurrentProducts(): Flow<List<ProductDomain>>
 }
