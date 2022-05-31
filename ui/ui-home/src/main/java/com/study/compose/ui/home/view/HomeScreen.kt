@@ -218,7 +218,7 @@ fun ProductChip(product: Product, onClick: (product: Product) -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     model = product.imageUrl,
                     contentDescription = "${product.id}",
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.FillWidth,
                 )
                 Image(
                     painter = painterResource(id = com.study.compose.ui.common.R.drawable.fake_brand),
@@ -235,7 +235,10 @@ fun ProductChip(product: Product, onClick: (product: Product) -> Unit) {
                 style = MaterialTheme.typography.subtitle2.copy(fontWeight = FontWeight.Bold),
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "$${product.price}", style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.W500))
+            Text(
+                text = "$${product.price}",
+                style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.W500)
+            )
         }
         IconButton(
             onClick = { /*TODO*/ }, modifier = Modifier
