@@ -34,7 +34,7 @@ class DetailViewModel @Inject constructor(
             .scan(initVS) { vs, change -> change.reduce(vs) }
             .onEach { viewState.value = it }
             .catch { viewState.value = viewState.value.copy(error = it) }
-            .stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, initVS)
+            .launchIn(viewModelScope)
 
     }
 
