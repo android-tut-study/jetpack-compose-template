@@ -4,14 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.study.compose.ui.detail.Detail
 import com.study.compose.ui.home.HomeScreen
 import com.study.compose.ui.landing.LandingScreen
-import com.study.compose.ui.state.AppStateViewModel
 
 sealed class Screen(val route: String) {
     object Landing : Screen("landing")
@@ -25,9 +23,9 @@ sealed class ProductScreen(
 
     object Products : ProductScreen("products")
 
-    object ShowDetail : ProductScreen("show/{id}") {
-        fun createRoute(root: Screen, id: Long): String {
-            return "${root.route}/show/$id"
+    object ShowDetail : ProductScreen("show/{productId}") {
+        fun createRoute(root: Screen, productId: Int): String {
+            return "${root.route}/show/$productId"
         }
     }
 }
@@ -50,10 +48,15 @@ fun AppNavigation(navController: NavHostController, viewModelStoreOwner: ViewMod
 
 fun NavGraphBuilder.addShowProductDetail(
     navController: NavController,
-    root: Screen
+    root: Screen,
 ) {
-    composable(route = ProductScreen.ShowDetail.createRoute(root)) {
+    composable(
+        route = ProductScreen.ShowDetail.createRoute(root),
+        arguments = listOf(navArgument("productId") { type = NavType.IntType; defaultValue = -1 })
+    ) { backStackEntry ->
+        val productId = backStackEntry.arguments?.getInt("productId") ?: -1
         Detail(
+            productId = productId,
             onClosePressed = { navController.popBackStack() },
             onCartAddPressed = { /* TODO Process Add Cart */ },
             onFavoritePressed = { /* TODO Process Favorite */ }
@@ -71,8 +74,8 @@ fun NavGraphBuilder.addProducts(
             LocalViewModelStoreOwner provides viewModelStoreOwner
         ) {
             HomeScreen(
-                onProductSelect = { cart ->
-                    navController.navigate(ProductScreen.ShowDetail.createRoute(root))
+                onProductSelect = { product ->
+                    navController.navigate(ProductScreen.ShowDetail.createRoute(root, productId = product.id))
                 },
             )
         }
@@ -93,7 +96,10 @@ fun NavGraphBuilder.addProductTopLevel(
             root = Screen.Products,
             viewModelStoreOwner = viewModelStoreOwner
         )
-        addShowProductDetail(navController = navController, root = Screen.Products)
+        addShowProductDetail(
+            navController = navController,
+            root = Screen.Products,
+        )
     }
 }
 
