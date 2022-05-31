@@ -15,10 +15,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.study.compose.ui.common.components.ShrineDivider
 import com.study.compose.ui.common.theme.ShrineComposeTheme
@@ -28,11 +26,8 @@ import com.study.compose.ui.detail.components.MoreDetail
 import com.study.compose.ui.detail.components.ProductInfo
 import com.study.compose.ui.detail.data.ProductDetail
 import com.study.compose.ui.detail.interactor.intent.DetailIntent
-import com.study.compose.ui.detail.interactor.state.CurrentProduct
 import com.study.compose.ui.detail.interactor.state.DetailViewState
 import com.study.compose.ui.detail.viewmodel.DetailViewModel
-import com.study.compose.ui.state.AppStateViewModel
-import com.study.compose.ui.state.rememberAppState
 
 private val MinTitleOffset = 56.dp
 private val ExpandedImageHeight = 180.dp
@@ -88,30 +83,59 @@ fun Detail(
     ShrineComposeTheme {
         Surface(color = MaterialTheme.colors.surface) {
             val scroll = scrollState.value
-            val collapseRange = with(LocalDensity.current) { (ExpandedImageHeight).toPx() }
-            val collapseFraction = (scroll / collapseRange).coerceIn(0f, 1f)
 
             Box(modifier = Modifier.fillMaxSize()) {
                 ProductImage(
                     scroll = scrollState.value,
                     currentProduct = viewState.currentProduct
                 )
-                Body(scrollState, scroll, currentProduct = viewState.currentProduct, alsoLikes = viewState.products)
+                Body(
+                    scrollState,
+                    scroll,
+                    currentProduct = viewState.currentProduct,
+                    alsoLikes = viewState.products
+                )
                 ConcealedTitle(scroll = scroll, currentProduct = viewState.currentProduct)
                 DetailHeader(
-                    modifier = Modifier
-                        .background(
-                            color = MaterialTheme.colors.surface.copy(
-                                alpha = (collapseFraction * 1.4f).coerceIn(0f, 1f)
-                            )
-                        ),
+                    scroll = scroll,
                     onNavigationPressed = onClosePressed,
+                    onCartAddPressed = onCartAddPressed,
                     onFavoritePressed = onFavoritePressed,
-                    onCartAddPressed = onCartAddPressed
+                    currentProduct = viewState.currentProduct
                 )
             }
         }
     }
+}
+
+@Composable
+fun DetailHeader(
+    scroll: Int,
+    onNavigationPressed: () -> Unit = {},
+    onCartAddPressed: () -> Unit = {},
+    onFavoritePressed: () -> Unit = {},
+    currentProduct: ProductDetail?
+) {
+    val collapseRange = with(LocalDensity.current) { ExpandedImageHeight.toPx() }
+    val collapseFraction = (scroll / collapseRange).coerceIn(0f, 1f)
+
+    // calculate product image alpha
+    val offset = (collapseRange - scroll).coerceIn(0f, collapseRange)
+    val alpha = (offset / collapseRange).coerceIn(0f, 1f)
+
+    DetailHeader(
+        modifier = Modifier
+            .background(
+                color = MaterialTheme.colors.surface.copy(
+                    alpha = (collapseFraction * 1.4f).coerceIn(0f, 1f)
+                )
+            ),
+        onNavigationPressed = onNavigationPressed,
+        onCartAddPressed = onCartAddPressed,
+        onFavoritePressed = onFavoritePressed,
+        productDetail = currentProduct,
+        productImageModifier = Modifier.alpha(1 - alpha)
+    )
 }
 
 @Composable
@@ -132,34 +156,11 @@ fun ConcealedTitle(
             .then(modifier)
         ) {
             Column {
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    ProductInfo(
-                        modifier = Modifier
-                            .height(TitleHeight)
-                            .padding(horizontal = ScreenPadding)
-                    )
-                    val concealedImageModifier = Modifier
-                        .padding(bottom = 20.dp, top = 10.dp, end = ScreenPadding)
-                        .size(CollapsedImageHeight)
-                        .clip(CircleShape)
-                        .align(Alignment.BottomEnd)
-                    if (currentProduct != null) {
-                        AsyncImage(
-                            modifier = concealedImageModifier,
-                            model = currentProduct.imageUrl,
-                            contentDescription = "Fake1",
-                            contentScale = ContentScale.Inside,
-                        )
-                    } else {
-                        // TODO Change to PlaceHolder
-                        Image(
-                            modifier = concealedImageModifier,
-                            painter = painterResource(id = com.study.compose.ui.common.R.drawable.fake),
-                            contentDescription = "Fake1",
-                            contentScale = ContentScale.Inside,
-                        )
-                    }
-                }
+                ProductInfo(
+                    modifier = Modifier
+                        .padding(horizontal = ScreenPadding),
+                    productDetail = currentProduct
+                )
                 ShrineDivider(
                     modifier = Modifier
                         .padding(top = 2.dp)
@@ -171,57 +172,29 @@ fun ConcealedTitle(
 }
 
 @Composable
-fun Title(scroll: Int, currentProduct: ProductDetail?) {
-    val maxOffset = with(LocalDensity.current) { (ExpandedImageHeight).toPx() }
-    val minOffset = with(LocalDensity.current) { MinTitleOffset.toPx() }
-    val offset = (maxOffset - scroll).coerceAtLeast(minOffset)
-    val alpha = (offset / maxOffset).coerceIn(0f, 1f)
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        ProductInfo(
-            Modifier
-                .height(TitleHeight)
-                .padding(horizontal = ScreenPadding)
-        )
-
-        val titleImageModifier = Modifier
-            .padding(bottom = 20.dp, top = 10.dp, end = ScreenPadding)
-            .size(CollapsedImageHeight)
-            .clip(CircleShape)
-            .align(Alignment.BottomEnd)
-            .alpha(1 - alpha)
-        if (currentProduct != null) {
-            AsyncImage(
-                modifier = titleImageModifier,
-                model = currentProduct.imageUrl,
-                contentDescription = "Fake2",
-                contentScale = ContentScale.Inside,
-            )
-        } else {
-            // TODO Change to PlaceHolder
-            Image(
-                modifier = titleImageModifier,
-                painter = painterResource(id = com.study.compose.ui.common.R.drawable.fake),
-                contentDescription = "Fake2",
-                contentScale = ContentScale.Inside,
-            )
-        }
-
-    }
+fun Title(currentProduct: ProductDetail?) {
+    ProductInfo(
+        Modifier
+            .padding(horizontal = ScreenPadding)
+            .fillMaxWidth(),
+        productDetail = currentProduct
+    )
 }
 
 @Composable
-fun Body(scrollState: ScrollState, scroll: Int, currentProduct: ProductDetail?, alsoLikes: List<ProductDetail>) {
+fun Body(
+    scrollState: ScrollState,
+    scroll: Int,
+    currentProduct: ProductDetail?,
+    alsoLikes: List<ProductDetail>
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(scrollState)
     ) {
         Spacer(Modifier.height(ExpandedImageHeight))
-        Title(scroll, currentProduct)
+        Title(currentProduct)
         MoreDetail(
             modifier = Modifier.padding(horizontal = ScreenPadding),
             onSizeSelected = {},
@@ -237,7 +210,6 @@ fun Body(scrollState: ScrollState, scroll: Int, currentProduct: ProductDetail?, 
 
 @Composable
 fun ProductImage(
-    modifier: Modifier = Modifier,
     scroll: Int,
     currentProduct: ProductDetail? = null
 ) {
