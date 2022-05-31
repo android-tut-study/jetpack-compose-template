@@ -74,8 +74,8 @@ fun NavGraphBuilder.addProducts(
             LocalViewModelStoreOwner provides viewModelStoreOwner
         ) {
             HomeScreen(
-                onProductSelect = { product ->
-                    navController.navigate(ProductScreen.ShowDetail.createRoute(root, productId = product.id))
+                onProductSelect = { productId ->
+                    navController.navigate(ProductScreen.ShowDetail.createRoute(root, productId = productId))
                 },
             )
         }

@@ -1,6 +1,7 @@
 package com.study.compose.ui.home.interactor.state
 
 import com.study.compose.ui.home.data.HomeProduct
+import com.study.compose.ui.state.UiStatePartialChange
 
 data class HomeViewState(
     val drawerOpened: Boolean,
@@ -19,16 +20,14 @@ data class HomeViewState(
     }
 }
 
-sealed interface HomePartialChange {
-    fun reduce(viewState: HomeViewState): HomeViewState
-}
+sealed interface HomePartialChange: UiStatePartialChange<HomeViewState>
 
 sealed class FetchProducts : HomePartialChange {
-    override fun reduce(viewState: HomeViewState): HomeViewState {
+    override fun reduce(vs: HomeViewState): HomeViewState {
         return when (this) {
-            is Loading -> viewState.copy(loading = true)
-            is Data -> viewState.copy(loading = false, product = product)
-            is Error -> viewState.copy(loading = false, error = err)
+            is Loading -> vs.copy(loading = true)
+            is Data -> vs.copy(loading = false, product = product)
+            is Error -> vs.copy(loading = false, error = err)
         }
     }
 
