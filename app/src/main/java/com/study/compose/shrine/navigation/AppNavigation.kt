@@ -54,7 +54,7 @@ fun NavGraphBuilder.addShowProductDetail(
         route = ProductScreen.ShowDetail.createRoute(root),
         arguments = listOf(navArgument("productId") { type = NavType.IntType; defaultValue = -1 })
     ) { backStackEntry ->
-        val productId = backStackEntry.arguments?.getInt("productId") ?: -1
+        val productId = backStackEntry.arguments?.getInt("productId", -1) ?: -1
         Detail(
             productId = productId,
             onClosePressed = { navController.popBackStack() },
@@ -75,7 +75,12 @@ fun NavGraphBuilder.addProducts(
         ) {
             HomeScreen(
                 onProductSelect = { productId ->
-                    navController.navigate(ProductScreen.ShowDetail.createRoute(root, productId = productId))
+                    navController.navigate(
+                        ProductScreen.ShowDetail.createRoute(
+                            root,
+                            productId = productId
+                        )
+                    )
                 },
             )
         }

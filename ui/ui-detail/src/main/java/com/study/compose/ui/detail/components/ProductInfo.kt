@@ -33,7 +33,7 @@ fun ProductInfo(modifier: Modifier = Modifier, productDetail: ProductDetail?) {
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Text(text = productDetail?.category ?: "")
+                Text(text = productDetail?.category.orEmpty())
                 Text(
                     text = "$${productDetail?.price ?: "00"} ",
                     style = MaterialTheme.typography.h4.copy(
@@ -46,17 +46,19 @@ fun ProductInfo(modifier: Modifier = Modifier, productDetail: ProductDetail?) {
             }
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = productDetail?.title ?: "",
+                text = productDetail?.title.orEmpty(),
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight(500)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = productDetail?.description ?: "", style = MaterialTheme.typography.body2.copy(
+                text = productDetail?.description.orEmpty(),
+                style = MaterialTheme.typography.body2.copy(
                     color = Color(
                         0xFF4D4C4C
                     )
-                ), fontStyle = FontStyle.Italic
+                ),
+                fontStyle = FontStyle.Italic
             )
         }
     }
@@ -67,14 +69,16 @@ fun ProductInfo(modifier: Modifier = Modifier, productDetail: ProductDetail?) {
 private fun ProductInfoPreview() {
     ShrineComposeTheme {
         Surface(modifier = Modifier.fillMaxWidth()) {
-            ProductInfo(productDetail = ProductDetail(
-                id = 1,
-                title = "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
-                price= 109.95f,
-                description ="Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
-                category = "men's clothing",
-                imageUrl = "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg"
-            ))
+            ProductInfo(
+                productDetail = ProductDetail(
+                    id = 1,
+                    title = "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
+                    price = 109.95f,
+                    description = "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
+                    category = "men's clothing",
+                    imageUrl = "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg"
+                )
+            )
         }
     }
 }

@@ -58,7 +58,7 @@ class DetailViewModel @Inject constructor(
                 val categoryProducts = product?.let { currentProduct ->
                     domainProducts.filter { currentProduct.category == it.category && currentProduct.id != it.id }
                         .map(::ProductDetail)
-                } ?: emptyList()
+                }.orEmpty()
                 emit(GetProducts.Data(categoryProducts))
             }
             .catch { emit(GetProducts.Error(it)) }
