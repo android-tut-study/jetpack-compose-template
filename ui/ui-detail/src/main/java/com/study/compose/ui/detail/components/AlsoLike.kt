@@ -1,5 +1,6 @@
 package com.study.compose.ui.detail.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -22,7 +23,8 @@ import com.study.compose.ui.detail.data.ProductDetail
 @Composable
 fun AlsoLikes(
     modifier: Modifier = Modifier,
-    items: List<ProductDetail>
+    items: List<ProductDetail>,
+    onAlsoPressed: (ProductDetail) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -46,10 +48,12 @@ fun AlsoLikes(
         ) {
             items.forEach { item ->
                 AsyncImage(
-                    model =  item.imageUrl,
+                    model = item.imageUrl,
                     contentDescription = "Also ${item.id}",
                     contentScale = ContentScale.FillWidth,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable { onAlsoPressed(item) },
                     alignment = Alignment.BottomCenter
                 )
             }

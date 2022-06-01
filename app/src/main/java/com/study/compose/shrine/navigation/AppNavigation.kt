@@ -58,7 +58,11 @@ fun NavGraphBuilder.addShowProductDetail(
         Detail(
             productId = productId,
             onClosePressed = { navController.popBackStack() },
-            onCartAddPressed = { /* TODO Process Add Cart */ },
+            onOtherDetailPressed = { otherId ->
+                navController.navigate(
+                    ProductScreen.ShowDetail.createRoute(root, productId = otherId)
+                )
+            },
             onFavoritePressed = { /* TODO Process Favorite */ }
         )
     }

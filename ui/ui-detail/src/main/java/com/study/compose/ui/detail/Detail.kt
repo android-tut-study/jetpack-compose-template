@@ -1,16 +1,13 @@
 package com.study.compose.ui.detail
 
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
@@ -38,7 +35,7 @@ private val ScreenPadding = 12.dp
 @Composable
 fun Detail(
     productId: Int,
-    onCartAddPressed: () -> Unit = {},
+    onOtherDetailPressed: (Int) -> Unit = {},
     onClosePressed: () -> Unit = {},
     onFavoritePressed: () -> Unit = {}
 ) {
@@ -46,7 +43,7 @@ fun Detail(
     Detail(
         productId = id,
         viewModel = hiltViewModel(),
-        onCartAddPressed = onCartAddPressed,
+        onOtherDetailPressed = onOtherDetailPressed,
         onClosePressed = onClosePressed,
         onFavoritePressed = onFavoritePressed
     )
@@ -56,7 +53,7 @@ fun Detail(
 fun Detail(
     productId: Int,
     viewModel: DetailViewModel,
-    onCartAddPressed: () -> Unit = {},
+    onOtherDetailPressed: (Int) -> Unit = {},
     onClosePressed: () -> Unit = {},
     onFavoritePressed: () -> Unit = {}
 ) {
@@ -66,7 +63,7 @@ fun Detail(
     val viewState by viewModel.viewState.collectAsState()
     Detail(
         viewState = viewState,
-        onCartAddPressed = onCartAddPressed,
+        onOtherDetailPressed = onOtherDetailPressed,
         onClosePressed = onClosePressed,
         onFavoritePressed = onFavoritePressed,
     )
@@ -75,7 +72,7 @@ fun Detail(
 @Composable
 fun Detail(
     viewState: DetailViewState,
-    onCartAddPressed: () -> Unit = {},
+    onOtherDetailPressed: (Int) -> Unit = {},
     onClosePressed: () -> Unit = {},
     onFavoritePressed: () -> Unit = {}
 ) {
@@ -91,15 +88,15 @@ fun Detail(
                 )
                 Body(
                     scrollState,
-                    scroll,
                     currentProduct = viewState.currentProduct,
-                    alsoLikes = viewState.products
+                    alsoLikes = viewState.products,
+                    onAlsoPressed = { also -> onOtherDetailPressed(also.id) }
                 )
                 ConcealedTitle(scroll = scroll, currentProduct = viewState.currentProduct)
                 DetailHeader(
                     scroll = scroll,
                     onNavigationPressed = onClosePressed,
-                    onCartAddPressed = onCartAddPressed,
+                    onCartAddPressed = {},
                     onFavoritePressed = onFavoritePressed,
                     currentProduct = viewState.currentProduct
                 )
@@ -184,9 +181,9 @@ fun Title(currentProduct: ProductDetail?) {
 @Composable
 fun Body(
     scrollState: ScrollState,
-    scroll: Int,
     currentProduct: ProductDetail?,
-    alsoLikes: List<ProductDetail>
+    alsoLikes: List<ProductDetail>,
+    onAlsoPressed: (ProductDetail) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -202,7 +199,11 @@ fun Body(
         Spacer(modifier = Modifier.height(10.dp))
         AddToCart()
         Spacer(modifier = Modifier.height(20.dp))
-        AlsoLikes(modifier = Modifier.padding(horizontal = ScreenPadding), items = alsoLikes)
+        AlsoLikes(
+            modifier = Modifier.padding(horizontal = ScreenPadding),
+            items = alsoLikes,
+            onAlsoPressed = onAlsoPressed
+        )
         Spacer(modifier = Modifier.height(64.dp))
     }
 
