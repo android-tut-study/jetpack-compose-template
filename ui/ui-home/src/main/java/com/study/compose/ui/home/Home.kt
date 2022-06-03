@@ -12,7 +12,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.study.compose.ui.common.components.ShrineScaffold
 import com.study.compose.ui.common.components.ShrineTopBar
 import com.study.compose.ui.home.components.*
-import com.study.compose.ui.home.data.Product
 import com.study.compose.ui.home.interactor.intent.HomeIntent
 import com.study.compose.ui.home.interactor.state.HomeViewState
 import com.study.compose.ui.home.view.ProductsContent
@@ -25,7 +24,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     onFilterPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
-    onProductSelect: (product: Product) -> Unit
+    onProductSelect: (id: Int) -> Unit
 ) {
     HomeScreen(
         viewModel = hiltViewModel(),
@@ -40,11 +39,11 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     onFilterPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
-    onProductSelect: (product: Product) -> Unit
+    onProductSelect: (id: Int) -> Unit
 ) {
     val homeViewState = viewModel.viewState.collectAsState()
     // TODO Test
-    LaunchedEffect(key1 = homeViewState) {
+    LaunchedEffect(true) {
         viewModel.processIntent(HomeIntent.FetchProducts)
     }
     Products(
@@ -62,7 +61,7 @@ fun Products(
     viewState: HomeViewState,
     onFilterPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
-    onProductSelect: (product: Product) -> Unit,
+    onProductSelect: (id: Int) -> Unit,
 ) {
     val appState = rememberAppState()
     val appViewStateVM: AppStateViewModel = viewModel()
@@ -107,7 +106,7 @@ fun Products(
             scaffoldState = scaffoldState
         ) {
             ProductsContent(
-                onProductSelect = onProductSelect,
+                onProductSelect = { product -> onProductSelect(product.id) },
                 modifier = Modifier.padding(vertical = 56.dp),
                 products = viewState.product.products
             )
@@ -121,7 +120,7 @@ fun Products(
 fun NavigationMenus(backdropRevealed: Boolean) {
     ShrineDrawer(
         backdropRevealed = backdropRevealed,
-        // This padding so useful. It prevent crash in BackdropScaffold caused by peekheight
+        // This padding so useful. It prevent crash by BackdropScaffold caused by peekheight
         modifier = Modifier.padding(top = 12.dp, bottom = 32.dp),
     )
 }

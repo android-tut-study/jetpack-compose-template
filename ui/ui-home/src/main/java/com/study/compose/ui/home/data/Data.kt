@@ -3,9 +3,9 @@ package com.study.compose.ui.home.data
 import com.study.compose.core.domain.model.ProductDomain
 import com.study.compose.ui.home.R
 
-sealed interface HomeModel
+sealed class HomeModel
 
-data class HomeProduct constructor (var products: List<Product>) : HomeModel {
+data class HomeProduct constructor (var products: List<Product>) : HomeModel() {
 
     companion object {
         fun generateFromDomain(domain: List<ProductDomain>) = HomeProduct(products = domain.map(::Product))
@@ -19,7 +19,7 @@ data class Product(
     val description: String,
     val category: String,
     val imageUrl: String
-) : HomeModel {
+) : HomeModel() {
     constructor(productDomain: ProductDomain) : this(
         id = productDomain.id,
         title = productDomain.title,
