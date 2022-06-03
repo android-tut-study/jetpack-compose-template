@@ -1,6 +1,5 @@
 package com.study.compose.ui.detail.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.study.compose.ui.common.viewmodel.BaseViewModel
 import com.study.compose.ui.detail.data.ProductDetail
@@ -48,7 +47,7 @@ class DetailViewModel @Inject constructor(
         )
     }
 
-    fun products(id: Int): Flow<DetailUIPartialChange> = flow {
+    private fun products(id: Int): Flow<DetailUIPartialChange> = flow {
         getProductsUseCase()
             .onEach { result ->
                 val domainProducts = result.getOrThrow()
