@@ -31,6 +31,7 @@ digraph {
   ":domain:domain-products" -> ":core:core-dispatcher" [style=dotted]
   ":ui:ui-common" -> ":ui:ui-state"
   ":ui:ui-detail" -> ":ui:ui-common" [style=dotted]
+  ":ui:ui-detail" -> ":usecase:usecase-products" [style=dotted]
   ":ui:ui-home" -> ":ui:ui-common" [style=dotted]
   ":ui:ui-home" -> ":usecase:usecase-products" [style=dotted]
   ":ui:ui-landing" -> ":ui:ui-common" [style=dotted]
