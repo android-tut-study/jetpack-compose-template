@@ -8,13 +8,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.study.compose.ui.common.components.ExpandableText
 import com.study.compose.ui.common.components.ShrineDivider
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 import com.study.compose.ui.detail.components.AlsoLikes
@@ -28,8 +31,6 @@ import com.study.compose.ui.detail.viewmodel.DetailViewModel
 
 private val MinTitleOffset = 56.dp
 private val ExpandedImageHeight = 180.dp
-private val CollapsedImageHeight = 60.dp
-private val TitleHeight = 110.dp
 private val ScreenPadding = 12.dp
 
 @Composable
@@ -172,9 +173,22 @@ fun ConcealedTitle(
 fun Title(currentProduct: ProductDetail?) {
     ProductInfo(
         Modifier
-            .padding(horizontal = ScreenPadding)
             .fillMaxWidth(),
         productDetail = currentProduct
+    )
+}
+
+@Composable
+fun ProductDescription(currentProduct: ProductDetail?) {
+    ExpandableText(
+        modifier = Modifier.fillMaxWidth(),
+        text = currentProduct?.description.orEmpty(),
+        style = MaterialTheme.typography.body2.copy(
+            color = Color(
+                0xFF4D4C4C
+            )
+        ),
+        fontStyle = FontStyle.Italic
     )
 }
 
@@ -187,20 +201,21 @@ fun Body(
 ) {
     Column(
         modifier = Modifier
+            .padding(horizontal = ScreenPadding)
             .fillMaxWidth()
             .verticalScroll(scrollState)
     ) {
         Spacer(Modifier.height(ExpandedImageHeight))
         Title(currentProduct)
+        Spacer(Modifier.height(10.dp))
+        ProductDescription(currentProduct)
         MoreDetail(
-            modifier = Modifier.padding(horizontal = ScreenPadding),
             onSizeSelected = {},
             onColorSelected = {})
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         AddToCart()
         Spacer(modifier = Modifier.height(20.dp))
         AlsoLikes(
-            modifier = Modifier.padding(horizontal = ScreenPadding),
             items = alsoLikes,
             onAlsoPressed = onAlsoPressed
         )
@@ -254,7 +269,6 @@ fun AddToCart() {
         onClick = { /*TODO*/ },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp)
             .height(56.dp),
         elevation = ButtonDefaults.elevation(4.dp),
         shape = CutCornerShape(10.dp)

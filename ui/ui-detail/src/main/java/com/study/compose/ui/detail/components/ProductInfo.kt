@@ -1,12 +1,15 @@
 package com.study.compose.ui.detail.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -14,6 +17,7 @@ import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import com.study.compose.ui.common.components.ExpandableText
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 import com.study.compose.ui.detail.data.ProductDetail
 
@@ -49,16 +53,6 @@ fun ProductInfo(modifier: Modifier = Modifier, productDetail: ProductDetail?) {
                 text = productDetail?.title.orEmpty(),
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight(500)
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = productDetail?.description.orEmpty(),
-                style = MaterialTheme.typography.body2.copy(
-                    color = Color(
-                        0xFF4D4C4C
-                    )
-                ),
-                fontStyle = FontStyle.Italic
             )
         }
     }
