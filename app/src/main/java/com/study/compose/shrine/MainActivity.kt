@@ -18,8 +18,8 @@ import androidx.navigation.NavController
 import com.study.compose.shrine.navigation.AppNavigation
 import com.study.compose.shrine.navigation.Screen
 import com.study.compose.ui.common.theme.ShrineComposeTheme
-import com.study.compose.ui.home.components.BottomCart
-import com.study.compose.ui.home.data.SampleCartItems
+import com.study.compose.ui.cart.BottomCart
+import com.study.compose.ui.cart.data.SampleCartItems
 import com.study.compose.ui.state.AppStateViewModel
 import com.study.compose.ui.state.rememberAppState
 import dagger.hilt.android.AndroidEntryPoint
