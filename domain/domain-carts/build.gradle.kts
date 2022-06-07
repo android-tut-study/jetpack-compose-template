@@ -13,10 +13,8 @@ dependencies {
     implementation(Libs.Hilt.Core.ANDROID)
     kapt(Libs.Hilt.Core.ANDROID_COMPILER)
 
-    // Retrofit
-    implementation(Libs.Square.OkHttp.OKHTTP)
-    implementation(Libs.Square.OkHttp.LOGGING_INTERCEPTOR)
-    implementation(Libs.Square.Retrofit.RETROFIT)
-    implementation(Libs.Square.Retrofit.Converters.MOSHI)
+    implementation(Libs.AndroidX.Room.KTX)
+    implementation(Libs.AndroidX.Room.RUNTIME)
+    testImplementation(Libs.AndroidX.Room.TEST_HELPERS)
 
 }
