@@ -95,6 +95,22 @@ object Libs {
             const val VIEWMODEL_COMPOSE = "androidx.lifecycle:lifecycle-viewmodel-compose:$VERSION"
         }
 
+        object Room {
+            private const val VERSION = "2.4.2"
+            const val RUNTIME = "androidx.room:room-runtime:$VERSION"
+            const val COMPILER = "androidx.room:room-compiler:$VERSION"
+            const val TEST_HELPERS = "androidx.room:room-testing:$VERSION"
+
+            // optional - Kotlin Extensions and Coroutines support for Room
+            const val KTX = "androidx.room:room-ktx:$VERSION"
+
+
+            object Paging {
+                private const val VERSION = "2.5.0-alpha02"
+                const val PAGING3 = "androidx.room:room-compiler:$VERSION"
+            }
+        }
+
     }
 
     object Hilt {
