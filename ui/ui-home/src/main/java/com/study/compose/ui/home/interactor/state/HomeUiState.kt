@@ -35,9 +35,3 @@ sealed class FetchProducts : HomePartialChange {
     data class Data(val product: HomeProduct) : FetchProducts()
     data class Error(val err: Throwable) : FetchProducts()
 }
-
-enum class CartUiState {
-    Collapsed,
-    Expanded,
-    Hidden,
-}
