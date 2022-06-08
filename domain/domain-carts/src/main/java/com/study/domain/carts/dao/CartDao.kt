@@ -1,8 +1,8 @@
-package com.example.domain.carts.dao
+package com.study.domain.carts.dao
 
 import androidx.room.*
 import androidx.room.OnConflictStrategy.IGNORE
-import com.example.domain.carts.models.Cart
+import com.study.domain.carts.models.Cart
 import kotlinx.coroutines.flow.Flow
 
 @Dao

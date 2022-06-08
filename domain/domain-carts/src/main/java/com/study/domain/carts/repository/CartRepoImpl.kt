@@ -1,9 +1,9 @@
-package com.example.domain.carts.repository
+package com.study.domain.carts.repository
 
-import com.example.domain.carts.database.CartDatabase
-import com.example.domain.carts.models.Cart
-import com.example.domain.carts.models.CartRepoChange
-import com.example.domain.carts.models.CartRepoState
+import com.study.domain.carts.database.CartDatabase
+import com.study.domain.carts.models.Cart
+import com.study.domain.carts.models.CartRepoChange
+import com.study.domain.carts.models.CartRepoState
 import com.study.compose.core.dispatcher.CoroutineDispatchers
 import com.study.compose.core.domain.Mapper
 import com.study.compose.core.domain.model.CartDomain

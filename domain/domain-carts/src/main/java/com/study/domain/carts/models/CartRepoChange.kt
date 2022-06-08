@@ -1,4 +1,4 @@
-package com.example.domain.carts.models
+package com.study.domain.carts.models
 
 import com.study.compose.core.domain.model.CartDomain
 

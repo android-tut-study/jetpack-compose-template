@@ -1,10 +1,10 @@
-package com.example.domain.carts.di
+package com.study.domain.carts.di
 
 import android.content.Context
-import com.example.domain.carts.database.CartDatabase
-import com.example.domain.carts.mappers.CartEntityToDomainMapper
-import com.example.domain.carts.repository.CartRepo
-import com.example.domain.carts.repository.CartRepoImpl
+import com.study.domain.carts.database.CartDatabase
+import com.study.domain.carts.mappers.CartEntityToDomainMapper
+import com.study.domain.carts.repository.CartRepo
+import com.study.domain.carts.repository.CartRepoImpl
 import com.study.compose.core.dispatcher.CoroutineDispatchers
 import dagger.Module
 import dagger.Provides

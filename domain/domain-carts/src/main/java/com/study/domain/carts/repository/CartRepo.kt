@@ -1,6 +1,6 @@
-package com.example.domain.carts.repository
+package com.study.domain.carts.repository
 
-import com.example.domain.carts.models.Cart
+import com.study.domain.carts.models.Cart
 import kotlinx.coroutines.flow.Flow
 
 interface CartRepo {

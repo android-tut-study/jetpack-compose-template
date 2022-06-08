@@ -1,11 +1,11 @@
-package com.example.domain.carts.database
+package com.study.domain.carts.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.domain.carts.dao.CartDao
-import com.example.domain.carts.models.Cart
+import com.study.domain.carts.dao.CartDao
+import com.study.domain.carts.models.Cart
 
 @Database(entities = [Cart::class], version = 1)
 abstract class CartDatabase : RoomDatabase() {

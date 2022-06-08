@@ -1,6 +1,6 @@
-package com.example.domain.carts.mappers
+package com.study.domain.carts.mappers
 
-import com.example.domain.carts.models.Cart
+import com.study.domain.carts.models.Cart
 import com.study.compose.core.domain.Mapper
 import com.study.compose.core.domain.model.CartDomain
 import javax.inject.Inject
