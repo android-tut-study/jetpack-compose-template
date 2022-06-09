@@ -28,6 +28,7 @@ import com.study.compose.ui.detail.data.ProductDetail
 import com.study.compose.ui.detail.interactor.intent.DetailIntent
 import com.study.compose.ui.detail.interactor.state.DetailViewState
 import com.study.compose.ui.detail.viewmodel.DetailViewModel
+import kotlinx.coroutines.launch
 
 private val MinTitleOffset = 56.dp
 private val ExpandedImageHeight = 180.dp
@@ -58,6 +59,7 @@ fun Detail(
     onClosePressed: () -> Unit = {},
     onFavoritePressed: () -> Unit = {}
 ) {
+    val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(true) {
         viewModel.processIntent(DetailIntent.Initial(productId = productId))
     }
@@ -67,6 +69,11 @@ fun Detail(
         onOtherDetailPressed = onOtherDetailPressed,
         onClosePressed = onClosePressed,
         onFavoritePressed = onFavoritePressed,
+        onAddCart = { product, amount ->
+            coroutineScope.launch {
+                viewModel.processIntent(DetailIntent.AddCart(product, amount))
+            }
+        }
     )
 }
 
@@ -75,9 +82,11 @@ fun Detail(
     viewState: DetailViewState,
     onOtherDetailPressed: (Int) -> Unit = {},
     onClosePressed: () -> Unit = {},
-    onFavoritePressed: () -> Unit = {}
+    onFavoritePressed: () -> Unit = {},
+    onAddCart: (ProductDetail, Int) -> Unit
 ) {
     val scrollState = rememberScrollState(0)
+
     ShrineComposeTheme {
         Surface(color = MaterialTheme.colors.surface) {
             val scroll = scrollState.value
@@ -97,7 +106,12 @@ fun Detail(
                 DetailHeader(
                     scroll = scroll,
                     onNavigationPressed = onClosePressed,
-                    onCartAddPressed = {},
+                    onCartAddPressed = {
+                        viewState.currentProduct?.let { product ->
+                            // TODO Modify amount later
+                            onAddCart(product, 1)
+                        }
+                    },
                     onFavoritePressed = onFavoritePressed,
                     currentProduct = viewState.currentProduct
                 )

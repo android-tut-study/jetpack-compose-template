@@ -1,13 +1,15 @@
 package com.study.compose.ui.detail.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.study.compose.core.domain.model.CartDomain
+import com.study.compose.core.domain.model.ProductDomain
 import com.study.compose.ui.common.viewmodel.BaseViewModel
 import com.study.compose.ui.detail.data.ProductDetail
 import com.study.compose.ui.detail.interactor.intent.DetailIntent
-import com.study.compose.ui.detail.interactor.state.CurrentProduct
-import com.study.compose.ui.detail.interactor.state.DetailUIPartialChange
-import com.study.compose.ui.detail.interactor.state.DetailViewState
-import com.study.compose.ui.detail.interactor.state.GetProducts
+import com.study.compose.ui.detail.interactor.state.*
+import com.study.compose.usecase.carts.AddCartUseCase
+import com.study.compose.usecase.carts.GetAllCartsUseCase
 import com.study.compose.usecase.products.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -16,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val getProductsUseCase: GetProductsUseCase
+    private val getProductsUseCase: GetProductsUseCase,
+    private val addCartUseCase: AddCartUseCase
 ) : BaseViewModel<DetailIntent>() {
 
     private val _channel = MutableSharedFlow<DetailIntent>()
@@ -34,7 +37,6 @@ class DetailViewModel @Inject constructor(
             .onEach { viewState.value = it }
             .catch { viewState.value = viewState.value.copy(error = it) }
             .launchIn(viewModelScope)
-
     }
 
     override suspend fun processIntent(intent: DetailIntent) = _channel.emit(intent)
@@ -43,7 +45,11 @@ class DetailViewModel @Inject constructor(
     private fun Flow<DetailIntent>.toPartialChange(): Flow<DetailUIPartialChange> {
         return merge(
             filterIsInstance<DetailIntent.Initial>()
-                .flatMapConcat { products(it.productId) }
+                .flatMapConcat { products(it.productId) },
+            filterIsInstance<DetailIntent.AddCart>()
+                .flatMapConcat { addCart(it.product, it.amount) }
+                .onStart { emit(AddCart.Loading) }
+                .catch { emit(AddCart.Error(it)) }
         )
     }
 
@@ -62,5 +68,11 @@ class DetailViewModel @Inject constructor(
             }
             .catch { emit(GetProducts.Error(it)) }
             .collect()
+    }
+
+    private suspend fun addCart(product: ProductDetail, amount: Int) = flow<DetailUIPartialChange> {
+        val productDomain = product.toDomain()
+        val result = addCartUseCase(CartDomain.fromProduct(productDomain, amount))
+        emit(AddCart.Data(result.getOrThrow()))
     }
 }

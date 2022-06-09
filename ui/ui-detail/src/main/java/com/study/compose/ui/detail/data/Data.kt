@@ -20,4 +20,13 @@ data class ProductDetail(
         category = productDomain.category,
         imageUrl = productDomain.imageUrl
     )
+
+    fun toDomain() = ProductDomain(
+        id = this.id,
+        title = this.title,
+        price = this.price,
+        description = this.description,
+        category = this.category,
+        imageUrl = this.imageUrl
+    )
 }
