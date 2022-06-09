@@ -2,6 +2,7 @@ package com.study.compose.core.usecase
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import com.study.compose.core.result.Result
 
 abstract class ResultUseCase<in Params, Type>(private val dispatcher: CoroutineDispatcher) {
 
@@ -9,5 +10,5 @@ abstract class ResultUseCase<in Params, Type>(private val dispatcher: CoroutineD
         execute(params)
     }
 
-    abstract fun execute(params: Params): Result<Type>
+    abstract suspend fun execute(params: Params): Result<Type>
 }

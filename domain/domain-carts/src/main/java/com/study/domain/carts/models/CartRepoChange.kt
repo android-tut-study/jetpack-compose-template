@@ -1,5 +1,6 @@
 package com.study.domain.carts.models
 
+import com.study.compose.core.domain.model.CartChangeType
 import com.study.compose.core.domain.model.CartDomain
 
 sealed class CartRepoChange {
@@ -20,13 +21,7 @@ sealed class CartRepoChange {
     object Fail : CartRepoChange()
 }
 
-data class CartChange(val cart: CartDomain? = null, val type: CartChangeType? = null)
-
-enum class CartChangeType {
-    INSERT,
-    REMOVE,
-    UPDATE
-}
+data class CartChange(val cart: CartDomain? = null, val type: CartChangeType = CartChangeType.NONE)
 
 data class CartRepoState(
     val allCarts: List<CartDomain> = emptyList(),

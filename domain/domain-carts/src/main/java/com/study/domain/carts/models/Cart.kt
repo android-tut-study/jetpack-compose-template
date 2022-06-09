@@ -10,5 +10,5 @@ data class Cart(
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "description") val description: String,
     @ColumnInfo(name = "price") val price: Float,
-    @ColumnInfo(name = "amount") val amount: Float,
+    @ColumnInfo(name = "amount") val amount: Int,
 )

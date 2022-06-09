@@ -15,6 +15,8 @@ dependencies {
 
     implementation(Libs.AndroidX.Room.KTX)
     implementation(Libs.AndroidX.Room.RUNTIME)
+    kapt(Libs.AndroidX.Room.COMPILER)
+
     testImplementation(Libs.AndroidX.Room.TEST_HELPERS)
 
 }

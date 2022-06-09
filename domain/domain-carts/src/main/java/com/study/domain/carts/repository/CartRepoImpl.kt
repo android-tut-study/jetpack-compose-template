@@ -1,5 +1,6 @@
 package com.study.domain.carts.repository
 
+import android.util.Log
 import com.study.domain.carts.database.CartDatabase
 import com.study.domain.carts.models.Cart
 import com.study.domain.carts.models.CartRepoChange
@@ -28,15 +29,23 @@ class CartRepoImpl(
             .launchIn(CoroutineScope(dispatcher.io))
     }
 
-    override fun getCarts(): Flow<List<Cart>> = flow {
-        cartDatabase.cartDao().allCarts().onEach { emit(it) }
+    override fun getCarts(): Flow<List<CartDomain>> = flow {
+        cartDatabase.cartDao().allCarts()
+            .onEach { carts ->
+                val cartDomains = carts.map(cartEntityToDomain)
+                emit(cartDomains)
+                _cartRepoChange.emit(CartRepoChange.AllCarts(carts = cartDomains))
+            }
+            .collect()
     }.flowOn(dispatcher.io)
 
-    override suspend fun addCart(cart: Cart) {
+    override suspend fun addCart(cart: Cart): Long {
         val result = cartDatabase.cartDao().addToCarts(cart)
+        Log.e("ANNX", "ADd Cart Result $result")
         if (result > 0) {
             _cartRepoChange.emit(CartRepoChange.Add(cart = cartEntityToDomain(cart)))
         }
+        return result
     }
 
     override suspend fun removeCart(cart: Cart) {
@@ -53,6 +62,12 @@ class CartRepoImpl(
 
     override suspend fun editCart(cart: Cart) {
         cartDatabase.cartDao().editCarts(cart)
+    }
+
+    override fun getCartRepoState(): Flow<CartRepoState> = flow {
+        cartRepoState
+            .onEach { emit(it) }
+            .collect()
     }
 
 }

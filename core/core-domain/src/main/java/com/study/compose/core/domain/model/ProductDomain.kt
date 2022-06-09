@@ -9,5 +9,7 @@ data class ProductDomain(
     val description: String,
     val category: String,
     val imageUrl: String,
-    val rating: ProductRatingDomain
-): DomainModel
+//    val rating: ProductRatingDomain
+): DomainModel {
+
+}

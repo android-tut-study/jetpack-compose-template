@@ -18,7 +18,7 @@ class ProductResponseToDomainMapper @Inject constructor(
             description = response.description,
             category = response.category,
             imageUrl = response.imageUrl,
-            rating = ratingMapper(response.rating)
+//            rating = ratingMapper(response.rating)
         )
     }
 }
