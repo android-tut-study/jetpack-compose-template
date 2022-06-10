@@ -36,8 +36,8 @@ private val ScreenPadding = 12.dp
 
 @Composable
 fun Detail(
-    productId: Int,
-    onOtherDetailPressed: (Int) -> Unit = {},
+    productId: Long,
+    onOtherDetailPressed: (Long) -> Unit = {},
     onClosePressed: () -> Unit = {},
     onFavoritePressed: () -> Unit = {}
 ) {
@@ -53,9 +53,9 @@ fun Detail(
 
 @Composable
 fun Detail(
-    productId: Int,
+    productId: Long,
     viewModel: DetailViewModel,
-    onOtherDetailPressed: (Int) -> Unit = {},
+    onOtherDetailPressed: (Long) -> Unit = {},
     onClosePressed: () -> Unit = {},
     onFavoritePressed: () -> Unit = {}
 ) {
@@ -80,7 +80,7 @@ fun Detail(
 @Composable
 fun Detail(
     viewState: DetailViewState,
-    onOtherDetailPressed: (Int) -> Unit = {},
+    onOtherDetailPressed: (Long) -> Unit = {},
     onClosePressed: () -> Unit = {},
     onFavoritePressed: () -> Unit = {},
     onAddCart: (ProductDetail, Int) -> Unit
@@ -100,7 +100,8 @@ fun Detail(
                     scrollState,
                     currentProduct = viewState.currentProduct,
                     alsoLikes = viewState.products,
-                    onAlsoPressed = { also -> onOtherDetailPressed(also.id) }
+                    onAlsoPressed = { also -> onOtherDetailPressed(also.id) },
+                    addedToCart = viewState.addedToCart
                 )
                 ConcealedTitle(scroll = scroll, currentProduct = viewState.currentProduct)
                 DetailHeader(
@@ -211,7 +212,8 @@ fun Body(
     scrollState: ScrollState,
     currentProduct: ProductDetail?,
     alsoLikes: List<ProductDetail>,
-    onAlsoPressed: (ProductDetail) -> Unit
+    onAlsoPressed: (ProductDetail) -> Unit,
+    addedToCart: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -227,7 +229,7 @@ fun Body(
             onSizeSelected = {},
             onColorSelected = {})
         Spacer(modifier = Modifier.height(20.dp))
-        AddToCart()
+        AddToCart(addedToCart)
         Spacer(modifier = Modifier.height(20.dp))
         AlsoLikes(
             items = alsoLikes,
@@ -278,7 +280,7 @@ fun ProductImage(
 }
 
 @Composable
-fun AddToCart() {
+fun AddToCart(added: Boolean) {
     Button(
         onClick = { /*TODO*/ },
         modifier = Modifier
@@ -295,7 +297,7 @@ fun AddToCart() {
                 painter = painterResource(id = com.study.compose.ui.common.R.drawable.ic_add_cart_24),
                 contentDescription = "AddToCart"
             )
-            Text(text = "Add To Cart".uppercase())
+            Text(text = if (added) "Added To Cart" else "Add To Cart".uppercase())
         }
     }
 }

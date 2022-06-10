@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     onFilterPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
-    onProductSelect: (id: Int) -> Unit
+    onProductSelect: (Long) -> Unit
 ) {
     HomeScreen(
         viewModel = hiltViewModel(),
@@ -39,7 +39,7 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     onFilterPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
-    onProductSelect: (id: Int) -> Unit
+    onProductSelect: (Long) -> Unit
 ) {
     val homeViewState = viewModel.viewState.collectAsState()
     // TODO Test
@@ -61,7 +61,7 @@ fun Products(
     viewState: HomeViewState,
     onFilterPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
-    onProductSelect: (id: Int) -> Unit,
+    onProductSelect: (Long) -> Unit,
 ) {
     val appState = rememberAppState()
     val appViewStateVM: AppStateViewModel = viewModel()

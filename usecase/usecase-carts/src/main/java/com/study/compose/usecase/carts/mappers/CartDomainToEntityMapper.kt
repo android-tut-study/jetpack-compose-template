@@ -7,12 +7,18 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CartDomainToEntityMapper @Inject constructor(): Mapper<CartDomain, Cart> {
+class CartDomainToEntityMapper @Inject constructor() : Mapper<CartDomain, Cart> {
     override fun invoke(p1: CartDomain): Cart = Cart(
+        productId = p1.productId,
         title = p1.title,
         description = p1.description,
-        productId = p1.productId,
         price = p1.price,
-        amount = p1.amount
-    )
+        amount = p1.amount,
+        size = p1.size,
+        color = p1.color,
+        imageUrl = p1.imageUrl,
+        category = p1.category,
+    ).apply {
+        id = p1.id
+    }
 }

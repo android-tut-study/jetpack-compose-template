@@ -24,7 +24,7 @@ sealed class ProductScreen(
     object Products : ProductScreen("products")
 
     object ShowDetail : ProductScreen("show/{productId}") {
-        fun createRoute(root: Screen, productId: Int): String {
+        fun createRoute(root: Screen, productId: Long): String {
             return "${root.route}/show/$productId"
         }
     }
@@ -52,9 +52,9 @@ fun NavGraphBuilder.addShowProductDetail(
 ) {
     composable(
         route = ProductScreen.ShowDetail.createRoute(root),
-        arguments = listOf(navArgument("productId") { type = NavType.IntType; defaultValue = -1 })
+        arguments = listOf(navArgument("productId") { type = NavType.LongType; defaultValue = -1 })
     ) { backStackEntry ->
-        val productId = backStackEntry.arguments?.getInt("productId", -1) ?: -1
+        val productId = backStackEntry.arguments?.getLong("productId", -1) ?: -1
         Detail(
             productId = productId,
             onClosePressed = { navController.popBackStack() },

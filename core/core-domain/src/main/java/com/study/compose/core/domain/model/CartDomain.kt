@@ -1,11 +1,18 @@
 package com.study.compose.core.domain.model
 
+import android.graphics.Color
+
 data class CartDomain(
-    val productId: Int,
+    val id: Long? = null,
+    val productId: Long,
     val title: String,
     val description: String,
     val price: Float,
     val amount: Int,
+    val color: Int = Color.CYAN,
+    val size: Int = 1,
+    val category: String,
+    val imageUrl: String
 ) {
 
     companion object {
@@ -14,7 +21,11 @@ data class CartDomain(
             title = productDomain.title,
             description = productDomain.description,
             price = productDomain.price,
-            amount = amount
+            amount = amount,
+            imageUrl = productDomain.imageUrl,
+            category = productDomain.category,
+            // TODO update size, color
+            size = 1,
         )
     }
 }

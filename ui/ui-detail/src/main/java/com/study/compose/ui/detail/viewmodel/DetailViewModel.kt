@@ -3,13 +3,11 @@ package com.study.compose.ui.detail.viewmodel
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.study.compose.core.domain.model.CartDomain
-import com.study.compose.core.domain.model.ProductDomain
 import com.study.compose.ui.common.viewmodel.BaseViewModel
 import com.study.compose.ui.detail.data.ProductDetail
 import com.study.compose.ui.detail.interactor.intent.DetailIntent
 import com.study.compose.ui.detail.interactor.state.*
 import com.study.compose.usecase.carts.AddCartUseCase
-import com.study.compose.usecase.carts.GetAllCartsUseCase
 import com.study.compose.usecase.products.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -53,7 +51,7 @@ class DetailViewModel @Inject constructor(
         )
     }
 
-    private fun products(id: Int): Flow<DetailUIPartialChange> = flow {
+    private fun products(id: Long): Flow<DetailUIPartialChange> = flow {
         getProductsUseCase()
             .onEach { result ->
                 val domainProducts = result.getOrThrow()

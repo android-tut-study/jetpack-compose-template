@@ -1,5 +1,6 @@
 package com.study.compose.ui.cart
 
+import android.util.Log
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
@@ -18,15 +19,71 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.study.compose.ui.cart.data.Cart
-import com.study.compose.ui.cart.data.SampleCartItems
+import com.study.compose.ui.cart.data.Vendor
+import com.study.compose.ui.cart.interactor.intent.CartIntent
 import com.study.compose.ui.cart.interactor.state.CartState
+import com.study.compose.ui.cart.interactor.state.CartViewState
+import com.study.compose.ui.cart.viewmodel.CartVM
+import com.study.compose.ui.common.R
 import com.study.compose.ui.common.theme.ShrineComposeTheme
+import com.study.compose.ui.state.AppStateViewModel
 import kotlin.math.min
+
+@Composable
+fun BottomCart(
+    modifier: Modifier = Modifier,
+    appStateViewModel: AppStateViewModel
+) {
+    BottomCart(
+        modifier = modifier,
+        viewModel = hiltViewModel(),
+        appStateViewModel = appStateViewModel
+    )
+}
+
+@Composable
+fun BottomCart(
+    modifier: Modifier = Modifier,
+    viewModel: CartVM,
+    appStateViewModel: AppStateViewModel
+) {
+    LaunchedEffect(true) {
+        viewModel.processIntent(CartIntent.AllCarts)
+    }
+    val viewState by viewModel.viewState.collectAsState()
+    val appViewState by appStateViewModel.state.collectAsState()
+    BottomCart(
+        modifier = modifier,
+        viewState = viewState,
+        hidden = !appViewState.showBottomCart
+    )
+}
+
+@Composable
+fun BottomCart(
+    modifier: Modifier = Modifier,
+    viewState: CartViewState,
+    hidden: Boolean
+) {
+    val config = LocalConfiguration.current
+    val allCarts = viewState.carts
+    BottomCart(
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(modifier),
+        maxHeight = config.screenHeightDp.dp,
+        maxWidth = config.screenWidthDp.dp,
+        carts = allCarts,
+        hidden = hidden
+    )
+}
 
 @Composable
 fun BottomCart(
@@ -108,11 +165,11 @@ fun BottomCart(
             elevation = 8.dp
         ) {
             if (expanded) {
-                ExpandedCarts {
+                ExpandedCarts(carts = carts) {
                     expanded = false
                 }
             } else {
-                CollapsedCart {
+                CollapsedCart(carts = carts) {
                     expanded = true
                 }
             }
@@ -123,7 +180,7 @@ fun BottomCart(
 
 @Composable
 fun CollapsedCart(
-    carts: List<Cart> = SampleCartItems.subList(0, 2),
+    carts: List<Cart>,
     onTap: () -> Unit
 ) {
     Row(
@@ -143,9 +200,9 @@ fun CollapsedCart(
 
 @Composable
 fun CollapseCartItem(cart: Cart) {
-    Image(
-        painter = painterResource(id = cart.photoResId),
-        contentDescription = "Collapse Cart Item",
+    AsyncImage(
+        model = cart.imageUrl,
+        contentDescription = "Collapse Cart Item ${cart.productId}",
         alignment = Alignment.TopCenter,
         contentScale = ContentScale.Crop,
         modifier = Modifier
@@ -172,7 +229,7 @@ fun CartHeader(cartSize: Int, onTap: () -> Unit) {
 }
 
 @Composable
-fun ExpandedCarts(carts: List<Cart> = SampleCartItems, onCollapse: () -> Unit) {
+fun ExpandedCarts(carts: List<Cart>, onCollapse: () -> Unit) {
 
     Surface(color = MaterialTheme.colors.secondary) {
         Column(Modifier.fillMaxSize()) {
@@ -210,14 +267,15 @@ fun CartItem(
                 modifier = Modifier.padding(vertical = 20.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(id = cart.photoResId),
-                    contentDescription = "Image "
+                AsyncImage(
+                    modifier = Modifier.height(54.dp),
+                    model = cart.imageUrl,
+                    contentDescription = "Cart ${cart.productId}"
                 )
                 Spacer(modifier = Modifier.width(20.dp))
                 Column(Modifier.padding(end = 16.dp)) {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(text = cart.vendor.name)
+                        Text(text = cart.category)
                         Text(text = "$${cart.price}")
                     }
                     Text(text = cart.title)
@@ -232,7 +290,13 @@ fun CartItem(
 fun CartItemPreview() {
     ShrineComposeTheme {
         Surface(color = MaterialTheme.colors.secondary) {
-            CartItem(cart = SampleCartItems[0])
+            CartItem(
+                cart = Cart(
+                    productId = 0,
+                    title = "Vagabond sack",
+                    price = 120f,
+                )
+            )
         }
     }
 }
@@ -242,9 +306,15 @@ fun CartItemPreview() {
 fun CollapsedCartPreview() {
     ShrineComposeTheme {
         Surface(color = MaterialTheme.colors.secondary) {
-            CollapsedCart {
-
-            }
+            CollapsedCart(
+                listOf(
+                    Cart(
+                        productId = 0,
+                        title = "Vagabond sack",
+                        price = 120f,
+                    )
+                )
+            ) {}
         }
     }
 }
@@ -264,10 +334,16 @@ fun CartHeaderPreview() {
 
 @Preview
 @Composable
-fun ExpandedCartItemsPreview() {
+private fun ExpandedCartItemsPreview() {
     ShrineComposeTheme {
-        ExpandedCarts {
-
-        }
+        ExpandedCarts(
+            listOf(
+                Cart(
+                    productId = 0,
+                    title = "Vagabond sack",
+                    price = 120f,
+                )
+            )
+        ) { }
     }
 }

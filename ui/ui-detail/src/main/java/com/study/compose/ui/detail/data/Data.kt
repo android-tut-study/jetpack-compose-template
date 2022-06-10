@@ -5,7 +5,7 @@ import com.study.compose.core.domain.model.ProductDomain
 sealed class DetailModel
 
 data class ProductDetail(
-    val id: Int,
+    val id: Long,
     val title: String,
     val price: Float,
     val description: String,

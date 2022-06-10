@@ -41,7 +41,6 @@ class CartRepoImpl(
 
     override suspend fun addCart(cart: Cart): Long {
         val result = cartDatabase.cartDao().addToCarts(cart)
-        Log.e("ANNX", "ADd Cart Result $result")
         if (result > 0) {
             _cartRepoChange.emit(CartRepoChange.Add(cart = cartEntityToDomain(cart)))
         }
