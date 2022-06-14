@@ -60,10 +60,10 @@ fun Detail(
     onFavoritePressed: () -> Unit = {}
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val viewState by viewModel.viewState.collectAsState()
     LaunchedEffect(true) {
         viewModel.processIntent(DetailIntent.Initial(productId = productId))
     }
-    val viewState by viewModel.viewState.collectAsState()
     Detail(
         viewState = viewState,
         onOtherDetailPressed = onOtherDetailPressed,

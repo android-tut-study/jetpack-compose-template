@@ -7,8 +7,10 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -232,14 +234,17 @@ fun CartHeader(cartSize: Int, onTap: () -> Unit) {
 fun ExpandedCarts(carts: List<Cart>, onCollapse: () -> Unit) {
 
     Surface(color = MaterialTheme.colors.secondary) {
-        Column(Modifier.fillMaxSize()) {
+        Box(
+            Modifier
+                .fillMaxSize()) {
             CartHeader(carts.size) {
                 onCollapse()
             }
             Column(
                 Modifier
+                    .padding(top = 56.dp)
                     .fillMaxWidth()
-                    .padding(bottom = 64.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
                 carts.forEach {
                     CartItem(cart = it)
@@ -268,7 +273,7 @@ fun CartItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AsyncImage(
-                    modifier = Modifier.height(54.dp),
+                    modifier = Modifier.height(64.dp),
                     model = cart.imageUrl,
                     contentDescription = "Cart ${cart.productId}"
                 )

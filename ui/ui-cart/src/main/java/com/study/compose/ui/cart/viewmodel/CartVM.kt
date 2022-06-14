@@ -12,6 +12,7 @@ import com.study.compose.ui.common.viewmodel.BaseViewModel
 import com.study.compose.usecase.carts.CartChangeUseCase
 import com.study.compose.usecase.carts.GetAllCartsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
@@ -21,16 +22,13 @@ class CartVM @Inject constructor(
     private val allCartsUseCase: GetAllCartsUseCase
 ) : BaseViewModel<CartIntent>() {
 
-    private val _intentChannel = MutableSharedFlow<CartIntent>()
+    private val _intentChannel = MutableSharedFlow<CartIntent>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     val viewState: StateFlow<CartViewState>
 
     init {
         val initVS = CartViewState.initial()
         viewState = MutableStateFlow(initVS)
         _intentChannel
-            .distinctUntilChanged { old, new ->
-                if (old == CartIntent.Initial) false else old == new
-            }
             .toPartialChange()
             .scan(initVS) { vs, change -> change.reduce(vs) }
             .onEach { viewState.value = it }

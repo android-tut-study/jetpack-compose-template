@@ -1,6 +1,5 @@
 package com.study.compose.ui.detail.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.study.compose.core.domain.model.CartDomain
 import com.study.compose.ui.common.viewmodel.BaseViewModel
@@ -11,6 +10,7 @@ import com.study.compose.usecase.carts.AddCartUseCase
 import com.study.compose.usecase.products.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
@@ -20,19 +20,23 @@ class DetailViewModel @Inject constructor(
     private val addCartUseCase: AddCartUseCase
 ) : BaseViewModel<DetailIntent>() {
 
-    private val _channel = MutableSharedFlow<DetailIntent>()
+    private val _channel = MutableSharedFlow<DetailIntent>(
+        replay = 0,
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     val viewState: StateFlow<DetailViewState>
 
     init {
         val initVS = DetailViewState.init()
         viewState = MutableStateFlow(initVS)
         _channel
-            .distinctUntilChanged { old, new ->
-                if (old is DetailIntent.Initial) false else old == new
-            }
+            .logIntent()
             .toPartialChange()
             .scan(initVS) { vs, change -> change.reduce(vs) }
-            .onEach { viewState.value = it }
+            .onEach {
+                viewState.value = it
+            }
             .catch { viewState.value = viewState.value.copy(error = it) }
             .launchIn(viewModelScope)
     }
@@ -68,7 +72,7 @@ class DetailViewModel @Inject constructor(
             .collect()
     }
 
-    private suspend fun addCart(product: ProductDetail, amount: Int) = flow<DetailUIPartialChange> {
+    private fun addCart(product: ProductDetail, amount: Int) = flow<DetailUIPartialChange> {
         val productDomain = product.toDomain()
         val result = addCartUseCase(CartDomain.fromProduct(productDomain, amount))
         emit(AddCart.Data(result.getOrThrow()))
