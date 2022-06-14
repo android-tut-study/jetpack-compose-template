@@ -19,6 +19,6 @@ object SharedVersion {
     }
 
     object KotlinX {
-        const val COROUTINES = "1.6.0"
+        const val COROUTINES = "1.6.2"
     }
 }
