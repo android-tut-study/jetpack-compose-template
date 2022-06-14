@@ -1,7 +1,8 @@
 package com.study.compose.ui.home.data
 
+import android.graphics.Color
+import com.study.compose.core.domain.model.CartDomain
 import com.study.compose.core.domain.model.ProductDomain
-import com.study.compose.ui.home.R
 
 sealed class HomeModel
 
@@ -18,7 +19,8 @@ data class Product(
     val price: Float,
     val description: String,
     val category: String,
-    val imageUrl: String
+    val imageUrl: String,
+    val isAdded: Boolean = false
 ) : HomeModel() {
     constructor(productDomain: ProductDomain) : this(
         id = productDomain.id,
@@ -27,6 +29,17 @@ data class Product(
         description = productDomain.description,
         category = productDomain.category,
         imageUrl = productDomain.imageUrl
+    )
+
+    fun toCart() = CartDomain(
+        productId = this.id,
+        title=this.title,
+        price = this.price,
+        description = this.description,
+        category = this.category,
+        imageUrl = this.imageUrl,
+        amount = 1,
+        color = Color.CYAN
     )
 }
 

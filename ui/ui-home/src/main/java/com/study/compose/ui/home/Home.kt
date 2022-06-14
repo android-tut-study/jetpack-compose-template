@@ -1,5 +1,6 @@
 package com.study.compose.ui.home
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,6 +13,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.study.compose.ui.common.components.ShrineScaffold
 import com.study.compose.ui.common.components.ShrineTopBar
 import com.study.compose.ui.home.components.*
+import com.study.compose.ui.home.data.Product
 import com.study.compose.ui.home.interactor.intent.HomeIntent
 import com.study.compose.ui.home.interactor.state.HomeViewState
 import com.study.compose.ui.home.view.ProductsContent
@@ -42,6 +44,7 @@ fun HomeScreen(
     onProductSelect: (Long) -> Unit
 ) {
     val homeViewState = viewModel.viewState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
     // TODO Test
     LaunchedEffect(true) {
         viewModel.processIntent(HomeIntent.FetchProducts)
@@ -51,6 +54,11 @@ fun HomeScreen(
         onFilterPressed = onFilterPressed,
         onSearchPressed = onSearchPressed,
         onProductSelect = onProductSelect,
+        onAddedPress = { product ->
+            coroutineScope.launch {
+                viewModel.processIntent(HomeIntent.AddCart(product = product))
+            }
+        }
     )
 }
 
@@ -62,6 +70,7 @@ fun Products(
     onFilterPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
     onProductSelect: (Long) -> Unit,
+    onAddedPress: (Product) -> Unit
 ) {
     val appState = rememberAppState()
     val appViewStateVM: AppStateViewModel = viewModel()
@@ -108,7 +117,8 @@ fun Products(
             ProductsContent(
                 onProductSelect = { product -> onProductSelect(product.id) },
                 modifier = Modifier.padding(vertical = 56.dp),
-                products = viewState.product.products
+                products = viewState.product.products,
+                onProductAddPress = { product: Product -> onAddedPress(product) }
             )
         }
     }
