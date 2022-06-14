@@ -9,6 +9,7 @@ import com.study.compose.core.dispatcher.CoroutineDispatchers
 import com.study.compose.core.domain.Mapper
 import com.study.compose.core.domain.model.CartDomain
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 
 class CartRepoImpl(
@@ -17,8 +18,8 @@ class CartRepoImpl(
     private val cartEntityToDomain: Mapper<Cart, CartDomain>
 ) : CartRepo {
 
-    private val _cartRepoChange = MutableSharedFlow<CartRepoChange>()
-    val cartRepoState: StateFlow<CartRepoState>
+    private val _cartRepoChange = MutableSharedFlow<CartRepoChange>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private val cartRepoState: StateFlow<CartRepoState>
 
     init {
         val initState = CartRepoState.initial()
