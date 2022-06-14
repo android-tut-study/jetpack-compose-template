@@ -10,6 +10,7 @@ uiConfiguration {
 
 dependencies {
     api(project(":ui:ui-state"))
+    api(project(":android-core:android-core-logger"))
     api(Libs.AndroidX.Core.KTX)
     api(Libs.AndroidX.AppCompat.APPCOMPAT)
     api(Libs.AndroidX.Compose.LAYOUT)
