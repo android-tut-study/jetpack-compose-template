@@ -36,6 +36,7 @@ class Logger private constructor(dispatcher: CoroutineDispatcher) : ILogger {
     }
 
     override fun clear() {
+        Log.d(Logger::class.simpleName, " >>> Logger Cancel ! <<<")
         controller.clear()
     }
 
@@ -46,7 +47,7 @@ class Logger private constructor(dispatcher: CoroutineDispatcher) : ILogger {
             this.apply { dispatcher = coroutineDispatcher }
 
         fun build() = Logger(this).also {
-            Log.e(Logger::class.simpleName, " >>> Logger Created ! <<<")
+            Log.d(Logger::class.simpleName, " >>> Logger Created ! <<<")
         }
     }
 
