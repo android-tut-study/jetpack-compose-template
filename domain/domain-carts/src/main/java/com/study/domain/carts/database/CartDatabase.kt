@@ -4,10 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.study.domain.carts.converter.DateConverter
 import com.study.domain.carts.dao.CartDao
 import com.study.domain.carts.models.Cart
 
 @Database(entities = [Cart::class], version = 1)
+@TypeConverters(DateConverter::class)
 abstract class CartDatabase : RoomDatabase() {
     abstract fun cartDao(): CartDao
 

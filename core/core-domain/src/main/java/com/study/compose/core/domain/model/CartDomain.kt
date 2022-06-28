@@ -1,6 +1,7 @@
 package com.study.compose.core.domain.model
 
 import android.graphics.Color
+import java.util.*
 
 data class CartDomain(
     val id: Long? = null,
@@ -12,7 +13,9 @@ data class CartDomain(
     val color: Int = Color.CYAN,
     val size: Int = 1,
     val category: String,
-    val imageUrl: String
+    val imageUrl: String,
+    val createdAt: Date = Date(),
+    val updatedAt: Date = createdAt
 ) {
 
     companion object {

@@ -15,7 +15,10 @@ dependencies {
 
     implementation(Libs.AndroidX.Room.KTX)
     implementation(Libs.AndroidX.Room.RUNTIME)
+    implementation(Libs.AndroidX.Room.PAGING3)
     kapt(Libs.AndroidX.Room.COMPILER)
+
+    implementation(Libs.AndroidX.Paging.RUNTIME)
 
     testImplementation(Libs.AndroidX.Room.TEST_HELPERS)
 

@@ -18,6 +18,8 @@ class CartEntityToDomainMapper @Inject constructor() : Mapper<Cart, CartDomain> 
         color = p1.color,
         imageUrl = p1.imageUrl,
         category = p1.category,
-        id = p1.id
+        id = p1.id,
+        createdAt = p1.createdAt,
+        updatedAt = p1.updatedAt
     )
 }

@@ -4,6 +4,7 @@ import android.graphics.Color
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Entity(tableName = "cart_table")
 data class Cart(
@@ -15,7 +16,9 @@ data class Cart(
     @ColumnInfo(name = "imageUrl") val imageUrl: String,
     @ColumnInfo(name = "category") val category: String,
     @ColumnInfo(name = "color") val color: Int = Color.CYAN,
-    @ColumnInfo(name = "size") val size: Int = 1
+    @ColumnInfo(name = "size") val size: Int = 1,
+    @ColumnInfo(name = "created_at") val createdAt: Date = Date(),
+    @ColumnInfo(name = "updated_at") val updatedAt: Date = createdAt
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")

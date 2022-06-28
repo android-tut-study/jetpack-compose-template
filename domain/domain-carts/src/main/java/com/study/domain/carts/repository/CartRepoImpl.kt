@@ -1,6 +1,6 @@
 package com.study.domain.carts.repository
 
-import android.util.Log
+import androidx.paging.*
 import com.study.domain.carts.database.CartDatabase
 import com.study.domain.carts.models.Cart
 import com.study.domain.carts.models.CartRepoChange
@@ -18,7 +18,10 @@ class CartRepoImpl(
     private val cartEntityToDomain: Mapper<Cart, CartDomain>
 ) : CartRepo {
 
-    private val _cartRepoChange = MutableSharedFlow<CartRepoChange>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private val _cartRepoChange = MutableSharedFlow<CartRepoChange>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     private val cartRepoState: StateFlow<CartRepoState>
 
     init {
@@ -70,5 +73,6 @@ class CartRepoImpl(
             .collect()
     }
 
+    override fun allCartsPagingSource(): PagingSource<Int, Cart> = cartDatabase.cartDao().lazyAllCarts()
 }
 

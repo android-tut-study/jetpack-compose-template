@@ -14,4 +14,7 @@ dependencies {
     implementation(Libs.Kotlinx.Coroutines.CORE)
     implementation(Libs.Hilt.Core.ANDROID)
     kapt(Libs.Hilt.Core.ANDROID_COMPILER)
+
+    implementation(Libs.AndroidX.Paging.RUNTIME)
+    implementation(Libs.AndroidX.Paging.COMPOSE)
 }

@@ -1,11 +1,9 @@
 package com.study.compose.usecase.carts.di
 
 import com.study.compose.core.dispatcher.CoroutineDispatchers
-import com.study.compose.core.domain.Mapper
-import com.study.compose.core.domain.model.CartDomain
 import com.study.compose.usecase.carts.*
 import com.study.compose.usecase.carts.mappers.CartDomainToEntityMapper
-import com.study.domain.carts.models.Cart
+import com.study.domain.carts.mappers.CartEntityToDomainMapper
 import com.study.domain.carts.repository.CartRepo
 import dagger.Module
 import dagger.Provides
@@ -31,7 +29,11 @@ object CartUseCaseModule {
         )
 
     @Provides
-    fun providesAddCartUseCase(dispatchers: CoroutineDispatchers, repo: CartRepo, mapper: CartDomainToEntityMapper) =
+    fun providesAddCartUseCase(
+        dispatchers: CoroutineDispatchers,
+        repo: CartRepo,
+        mapper: CartDomainToEntityMapper
+    ) =
         AddCartUseCase(
             dispatchers = dispatchers,
             repo = repo,
@@ -39,7 +41,11 @@ object CartUseCaseModule {
         )
 
     @Provides
-    fun providesRemoveCartUseCase(dispatchers: CoroutineDispatchers, repo: CartRepo, mapper: CartDomainToEntityMapper) =
+    fun providesRemoveCartUseCase(
+        dispatchers: CoroutineDispatchers,
+        repo: CartRepo,
+        mapper: CartDomainToEntityMapper
+    ) =
         RemoveCartUseCase(
             dispatchers = dispatchers,
             repo = repo,
@@ -47,10 +53,21 @@ object CartUseCaseModule {
         )
 
     @Provides
-    fun providesEditCartUseCase(dispatchers: CoroutineDispatchers, repo: CartRepo, mapper: CartDomainToEntityMapper) =
+    fun providesEditCartUseCase(
+        dispatchers: CoroutineDispatchers,
+        repo: CartRepo,
+        mapper: CartDomainToEntityMapper
+    ) =
         EditCartUseCase(
             dispatchers = dispatchers,
             repo = repo,
             cartDomainToEntity = mapper
+        )
+
+    @Provides
+    fun providesLazyGetAllCartsUseCase(cartRepo: CartRepo, mapper: CartEntityToDomainMapper) =
+        LazyGetCartsUseCase(
+            mapper = mapper,
+            cartRepo = cartRepo
         )
 }
