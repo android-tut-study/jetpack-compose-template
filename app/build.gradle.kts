@@ -87,6 +87,8 @@ dependencies {
     implementation(Libs.Hilt.Core.ANDROID)
     kapt(Libs.Hilt.Core.ANDROID_COMPILER)
 
+    implementation(Libs.IO.Coil.KT)
+
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.test.espresso:espresso-core:3.4.0")
     testImplementation("androidx.compose.ui:ui-test-junit4:1.1.1")
