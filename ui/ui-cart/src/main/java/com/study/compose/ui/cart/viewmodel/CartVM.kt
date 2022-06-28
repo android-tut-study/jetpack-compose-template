@@ -1,16 +1,18 @@
 package com.study.compose.ui.cart.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.study.compose.core.domain.model.CartChangeType
 import com.study.compose.ui.cart.data.Cart
 import com.study.compose.ui.cart.interactor.intent.CartIntent
 import com.study.compose.ui.cart.interactor.state.CartUIPartialChange
 import com.study.compose.ui.cart.interactor.state.CartViewState
 import com.study.compose.ui.cart.interactor.state.CartsChange
-import com.study.compose.ui.cart.interactor.state.GetCarts
 import com.study.compose.ui.common.viewmodel.BaseViewModel
 import com.study.compose.usecase.carts.CartChangeUseCase
-import com.study.compose.usecase.carts.GetAllCartsUseCase
+import com.study.compose.usecase.carts.LazyGetCartsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
@@ -19,11 +21,15 @@ import javax.inject.Inject
 @HiltViewModel
 class CartVM @Inject constructor(
     private val cartChangeUseCase: CartChangeUseCase,
-    private val allCartsUseCase: GetAllCartsUseCase
+    lazyGetCartsUseCase: LazyGetCartsUseCase
 ) : BaseViewModel<CartIntent>() {
 
-    private val _intentChannel = MutableSharedFlow<CartIntent>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private val _intentChannel = MutableSharedFlow<CartIntent>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     val viewState: StateFlow<CartViewState>
+    val cartLazyFlow: Flow<PagingData<Cart>>
 
     init {
         val initVS = CartViewState.initial()
@@ -34,27 +40,21 @@ class CartVM @Inject constructor(
             .onEach { viewState.value = it }
             .catch { viewState.value = viewState.value.copy(error = it) }
             .launchIn(viewModelScope)
+
+        cartLazyFlow = lazyGetCartsUseCase(LazyGetCartsUseCase.Param(5))
+            .map { pagingData -> pagingData.map { cartDomain -> Cart(cartDomain) } }
+            .cachedIn(viewModelScope)
     }
 
     override suspend fun processIntent(intent: CartIntent) = _intentChannel.emit(intent)
 
     private fun Flow<CartIntent>.toPartialChange(): Flow<CartUIPartialChange> {
         return merge(
-            filterIsInstance<CartIntent.AllCarts>()
-                .flatMapConcat {
-                    carts()
-                },
             filterIsInstance<CartIntent.ListenCartChange>()
                 .flatMapConcat {
                     cartsChange()
                 }
         )
-    }
-
-    fun carts(): Flow<CartUIPartialChange> = flow {
-        allCartsUseCase().onEach { result ->
-            emit(GetCarts.Data(result.getOrThrow().map { Cart(it) }))
-        }.collect()
     }
 
     fun cartsChange() = flow {
