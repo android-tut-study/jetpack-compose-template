@@ -8,15 +8,16 @@ data class HomeViewState(
     val drawerOpened: Boolean,
     val loading: Boolean,
     val product: HomeProduct,
-    val error: Throwable?
-
+    val error: Throwable?,
+    val idProductAdded: Long?,
 ) {
     companion object {
         fun initial() = HomeViewState(
             drawerOpened = false,
             loading = false,
             product = HomeProduct(emptyList()),
-            error = null
+            error = null,
+            idProductAdded = null
         )
     }
 }
@@ -39,12 +40,7 @@ sealed class FetchProducts : HomePartialChange {
 
 sealed class AddCart : HomePartialChange {
     override fun reduce(vs: HomeViewState): HomeViewState = when (this) {
-        is Data -> {
-            val newProducts = vs.product.products.map {
-                if (it.id == product.id) it.copy(isAdded = true) else it
-            }
-            vs.copy(product = HomeProduct(products = newProducts))
-        }
+        is Data -> vs.copy(idProductAdded = product.id)
         is Error -> vs.copy(loading = false, error = err)
         Loading -> vs.copy(loading = true)
     }
@@ -52,4 +48,10 @@ sealed class AddCart : HomePartialChange {
     object Loading : AddCart()
     data class Data(val product: Product) : AddCart()
     data class Error(val err: Throwable) : AddCart()
+}
+
+object ClearIdProductAdded : HomePartialChange {
+    override fun reduce(vs: HomeViewState): HomeViewState {
+        return vs.copy(idProductAdded = null)
+    }
 }
