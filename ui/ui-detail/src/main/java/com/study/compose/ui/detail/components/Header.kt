@@ -5,11 +5,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,7 +29,7 @@ fun DetailHeader(
     productDetail: ProductDetail?,
     productImageModifier: Modifier = Modifier,
     onNavigationPressed: () -> Unit = {},
-    onCartAddPressed: () -> Unit = {},
+    onCartAddPressed: (Offset) -> Unit = {},
     onFavoritePressed: () -> Unit = {},
 ) {
     Row(
@@ -91,15 +94,22 @@ fun DetailProductImage(modifier: Modifier = Modifier, productDetail: ProductDeta
 }
 
 @Composable
-fun DetailHeaderActions(onCartAddPressed: () -> Unit, onFavoritePressed: () -> Unit) {
+fun DetailHeaderActions(
+    onCartAddPressed: (coordinate: Offset) -> Unit,
+    onFavoritePressed: () -> Unit
+) {
+    var coordinateAddButton by remember { mutableStateOf(Offset.Unspecified) }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(horizontal = 8.dp)
     ) {
         IconButton(
-            onClick = { onCartAddPressed() },
+            onClick = { onCartAddPressed(coordinateAddButton) },
             modifier = Modifier
                 .clip(CircleShape)
+                .onGloballyPositioned { layoutCoordinates ->
+                    coordinateAddButton = layoutCoordinates.positionInRoot()
+                }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_add_cart_24),
@@ -125,13 +135,15 @@ fun DetailHeaderActions(onCartAddPressed: () -> Unit, onFavoritePressed: () -> U
 @Composable
 private fun DetailHeaderPreview() {
     ShrineComposeTheme {
-        DetailHeader(productDetail = ProductDetail(
-            id = 1,
-            title = "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
-            price= 109.95f,
-            description ="Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
-            category = "men's clothing",
-            imageUrl = "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg"
-        ))
+        DetailHeader(
+            productDetail = ProductDetail(
+                id = 1,
+                title = "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
+                price = 109.95f,
+                description = "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
+                category = "men's clothing",
+                imageUrl = "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg"
+            )
+        )
     }
 }

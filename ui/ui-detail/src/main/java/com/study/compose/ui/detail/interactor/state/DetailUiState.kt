@@ -8,7 +8,7 @@ data class DetailViewState(
     val currentProduct: ProductDetail?,
     val products: List<ProductDetail>,
     val error: Throwable?,
-    val addedToCart: Boolean
+    val addedToCart: Boolean,
 ) {
     companion object {
         fun init() = DetailViewState(
@@ -16,7 +16,7 @@ data class DetailViewState(
             loading = false,
             products = emptyList(),
             error = null,
-            addedToCart = false
+            addedToCart = false,
         )
     }
 }
@@ -50,5 +50,11 @@ sealed class AddCart: DetailUIPartialChange {
 data class CurrentProduct(val current: ProductDetail): DetailUIPartialChange {
     override fun reduce(vs: DetailViewState): DetailViewState {
         return vs.copy(currentProduct = current)
+    }
+}
+
+object ClearIdProductAdded : DetailUIPartialChange {
+    override fun reduce(vs: DetailViewState): DetailViewState {
+        return vs.copy(addedToCart = false)
     }
 }

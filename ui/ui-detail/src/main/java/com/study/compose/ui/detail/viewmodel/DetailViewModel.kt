@@ -1,12 +1,14 @@
 package com.study.compose.ui.detail.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.study.compose.core.domain.model.CartChangeType
 import com.study.compose.core.domain.model.CartDomain
 import com.study.compose.ui.common.viewmodel.BaseViewModel
 import com.study.compose.ui.detail.data.ProductDetail
 import com.study.compose.ui.detail.interactor.intent.DetailIntent
 import com.study.compose.ui.detail.interactor.state.*
 import com.study.compose.usecase.carts.AddCartUseCase
+import com.study.compose.usecase.carts.CartChangeUseCase
 import com.study.compose.usecase.products.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -17,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     private val getProductsUseCase: GetProductsUseCase,
-    private val addCartUseCase: AddCartUseCase
+    private val addCartUseCase: AddCartUseCase,
+    cartChangeUseCase: CartChangeUseCase
 ) : BaseViewModel<DetailIntent>() {
 
     private val _channel = MutableSharedFlow<DetailIntent>(
@@ -39,6 +42,17 @@ class DetailViewModel @Inject constructor(
             }
             .catch { viewState.value = viewState.value.copy(error = it) }
             .launchIn(viewModelScope)
+
+        cartChangeUseCase()
+            .onEach { result ->
+                val cartChange = result.getOrThrow()
+                cartChange.cartDomain?.let { cart ->
+                    val type = cartChange.type
+                    viewState.value =
+                        viewState.value.copy(addedToCart = type == CartChangeType.INSERT)
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     override suspend fun processIntent(intent: DetailIntent) = _channel.emit(intent)
@@ -51,7 +65,9 @@ class DetailViewModel @Inject constructor(
             filterIsInstance<DetailIntent.AddCart>()
                 .flatMapConcat { addCart(it.product, it.amount) }
                 .onStart { emit(AddCart.Loading) }
-                .catch { emit(AddCart.Error(it)) }
+                .catch { emit(AddCart.Error(it)) },
+            filterIsInstance<DetailIntent.ClearCartAddedFlag>()
+                .flatMapConcat { clearAddedFlag() }
         )
     }
 
@@ -76,5 +92,9 @@ class DetailViewModel @Inject constructor(
         val productDomain = product.toDomain()
         val result = addCartUseCase(CartDomain.fromProduct(productDomain, amount))
         emit(AddCart.Data(result.getOrThrow()))
+    }
+
+    private fun clearAddedFlag() = flow {
+        emit(ClearIdProductAdded)
     }
 }
