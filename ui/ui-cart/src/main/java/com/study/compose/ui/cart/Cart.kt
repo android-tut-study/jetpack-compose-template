@@ -3,6 +3,7 @@ package com.study.compose.ui.cart
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -183,6 +184,7 @@ fun BottomCart(
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CollapsedCart(
     carts: LazyPagingItems<Cart>,
@@ -206,15 +208,22 @@ fun CollapsedCart(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround,
         ) {
-            items(carts.itemSnapshotList.items.subList(0, if (size < maxCartCount) size else maxCartCount).reversed()) { cart ->
-                CollapseCartItem(cart = cart)
+            items(
+                carts.itemSnapshotList.items.subList(
+                    0,
+                    if (size < maxCartCount) size else maxCartCount
+                ).reversed()
+            ) { cart ->
+                CollapseCartItem(cart = cart, modifier = Modifier.animateItemPlacement(
+                    tween(durationMillis = 250)
+                ))
             }
         }
     }
 }
 
 @Composable
-fun CollapseCartItem(cart: Cart) {
+fun CollapseCartItem(modifier: Modifier = Modifier, cart: Cart) {
     AsyncImage(
         model = cart.imageUrl,
         contentDescription = "Collapse Cart Item ${cart.productId}",
@@ -223,6 +232,8 @@ fun CollapseCartItem(cart: Cart) {
         modifier = Modifier
             .size(40.dp)
             .clip(RoundedCornerShape(10.dp))
+            .then(modifier)
+
     )
 }
 

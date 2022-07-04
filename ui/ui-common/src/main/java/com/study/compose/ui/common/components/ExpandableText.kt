@@ -29,9 +29,6 @@ fun ExpandableText(
     showLessText: String = " Show Less",
     showLessStyle: SpanStyle = showMoreStyle,
 ) {
-    if (text.isEmpty()) {
-        return
-    }
     var isExpanded by remember { mutableStateOf(false) }
     var clickable by remember { mutableStateOf(false) }
     var lastCharIndex by remember { mutableStateOf(0) }

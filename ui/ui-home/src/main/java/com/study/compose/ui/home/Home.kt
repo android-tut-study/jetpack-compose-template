@@ -149,19 +149,21 @@ fun Products(
                     positionProductAdded = coordinate
                     onAddedPress(product, coordinate)
                 },
-                enableAdd = viewState.idProductAdded == null,
+                enableAdd = viewState.idProductAdded == null || positionProductAdded == Offset.Zero,
                 screenWidth = with(LocalDensity.current) { LocalConfiguration.current.screenWidthDp.dp.roundToPx() }
             )
         }
 
-        if (viewState.idProductAdded != null) {
+        if (viewState.idProductAdded != null && positionProductAdded != Offset.Zero) {
             val productAdded =
-                viewState.product.products.find { it.id == viewState.idProductAdded } ?: return@Box
-            AddedFlyableProduct(
-                productAdded = productAdded,
-                beginCoordinate = positionProductAdded,
-                onAdded = onProductAddedDone
-            )
+                viewState.product.products.find { it.id == viewState.idProductAdded }
+            if (productAdded != null) {
+                AddedFlyableProduct(
+                    productAdded = productAdded,
+                    beginCoordinate = positionProductAdded,
+                    onAdded = onProductAddedDone
+                )
+            }
         }
     }
 
