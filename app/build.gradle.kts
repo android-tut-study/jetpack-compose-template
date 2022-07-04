@@ -66,6 +66,7 @@ dependencies {
     implementation(project(":ui:ui-landing"))
     implementation(project(":ui:ui-home"))
     implementation(project(":ui:ui-detail"))
+    implementation(project(":ui:ui-cart"))
 
     // Core
     implementation(Libs.AndroidX.Core.KTX)
@@ -85,6 +86,8 @@ dependencies {
     // Hilt
     implementation(Libs.Hilt.Core.ANDROID)
     kapt(Libs.Hilt.Core.ANDROID_COMPILER)
+
+    implementation(Libs.IO.Coil.KT)
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.test.espresso:espresso-core:3.4.0")

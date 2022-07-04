@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 
 data class ProductsResponse(
 
-    @field:Json(name = "id") val id: Int,
+    @field:Json(name = "id") val id: Long,
     @field:Json(name = "title") val title: String,
     @field:Json(name = "price") val price: Float,
     @field:Json(name = "description") val description: String,

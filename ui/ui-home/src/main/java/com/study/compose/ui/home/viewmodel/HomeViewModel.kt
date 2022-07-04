@@ -1,25 +1,35 @@
 package com.study.compose.ui.home.viewmodel
 
+import androidx.compose.animation.core.estimateAnimationDurationMillis
 import androidx.lifecycle.viewModelScope
+import com.study.compose.core.domain.model.CartChangeType
 import com.study.compose.ui.common.viewmodel.BaseViewModel
 import com.study.compose.ui.home.data.HomeProduct
 import com.study.compose.ui.home.data.HomeProduct.Companion.generateFromDomain
+import com.study.compose.ui.home.data.Product
 import com.study.compose.ui.home.interactor.intent.HomeIntent
-import com.study.compose.ui.home.interactor.state.FetchProducts
-import com.study.compose.ui.home.interactor.state.HomePartialChange
-import com.study.compose.ui.home.interactor.state.HomeViewState
+import com.study.compose.ui.home.interactor.state.*
+import com.study.compose.usecase.carts.AddCartUseCase
+import com.study.compose.usecase.carts.CartChangeUseCase
 import com.study.compose.usecase.products.FetchProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val fetchProductsUseCase: FetchProductsUseCase
+    private val fetchProductsUseCase: FetchProductsUseCase,
+    private val addCartUseCase: AddCartUseCase,
+    private val cartChangeUseCase: CartChangeUseCase,
 ) : BaseViewModel<HomeIntent>() {
 
-    private val _intentChannel = MutableSharedFlow<HomeIntent>()
+    private val _intentChannel = MutableSharedFlow<HomeIntent>(
+        replay = 0,
+        extraBufferCapacity = 1,
+        BufferOverflow.DROP_OLDEST
+    )
     val viewState: StateFlow<HomeViewState>
 
     init {
@@ -27,13 +37,25 @@ class HomeViewModel @Inject constructor(
         viewState = MutableStateFlow(initVS)
 
         _intentChannel
-            .distinctUntilChanged { old, new ->
-                if (old == HomeIntent.Initial) false else old == new
-            }
+            .logIntent()
             .toPartialChange()
             .scan(initVS) { vs, change -> change.reduce(vs) }
             .onEach { viewState.value = it }
             .catch { viewState.value = viewState.value.copy(error = it) }
+            .launchIn(viewModelScope)
+
+        cartChangeUseCase()
+            .onEach { result ->
+                val cartChange = result.getOrThrow()
+                cartChange.cartDomain?.let { cart ->
+                    val type = cartChange.type
+                    if (type == CartChangeType.INSERT) {
+                        viewState.value = viewState.value.copy(idProductAdded = cart.productId)
+                    } else {
+                        viewState.value = viewState.value.copy(idProductAdded = null)
+                    }
+                }
+            }
             .launchIn(viewModelScope)
     }
 
@@ -43,7 +65,11 @@ class HomeViewModel @Inject constructor(
     private fun Flow<HomeIntent>.toPartialChange(): Flow<HomePartialChange> {
         return merge(
             filterIsInstance<HomeIntent.FetchProducts>()
-                .flatMapConcat { products() }
+                .flatMapConcat { products() },
+            filterIsInstance<HomeIntent.AddCart>()
+                .flatMapConcat { addCart(it.product) },
+            filterIsInstance<HomeIntent.ClearIdProductAdded>()
+                .flatMapConcat { clearProductAdded() }
         )
     }
 
@@ -59,4 +85,14 @@ class HomeViewModel @Inject constructor(
             emit(home)
         }.collect()
     }
+
+    private fun addCart(product: Product) = flow<HomePartialChange> {
+        val result = addCartUseCase(product.toCart())
+        emit(AddCart.Data(product.copy(isAdded = result.getOrThrow())))
+    }
+
+    private fun clearProductAdded() = flow {
+        emit(ClearIdProductAdded)
+    }
+
 }

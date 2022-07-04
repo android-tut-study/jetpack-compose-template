@@ -1,16 +1,24 @@
 package com.study.compose.ui.detail
 
+import android.util.Log
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
@@ -20,14 +28,17 @@ import coil.compose.AsyncImage
 import com.study.compose.ui.common.components.ExpandableText
 import com.study.compose.ui.common.components.ShrineDivider
 import com.study.compose.ui.common.theme.ShrineComposeTheme
+import com.study.compose.ui.common.utils.toIntOffset
 import com.study.compose.ui.detail.components.AlsoLikes
 import com.study.compose.ui.detail.components.DetailHeader
 import com.study.compose.ui.detail.components.MoreDetail
 import com.study.compose.ui.detail.components.ProductInfo
 import com.study.compose.ui.detail.data.ProductDetail
 import com.study.compose.ui.detail.interactor.intent.DetailIntent
+import com.study.compose.ui.detail.interactor.state.AddCart
 import com.study.compose.ui.detail.interactor.state.DetailViewState
 import com.study.compose.ui.detail.viewmodel.DetailViewModel
+import kotlinx.coroutines.launch
 
 private val MinTitleOffset = 56.dp
 private val ExpandedImageHeight = 180.dp
@@ -35,8 +46,8 @@ private val ScreenPadding = 12.dp
 
 @Composable
 fun Detail(
-    productId: Int,
-    onOtherDetailPressed: (Int) -> Unit = {},
+    productId: Long,
+    onOtherDetailPressed: (Long) -> Unit = {},
     onClosePressed: () -> Unit = {},
     onFavoritePressed: () -> Unit = {}
 ) {
@@ -52,32 +63,49 @@ fun Detail(
 
 @Composable
 fun Detail(
-    productId: Int,
+    productId: Long,
     viewModel: DetailViewModel,
-    onOtherDetailPressed: (Int) -> Unit = {},
+    onOtherDetailPressed: (Long) -> Unit = {},
     onClosePressed: () -> Unit = {},
     onFavoritePressed: () -> Unit = {}
 ) {
-    LaunchedEffect(true) {
+    val coroutineScope = rememberCoroutineScope()
+    val viewState by viewModel.viewState.collectAsState()
+    LaunchedEffect(Unit) {
         viewModel.processIntent(DetailIntent.Initial(productId = productId))
     }
-    val viewState by viewModel.viewState.collectAsState()
     Detail(
         viewState = viewState,
         onOtherDetailPressed = onOtherDetailPressed,
         onClosePressed = onClosePressed,
         onFavoritePressed = onFavoritePressed,
+        onAddCart = { product, amount ->
+            coroutineScope.launch {
+                viewModel.processIntent(DetailIntent.AddCart(product, amount))
+            }
+        },
+        onCartAddedDone = {
+            coroutineScope.launch {
+                viewModel.processIntent(DetailIntent.ClearCartAddedFlag)
+            }
+        }
     )
 }
 
 @Composable
 fun Detail(
     viewState: DetailViewState,
-    onOtherDetailPressed: (Int) -> Unit = {},
+    onOtherDetailPressed: (Long) -> Unit = {},
     onClosePressed: () -> Unit = {},
-    onFavoritePressed: () -> Unit = {}
+    onFavoritePressed: () -> Unit = {},
+    onAddCart: (ProductDetail, Int) -> Unit,
+    onCartAddedDone: () -> Unit
 ) {
     val scrollState = rememberScrollState(0)
+    var positionAddButton by remember {
+        mutableStateOf(Offset.Unspecified)
+    }
+
     ShrineComposeTheme {
         Surface(color = MaterialTheme.colors.surface) {
             val scroll = scrollState.value
@@ -91,26 +119,82 @@ fun Detail(
                     scrollState,
                     currentProduct = viewState.currentProduct,
                     alsoLikes = viewState.products,
-                    onAlsoPressed = { also -> onOtherDetailPressed(also.id) }
+                    onAlsoPressed = { also -> onOtherDetailPressed(also.id) },
+                    onAddCartPressed = { product ->
+                        positionAddButton = Offset.Unspecified
+                        onAddCart(product, 1)
+                    }
                 )
                 ConcealedTitle(scroll = scroll, currentProduct = viewState.currentProduct)
                 DetailHeader(
                     scroll = scroll,
                     onNavigationPressed = onClosePressed,
-                    onCartAddPressed = {},
+                    onCartAddPressed = { position ->
+                        positionAddButton = position
+                        viewState.currentProduct?.let { product ->
+                            // TODO Modify amount later
+                            onAddCart(product, 1)
+                        }
+                    },
                     onFavoritePressed = onFavoritePressed,
                     currentProduct = viewState.currentProduct
                 )
+                if (viewState.currentProduct != null && positionAddButton != Offset.Unspecified && viewState.addedToCart) {
+                    AddedFlyableProduct(
+                        productAdded = viewState.currentProduct,
+                        beginCoordinate = positionAddButton,
+                        onAdded = onCartAddedDone
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
+fun AddedFlyableProduct(
+    productAdded: ProductDetail,
+    beginCoordinate: Offset,
+    onAdded: () -> Unit
+) {
+    Log.e("ANNX", "Flyable")
+    val productSize = 36.dp
+    val screenWidth =
+        with(LocalDensity.current) { LocalConfiguration.current.screenWidthDp.dp.toPx() - productSize.toPx() }
+    val screenHeight =
+        with(LocalDensity.current) { LocalConfiguration.current.screenHeightDp.dp.toPx() - productSize.toPx() }
+
+    val offset = remember { Animatable(beginCoordinate, Offset.VectorConverter) }
+
+    LaunchedEffect(Unit) {
+        offset.animateTo(
+            targetValue = Offset(
+                x = screenWidth,
+                y = screenHeight
+            ),
+            animationSpec = tween(
+                durationMillis = 500
+            )
+        )
+        onAdded()
+    }
+
+    AsyncImage(
+        modifier = Modifier
+            .size(productSize)
+            .offset { offset.value.toIntOffset() }
+            .clip(CircleShape),
+        model = productAdded.imageUrl,
+        contentDescription = null,
+        contentScale = ContentScale.FillHeight,
+    )
+}
+
+@Composable
 fun DetailHeader(
     scroll: Int,
     onNavigationPressed: () -> Unit = {},
-    onCartAddPressed: () -> Unit = {},
+    onCartAddPressed: (Offset) -> Unit = {},
     onFavoritePressed: () -> Unit = {},
     currentProduct: ProductDetail?
 ) {
@@ -197,7 +281,8 @@ fun Body(
     scrollState: ScrollState,
     currentProduct: ProductDetail?,
     alsoLikes: List<ProductDetail>,
-    onAlsoPressed: (ProductDetail) -> Unit
+    onAlsoPressed: (ProductDetail) -> Unit,
+    onAddCartPressed: (ProductDetail) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -213,7 +298,7 @@ fun Body(
             onSizeSelected = {},
             onColorSelected = {})
         Spacer(modifier = Modifier.height(20.dp))
-        AddToCart()
+        AddToCart { currentProduct?.let(onAddCartPressed) }
         Spacer(modifier = Modifier.height(20.dp))
         AlsoLikes(
             items = alsoLikes,
@@ -264,9 +349,9 @@ fun ProductImage(
 }
 
 @Composable
-fun AddToCart() {
+fun AddToCart(onAddCartPress: () -> Unit) {
     Button(
-        onClick = { /*TODO*/ },
+        onClick = { onAddCartPress() },
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp),

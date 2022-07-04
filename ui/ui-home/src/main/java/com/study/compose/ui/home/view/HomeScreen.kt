@@ -9,14 +9,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.layout.Placeable
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -24,13 +22,18 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.study.compose.ui.home.data.Product
+import com.study.compose.ui.common.R
 
 @Composable
 fun ProductsContent(
     modifier: Modifier = Modifier,
     onProductSelect: (product: Product) -> Unit,
-    products: List<Product> = emptyList()
-) {
+    onProductAddPress: (Product, coordinate: Offset) -> Unit,
+    products: List<Product> = emptyList(),
+    enableAdd: Boolean = true,
+    screenWidth: Int,
+
+    ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -43,10 +46,16 @@ fun ProductsContent(
         ) {
             StaggerProduct(
                 dividerSpace = with(LocalDensity.current) { 30.dp.roundToPx() },
-                offsetInColumn = with(LocalDensity.current) { 20.dp.roundToPx() }
+                offsetInColumn = with(LocalDensity.current) { 20.dp.roundToPx() },
+                screenWidth = screenWidth
             ) {
                 products.forEach {
-                    ProductChip(product = it, onClick = onProductSelect)
+                    ProductChip(
+                        product = it,
+                        onClick = onProductSelect,
+                        onAddPress = onProductAddPress,
+                        enableAdd = enableAdd
+                    )
                 }
             }
         }
@@ -59,11 +68,9 @@ fun StaggerProduct(
     modifier: Modifier = Modifier,
     dividerSpace: Int,
     offsetInColumn: Int,
+    screenWidth: Int,
     content: @Composable () -> Unit
 ) {
-    val screenWidth =
-        with(LocalDensity.current) { LocalConfiguration.current.screenWidthDp.dp.roundToPx() }
-
     Layout(modifier = modifier, content = content) { measureables, constraints ->
         val baseConstraints = Constraints.fixedWidth(width = screenWidth)
 
@@ -204,7 +211,15 @@ fun StaggerProduct(
 }
 
 @Composable
-fun ProductChip(product: Product, onClick: (product: Product) -> Unit) {
+fun ProductChip(
+    product: Product,
+    onClick: (product: Product) -> Unit,
+    onAddPress: (Product, coordinate: Offset) -> Unit,
+    enableAdd: Boolean
+) {
+
+    var positionInRoot by remember { mutableStateOf(Offset.Zero) }
+
     Box(contentAlignment = Alignment.Center) {
         Column(
             modifier = Modifier
@@ -221,7 +236,7 @@ fun ProductChip(product: Product, onClick: (product: Product) -> Unit) {
                     contentScale = ContentScale.FillWidth,
                 )
                 Image(
-                    painter = painterResource(id = com.study.compose.ui.common.R.drawable.fake_brand),
+                    painter = painterResource(id = R.drawable.fake_brand),
                     contentDescription = "fake brand",
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
@@ -241,13 +256,20 @@ fun ProductChip(product: Product, onClick: (product: Product) -> Unit) {
             )
         }
         IconButton(
-            onClick = { /*TODO*/ }, modifier = Modifier
+            enabled = enableAdd,
+            onClick = { onAddPress(product, positionInRoot) },
+            modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(8.dp)
                 .clip(CircleShape)
+                .onGloballyPositioned { coordinates ->
+                    positionInRoot = coordinates.positionInRoot()
+                }
         ) {
             Image(
-                painter = painterResource(id = com.study.compose.ui.common.R.drawable.ic_add_cart_24),
+                painter = painterResource(
+                    id = if (product.isAdded) R.drawable.ic_remove_cart_24 else R.drawable.ic_add_cart_24
+                ),
                 contentDescription = "Cart",
                 modifier = Modifier.padding(8.dp)
             )

@@ -95,6 +95,33 @@ object Libs {
             const val VIEWMODEL_COMPOSE = "androidx.lifecycle:lifecycle-viewmodel-compose:$VERSION"
         }
 
+        object Room {
+            private const val VERSION = "2.5.0-alpha02"
+            const val RUNTIME = "androidx.room:room-runtime:$VERSION"
+            const val COMPILER = "androidx.room:room-compiler:$VERSION"
+            const val TEST_HELPERS = "androidx.room:room-testing:$VERSION"
+
+            // optional - Kotlin Extensions and Coroutines support for Room
+            const val KTX = "androidx.room:room-ktx:$VERSION"
+            const val PAGING3 = "androidx.room:room-paging:$VERSION"
+
+
+//            object Paging {
+//                private const val VERSION = "2.5.0-alpha02"
+//                const val COMPOSE = "androidx.paging:paging-compose:1.0.0-alpha15"
+//            }
+        }
+
+        object Paging {
+            private const val VERSION = "3.1.1"
+
+            const val RUNTIME = "androidx.paging:paging-runtime:$VERSION"
+            const val COMPOSE = "androidx.paging:paging-compose:1.0.0-alpha15"
+
+            // alternatively - without Android dependencies for tests
+            const val TESTING_COMMON = "androidx.paging:paging-common:$VERSION"
+        }
+
     }
 
     object Hilt {
@@ -149,6 +176,7 @@ object Libs {
         object Coil {
             private const val VERSION = "2.1.0"
             const val COIL_COMPOSE = "io.coil-kt:coil-compose:$VERSION"
+            const val KT = "io.coil-kt:coil:$VERSION"
         }
     }
 

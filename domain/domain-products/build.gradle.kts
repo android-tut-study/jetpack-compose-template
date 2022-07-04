@@ -3,7 +3,6 @@ import com.example.Libs
 plugins {
     id("app-plugin")
     id("hilt-plugin")
-    kotlin(com.example.GradlePlugins.Plugins.Kotlin.KAPT)
 }
 
 dependencies {
