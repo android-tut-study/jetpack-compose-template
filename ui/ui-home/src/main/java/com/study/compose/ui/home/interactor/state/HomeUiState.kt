@@ -10,6 +10,8 @@ data class HomeViewState(
     val product: HomeProduct,
     val error: Throwable?,
     val idProductAdded: Long?,
+    val categories: List<String>,
+    val categoryMenuSelected: String? = null
 ) {
     companion object {
         fun initial() = HomeViewState(
@@ -17,7 +19,9 @@ data class HomeViewState(
             loading = false,
             product = HomeProduct(emptyList()),
             error = null,
-            idProductAdded = null
+            idProductAdded = null,
+            categories = emptyList(),
+            categoryMenuSelected = null
         )
     }
 }
@@ -28,7 +32,11 @@ sealed class FetchProducts : HomePartialChange {
     override fun reduce(vs: HomeViewState): HomeViewState {
         return when (this) {
             is Loading -> vs.copy(loading = true)
-            is Data -> vs.copy(loading = false, product = product)
+            is Data -> vs.copy(
+                loading = false,
+                product = product,
+                categories = product.products.distinctBy { it.category }.map { it.category }
+            )
             is Error -> vs.copy(loading = false, error = err)
         }
     }
@@ -54,4 +62,17 @@ object ClearIdProductAdded : HomePartialChange {
     override fun reduce(vs: HomeViewState): HomeViewState {
         return vs.copy(idProductAdded = null)
     }
+}
+
+sealed class MenuFilter : HomePartialChange {
+    override fun reduce(vs: HomeViewState): HomeViewState = when (this) {
+        Restore -> vs.copy(categoryMenuSelected = null)
+        is Filtered -> vs.copy(
+            categoryMenuSelected = category,
+            product = vs.product.copy(filteredProducts = filteredProducts)
+        )
+    }
+
+    object Restore : MenuFilter()
+    data class Filtered(val category: String, val filteredProducts: List<Product>) : MenuFilter()
 }

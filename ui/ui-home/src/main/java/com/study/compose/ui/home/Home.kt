@@ -30,8 +30,10 @@ import com.study.compose.ui.home.interactor.intent.HomeIntent
 import com.study.compose.ui.home.interactor.state.HomeViewState
 import com.study.compose.ui.home.view.ProductsContent
 import com.study.compose.ui.home.viewmodel.HomeViewModel
+import com.study.compose.ui.state.AppState
 import com.study.compose.ui.state.AppStateViewModel
 import com.study.compose.ui.state.rememberAppState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -43,27 +45,36 @@ fun HomeScreen(
 ) {
     HomeScreen(
         viewModel = hiltViewModel(),
+        appViewStateVM = viewModel(),
         onFilterPressed = onFilterPressed,
         onSearchPressed = onSearchPressed,
         onProductSelect = onProductSelect,
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
+    appViewStateVM: AppStateViewModel,
     onFilterPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
     onProductSelect: (Long) -> Unit
 ) {
-    val homeViewState = viewModel.viewState.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
-    // TODO Test
-    LaunchedEffect(true) {
+    LaunchedEffect(Unit) {
         viewModel.processIntent(HomeIntent.FetchProducts)
     }
+
+    val homeViewState = viewModel.viewState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
+    val appState = rememberAppState()
+
+    val scaffoldState = appState.scaffoldState
+
     Products(
         viewState = homeViewState.value,
+        appViewStateVM = appViewStateVM,
+        scaffoldState = scaffoldState,
         onFilterPressed = onFilterPressed,
         onSearchPressed = onSearchPressed,
         onProductSelect = onProductSelect,
@@ -76,28 +87,30 @@ fun HomeScreen(
             coroutineScope.launch {
                 viewModel.processIntent(HomeIntent.ClearIdProductAdded)
             }
-
-        }
+        },
+        onCategorySelected = { category ->
+            coroutineScope.launch {
+                viewModel.processIntent(HomeIntent.SelectCategory(category))
+            }
+        },
     )
 }
-
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Products(
     viewState: HomeViewState,
+    appViewStateVM: AppStateViewModel,
+    scaffoldState: BackdropScaffoldState,
     onFilterPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
     onProductSelect: (Long) -> Unit,
     onAddedPress: (Product, Offset) -> Unit,
-    onProductAddedDone: () -> Unit
+    onProductAddedDone: () -> Unit,
+    onCategorySelected: (String) -> Unit,
 ) {
-    val appState = rememberAppState()
-    val appViewStateVM: AppStateViewModel = viewModel()
-    val scaffoldState = appState.scaffoldState
     var backdropRevealed by remember { mutableStateOf(scaffoldState.isRevealed) }
     val scope = rememberCoroutineScope()
-
     var positionProductAdded by remember {
         mutableStateOf(Offset.Zero)
     }
@@ -138,13 +151,29 @@ fun Products(
                     title = { TopHeader(backdropRevealed = backdropRevealed) }
                 )
             },
-            backLayerContent = { NavigationMenus(backdropRevealed = backdropRevealed) },
+            backLayerContent = {
+                NavigationMenus(
+                    backdropRevealed = backdropRevealed,
+                    currentCategory = viewState.categoryMenuSelected,
+                    categories = viewState.categories,
+                    onCategorySelected = { category ->
+                        if (!scaffoldState.isAnimationRunning) {
+                            backdropRevealed = false
+                            appViewStateVM.shouldShowBottomCart(true)
+                            scope.launch {
+                                scaffoldState.conceal()
+                            }
+                            onCategorySelected(category)
+                        }
+                    }
+                )
+            },
             scaffoldState = scaffoldState
         ) {
             ProductsContent(
                 onProductSelect = { product -> onProductSelect(product.id) },
                 modifier = Modifier.padding(vertical = 56.dp),
-                products = viewState.product.products,
+                products = viewState.product.filteredProducts,
                 onProductAddPress = { product: Product, coordinate: Offset ->
                     positionProductAdded = coordinate
                     onAddedPress(product, coordinate)
@@ -156,7 +185,7 @@ fun Products(
 
         if (viewState.idProductAdded != null && positionProductAdded != Offset.Zero) {
             val productAdded =
-                viewState.product.products.find { it.id == viewState.idProductAdded }
+                viewState.product.filteredProducts.find { it.id == viewState.idProductAdded }
             if (productAdded != null) {
                 AddedFlyableProduct(
                     productAdded = productAdded,
@@ -209,11 +238,19 @@ fun AddedFlyableProduct(
 
 
 @Composable
-fun NavigationMenus(backdropRevealed: Boolean) {
+fun NavigationMenus(
+    backdropRevealed: Boolean,
+    categories: List<String>,
+    currentCategory: String? = null,
+    onCategorySelected: (String) -> Unit
+) {
     ShrineDrawer(
-        backdropRevealed = backdropRevealed,
         // This padding so useful. It prevent crash by BackdropScaffold caused by peekheight
         modifier = Modifier.padding(top = 12.dp, bottom = 32.dp),
+        backdropRevealed = backdropRevealed,
+        categories = categories,
+        onMenuSelected = onCategorySelected,
+        currentCategory = currentCategory,
     )
 }
 

@@ -69,7 +69,9 @@ class HomeViewModel @Inject constructor(
             filterIsInstance<HomeIntent.AddCart>()
                 .flatMapConcat { addCart(it.product) },
             filterIsInstance<HomeIntent.ClearIdProductAdded>()
-                .flatMapConcat { clearProductAdded() }
+                .flatMapConcat { clearProductAdded() },
+            filterIsInstance<HomeIntent.SelectCategory>()
+                .flatMapConcat { filteredProducts(it.category) }
         )
     }
 
@@ -93,6 +95,16 @@ class HomeViewModel @Inject constructor(
 
     private fun clearProductAdded() = flow {
         emit(ClearIdProductAdded)
+    }
+
+    private fun filteredProducts(category: String?) = flow {
+        val products = viewState.value.product.products
+        if (category == null) {
+            emit(MenuFilter.Restore)
+        } else {
+            val filteredProducts = products.filter { it.category == category }
+            emit(MenuFilter.Filtered(category = category, filteredProducts = filteredProducts))
+        }
     }
 
 }
