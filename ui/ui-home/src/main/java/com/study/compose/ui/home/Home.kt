@@ -32,6 +32,7 @@ import com.study.compose.ui.home.view.ProductsContent
 import com.study.compose.ui.home.viewmodel.HomeViewModel
 import com.study.compose.ui.state.AppState
 import com.study.compose.ui.state.AppStateViewModel
+import com.study.compose.ui.state.AppViewAction
 import com.study.compose.ui.state.rememberAppState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -127,8 +128,8 @@ fun Products(
                             onRevealed = { revealed ->
                                 if (!scaffoldState.isAnimationRunning) {
                                     backdropRevealed = revealed
-                                    appViewStateVM.shouldShowBottomCart(!revealed)
                                     scope.launch {
+                                        appViewStateVM.process(AppViewAction.ShowBottomCart(!revealed))
                                         if (scaffoldState.isConcealed) {
                                             scaffoldState.reveal()
                                         } else {
@@ -159,8 +160,8 @@ fun Products(
                     onCategorySelected = { category ->
                         if (!scaffoldState.isAnimationRunning) {
                             backdropRevealed = false
-                            appViewStateVM.shouldShowBottomCart(true)
                             scope.launch {
+                                appViewStateVM.process(AppViewAction.ShowBottomCart(true))
                                 scaffoldState.conceal()
                             }
                             onCategorySelected(category)
