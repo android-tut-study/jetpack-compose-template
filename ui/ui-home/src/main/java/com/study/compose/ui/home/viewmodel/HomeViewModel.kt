@@ -4,6 +4,7 @@ import androidx.compose.animation.core.estimateAnimationDurationMillis
 import androidx.lifecycle.viewModelScope
 import com.study.compose.core.domain.model.CartChangeType
 import com.study.compose.ui.common.viewmodel.BaseViewModel
+import com.study.compose.ui.home.components.MENU_ALL
 import com.study.compose.ui.home.data.HomeProduct
 import com.study.compose.ui.home.data.HomeProduct.Companion.generateFromDomain
 import com.study.compose.ui.home.data.Product
@@ -69,7 +70,9 @@ class HomeViewModel @Inject constructor(
             filterIsInstance<HomeIntent.AddCart>()
                 .flatMapConcat { addCart(it.product) },
             filterIsInstance<HomeIntent.ClearIdProductAdded>()
-                .flatMapConcat { clearProductAdded() }
+                .flatMapConcat { clearProductAdded() },
+            filterIsInstance<HomeIntent.SelectCategory>()
+                .flatMapConcat { filteredProducts(it.category) }
         )
     }
 
@@ -93,6 +96,16 @@ class HomeViewModel @Inject constructor(
 
     private fun clearProductAdded() = flow {
         emit(ClearIdProductAdded)
+    }
+
+    private fun filteredProducts(category: String) = flow {
+        val products = viewState.value.product.products
+        if (category == MENU_ALL) {
+            emit(MenuFilter.Restore)
+        } else {
+            val filteredProducts = products.filter { it.category == category }
+            emit(MenuFilter.Filtered(category = category, filteredProducts = filteredProducts))
+        }
     }
 
 }

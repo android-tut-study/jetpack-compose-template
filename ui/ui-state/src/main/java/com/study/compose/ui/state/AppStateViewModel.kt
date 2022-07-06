@@ -1,38 +1,64 @@
 package com.study.compose.ui.state
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AppStateViewModel @Inject constructor() : ViewModel() {
 
+    private val _actionChannel = MutableSharedFlow<AppViewAction>(
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+        extraBufferCapacity = 1,
+        replay = 0
+    )
+
     private val _state = MutableStateFlow(AppViewState())
     val state: StateFlow<AppViewState>
         get() = _state
 
-    private val shouldShowBottomCart = MutableStateFlow(true)
-
     init {
-        viewModelScope.launch {
-            shouldShowBottomCart.collect {
-                _state.value = AppViewState(it)
-            }
-        }
+        val initAppState = AppViewState()
+        _actionChannel
+            .toAppViewState()
+            .scan(initAppState) { vs, change -> change.reduce(vs) }
+            .onEach { _state.value = it }
+            .launchIn(viewModelScope)
     }
 
-    fun shouldShowBottomCart(show: Boolean) {
-        shouldShowBottomCart.value = show
+
+    private fun shouldShowBottomCart(show: Boolean) = flow {
+        emit(ShowBottomCart(show))
     }
+
+    suspend fun process(action: AppViewAction) = _actionChannel.emit(action)
+
+    private fun Flow<AppViewAction>.toAppViewState() = merge(
+        filterIsInstance<AppViewAction.ShowBottomCart>()
+            .flatMapConcat { shouldShowBottomCart(show = it.show) }
+    )
+
 
 }
 
 data class AppViewState(
     val showBottomCart: Boolean = true
 )
+
+sealed class UiStateChange: UiStatePartialChange<AppViewState>
+
+data class ShowBottomCart(val show: Boolean): UiStateChange() {
+    override fun reduce(vs: AppViewState): AppViewState {
+        return vs.copy(showBottomCart = show)
+    }
+}
+
+sealed class AppViewAction {
+    data class ShowBottomCart(val show: Boolean) : AppViewAction()
+}
+

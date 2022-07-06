@@ -6,7 +6,7 @@ import com.study.compose.core.domain.model.ProductDomain
 
 sealed class HomeModel
 
-data class HomeProduct constructor (var products: List<Product>) : HomeModel() {
+data class HomeProduct constructor (var products: List<Product>, val filteredProducts: List<Product> = products.toMutableList()) : HomeModel() {
 
     companion object {
         fun generateFromDomain(domain: List<ProductDomain>) = HomeProduct(products = domain.map(::Product))
