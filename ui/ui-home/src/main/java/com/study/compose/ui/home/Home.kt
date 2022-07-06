@@ -158,14 +158,15 @@ fun Products(
                     currentCategory = viewState.categoryMenuSelected,
                     categories = viewState.categories,
                     onCategorySelected = { category ->
-                        if (!scaffoldState.isAnimationRunning) {
-                            backdropRevealed = false
-                            scope.launch {
-                                appViewStateVM.process(AppViewAction.ShowBottomCart(true))
-                                scaffoldState.conceal()
-                            }
+                        // UNCOMMENT it if you want to conceal backdrop after select category
+//                        if (!scaffoldState.isAnimationRunning) {
+//                            backdropRevealed = false
+//                            scope.launch {
+//                                appViewStateVM.process(AppViewAction.ShowBottomCart(true))
+//                                scaffoldState.conceal()
+//                            }
                             onCategorySelected(category)
-                        }
+//                        }
                     }
                 )
             },
@@ -242,7 +243,7 @@ fun AddedFlyableProduct(
 fun NavigationMenus(
     backdropRevealed: Boolean,
     categories: List<String>,
-    currentCategory: String? = null,
+    currentCategory: String,
     onCategorySelected: (String) -> Unit
 ) {
     ShrineDrawer(

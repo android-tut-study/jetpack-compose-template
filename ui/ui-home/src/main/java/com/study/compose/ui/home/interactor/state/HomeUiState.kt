@@ -1,5 +1,6 @@
 package com.study.compose.ui.home.interactor.state
 
+import com.study.compose.ui.home.components.MENU_ALL
 import com.study.compose.ui.home.data.HomeProduct
 import com.study.compose.ui.home.data.Product
 import com.study.compose.ui.state.UiStatePartialChange
@@ -11,7 +12,7 @@ data class HomeViewState(
     val error: Throwable?,
     val idProductAdded: Long?,
     val categories: List<String>,
-    val categoryMenuSelected: String? = null
+    val categoryMenuSelected: String,
 ) {
     companion object {
         fun initial() = HomeViewState(
@@ -21,7 +22,7 @@ data class HomeViewState(
             error = null,
             idProductAdded = null,
             categories = emptyList(),
-            categoryMenuSelected = null
+            categoryMenuSelected = MENU_ALL
         )
     }
 }
@@ -35,7 +36,8 @@ sealed class FetchProducts : HomePartialChange {
             is Data -> vs.copy(
                 loading = false,
                 product = product,
-                categories = product.products.distinctBy { it.category }.map { it.category }
+                categories = listOf(MENU_ALL) + product.products.distinctBy { it.category }
+                    .map { it.category }
             )
             is Error -> vs.copy(loading = false, error = err)
         }
@@ -66,7 +68,10 @@ object ClearIdProductAdded : HomePartialChange {
 
 sealed class MenuFilter : HomePartialChange {
     override fun reduce(vs: HomeViewState): HomeViewState = when (this) {
-        Restore -> vs.copy(categoryMenuSelected = null)
+        Restore -> vs.copy(
+            categoryMenuSelected = MENU_ALL,
+            product = vs.product.copy(filteredProducts = vs.product.products.toMutableList())
+        )
         is Filtered -> vs.copy(
             categoryMenuSelected = category,
             product = vs.product.copy(filteredProducts = filteredProducts)

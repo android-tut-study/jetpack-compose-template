@@ -2,10 +2,8 @@ package com.study.compose.ui.common.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.android.core.Logger
-import com.example.android.core.logger.LogLevel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transform
 
 abstract class BaseViewModel<I> : ViewModel() {

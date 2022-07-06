@@ -8,5 +8,5 @@ sealed class HomeIntent {
     object FetchProducts : HomeIntent()
     data class AddCart(val product: Product, val coordinate: Offset) : HomeIntent()
     object ClearIdProductAdded: HomeIntent()
-    data class SelectCategory(val category: String? = null): HomeIntent()
+    data class SelectCategory(val category: String): HomeIntent()
 }

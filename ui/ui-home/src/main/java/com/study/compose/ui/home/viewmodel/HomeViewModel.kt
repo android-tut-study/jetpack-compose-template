@@ -4,6 +4,7 @@ import androidx.compose.animation.core.estimateAnimationDurationMillis
 import androidx.lifecycle.viewModelScope
 import com.study.compose.core.domain.model.CartChangeType
 import com.study.compose.ui.common.viewmodel.BaseViewModel
+import com.study.compose.ui.home.components.MENU_ALL
 import com.study.compose.ui.home.data.HomeProduct
 import com.study.compose.ui.home.data.HomeProduct.Companion.generateFromDomain
 import com.study.compose.ui.home.data.Product
@@ -97,9 +98,9 @@ class HomeViewModel @Inject constructor(
         emit(ClearIdProductAdded)
     }
 
-    private fun filteredProducts(category: String?) = flow {
+    private fun filteredProducts(category: String) = flow {
         val products = viewState.value.product.products
-        if (category == null) {
+        if (category == MENU_ALL) {
             emit(MenuFilter.Restore)
         } else {
             val filteredProducts = products.filter { it.category == category }
