@@ -67,6 +67,7 @@ dependencies {
     implementation(project(":ui:ui-home"))
     implementation(project(":ui:ui-detail"))
     implementation(project(":ui:ui-cart"))
+    implementation(project(":ui:ui-qr"))
 
     // Core
     implementation(Libs.AndroidX.Core.KTX)
