@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.ui.qr.Qr
 import com.study.compose.ui.detail.Detail
 import com.study.compose.ui.home.HomeScreen
 import com.study.compose.ui.landing.LandingScreen
@@ -14,6 +15,7 @@ import com.study.compose.ui.landing.LandingScreen
 sealed class Screen(val route: String) {
     object Landing : Screen("landing")
     object Products : Screen("products")
+    object Qr : Screen("qr")
 }
 
 sealed class ProductScreen(
@@ -43,6 +45,10 @@ fun AppNavigation(navController: NavHostController, viewModelStoreOwner: ViewMod
             }
         }
         addProductTopLevel(navController = navController, viewModelStoreOwner = viewModelStoreOwner)
+
+        composable(Screen.Qr.route) {
+            Qr { navController.popBackStack() }
+        }
     }
 }
 
@@ -86,6 +92,9 @@ fun NavGraphBuilder.addProducts(
                         )
                     )
                 },
+                onQrPressed = {
+                    navController.navigate(Screen.Qr.route)
+                }
             )
         }
 

@@ -122,6 +122,14 @@ object Libs {
             const val TESTING_COMMON = "androidx.paging:paging-common:$VERSION"
         }
 
+        object Camera {
+            private const val VERSION = "1.2.0-alpha03"
+            const val CORE = "androidx.camera:camera-core:$VERSION"
+            const val CAMERA2 = "androidx.camera:camera-camera2:$VERSION"
+            const val LIFECYCLE = "androidx.camera:camera-lifecycle:$VERSION"
+            const val VIEW = "androidx.camera:camera-view:$VERSION"
+        }
+
     }
 
     object Hilt {
@@ -178,6 +186,11 @@ object Libs {
             const val COIL_COMPOSE = "io.coil-kt:coil-compose:$VERSION"
             const val KT = "io.coil-kt:coil:$VERSION"
         }
+    }
+
+    object ZXING {
+        private const val VERSION = "3.4.1"
+        const val CORE = "com.google.zxing:core:$VERSION"
     }
 
 }
