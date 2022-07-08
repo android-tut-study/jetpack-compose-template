@@ -1,5 +1,6 @@
 package com.example.ui.qr.components
 
+import android.util.Size
 import androidx.camera.core.AspectRatio.RATIO_16_9
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.CameraSelector.LENS_FACING_BACK
@@ -7,25 +8,25 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -33,12 +34,11 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.example.ui.qr.R
 import com.example.ui.qr.analyzer.QrAnalyzer
+import com.study.compose.ui.common.components.ExpandableText
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 
 @Composable
-fun Scanner(modifier: Modifier, currentCode: String, onQrDetect: (String) -> Unit = {}) {
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val scannerSize = screenWidth * 4 / 5
+fun Scanner(modifier: Modifier, size: Dp, currentCode: String, onQrDetect: (String) -> Unit = {}) {
     val cameraOffsetWithBorder = 30.dp
     Column(
         modifier = modifier,
@@ -47,7 +47,7 @@ fun Scanner(modifier: Modifier, currentCode: String, onQrDetect: (String) -> Uni
     ) {
         BoxWithConstraints(
             modifier = Modifier
-                .size(scannerSize)
+                .size(size)
                 .offset(y = (-20).dp)
         ) {
             CameraPreview(
@@ -59,7 +59,7 @@ fun Scanner(modifier: Modifier, currentCode: String, onQrDetect: (String) -> Uni
 
             ScannerOverlay(
                 modifier = Modifier.align(Alignment.TopCenter),
-                containerSize = scannerSize,
+                containerSize = size,
                 height = 8.dp,
                 verticalDpOffset = cameraOffsetWithBorder,
                 horizontalDpOffset = cameraOffsetWithBorder
@@ -71,7 +71,10 @@ fun Scanner(modifier: Modifier, currentCode: String, onQrDetect: (String) -> Uni
                 contentDescription = "Scanner border"
             )
         }
-        ConcealableCode(code = currentCode)
+        ConcealableCode(
+            code = currentCode,
+            modifier = Modifier.padding(horizontal = cameraOffsetWithBorder)
+        )
     }
 }
 
@@ -96,12 +99,12 @@ fun CameraPreview(modifier: Modifier, onDetected: (String) -> Unit = {}) {
                 val preview = androidx.camera.core.Preview.Builder()
                     .setTargetAspectRatio(RATIO_16_9)
                     .build().also {
-                    it.setSurfaceProvider(previewView.surfaceProvider)
-                }
+                        it.setSurfaceProvider(previewView.surfaceProvider)
+                    }
                 val selector = CameraSelector.Builder().requireLensFacing(LENS_FACING_BACK).build()
 
                 val imageAnalysis = ImageAnalysis.Builder()
-                    .setTargetAspectRatio(RATIO_16_9)
+                    .setTargetResolution(Size(previewView.width, previewView.height))
                     .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
                     .build()
 
@@ -131,17 +134,66 @@ fun CameraPreview(modifier: Modifier, onDetected: (String) -> Unit = {}) {
     )
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun ConcealableCode(code: String) {
+fun ConcealableCode(modifier: Modifier = Modifier, code: String) {
+    val density = LocalDensity.current
+
     AnimatedVisibility(
         visible = code.isNotEmpty(),
-        enter = EnterTransition.None,
-        exit = ExitTransition.None
+        enter = slideInVertically {
+            with(density) { -40.dp.roundToPx() }
+        } + expandVertically(
+            // Expand from the top.
+            expandFrom = Alignment.Top
+        ) + fadeIn(
+            // Fade in with the initial alpha of 0.3f.
+            initialAlpha = 0.3f
+        ),
+        exit = slideOutVertically() + shrinkVertically() + fadeOut(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(modifier)
     ) {
-        Text(
-            text = code,
-            style = MaterialTheme.typography.subtitle1.copy(fontStyle = FontStyle.Italic)
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.small)
+                .background(color = MaterialTheme.colors.primary),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            AnimatedContent(
+                targetState = code,
+                transitionSpec = {
+                    if (!targetState.contentEquals(initialState)) {
+                        slideInVertically { height -> height } + fadeIn(initialAlpha = 0.3f) with
+                                slideOutVertically { height -> -height } + fadeOut()
+                    } else {
+                        slideInVertically { height -> -height } + fadeIn() with
+                                slideOutVertically { height -> height } + fadeOut()
+                    }.using(
+                        SizeTransform(clip = true)
+                    )
+                }) { targetState ->
+
+                ExpandableText(
+                    modifier = Modifier.padding(10.dp).fillMaxWidth(),
+                    text = targetState,
+                    style = MaterialTheme.typography.subtitle1.copy(
+                        fontStyle = FontStyle.Italic,
+                        color = MaterialTheme.colors.onPrimary
+                    ),
+                    collapsedMaxLine = 1,
+                    showMoreStyle = SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontStyle = FontStyle.Normal,
+                        color = MaterialTheme.colors.onPrimary,
+                        fontSize = MaterialTheme.typography.subtitle1.fontSize
+                    ),
+                    showMoreText = " ▼"
+                )
+            }
+        }
     }
 }
 

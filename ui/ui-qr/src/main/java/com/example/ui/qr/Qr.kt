@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -54,14 +55,20 @@ fun Qr(
     hasCameraPermission: Boolean,
     onClosed: () -> Unit
 ) {
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val scannerSize = screenWidth * 4 / 5
+    val actionHeight = 80.dp
+
     var currentQrCode by remember {
         mutableStateOf("")
     }
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         if (hasCameraPermission) {
             Scanner(
-                modifier = Modifier.align(Alignment.Center),
-                currentCode = currentQrCode
+                modifier = Modifier.offset(y = (screenHeight - actionHeight - scannerSize) / 2).align(Alignment.TopCenter),
+                currentCode = currentQrCode,
+                size = scannerSize,
             ) { code ->
                 currentQrCode = code
             }
@@ -71,7 +78,7 @@ fun Qr(
                 .clip(CutCornerShape(10.dp))
                 .background(MaterialTheme.colors.background.copy(alpha = 0.8f))
                 .fillMaxWidth()
-                .height(80.dp)
+                .height(actionHeight)
                 .align(Alignment.BottomCenter)
         )
         Header(modifier = Modifier.align(Alignment.TopStart)) {
