@@ -36,6 +36,8 @@ class QrViewModel @Inject constructor() : BaseViewModel<QrIntent>() {
             .flatMapConcat { toggleTorch() },
         filterIsInstance<QrIntent.DetectCode>()
             .flatMapConcat { qrCode(it.code) },
+        filterIsInstance<QrIntent.NotifyTorchState>()
+            .flatMapConcat { checkTorchState(it.enabled) },
     )
 
     private fun qrCode(code: String) = flow {
@@ -44,5 +46,12 @@ class QrViewModel @Inject constructor() : BaseViewModel<QrIntent>() {
 
     private fun toggleTorch() = flow {
         emit(CameraAction.ToggleTorch)
+    }
+
+    private fun checkTorchState(enabled: Boolean) = flow {
+        val currentQrTorchState = viewState.value.torchEnable
+        if (currentQrTorchState != enabled) {
+            emit(CameraAction.ToggleTorch)
+        }
     }
 }

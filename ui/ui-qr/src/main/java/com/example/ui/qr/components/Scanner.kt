@@ -2,11 +2,9 @@ package com.example.ui.qr.components
 
 import android.util.Log
 import android.util.Size
+import androidx.camera.core.*
 import androidx.camera.core.AspectRatio.RATIO_16_9
-import androidx.camera.core.Camera
-import androidx.camera.core.CameraSelector
 import androidx.camera.core.CameraSelector.LENS_FACING_BACK
-import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -34,6 +32,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
 import com.example.ui.qr.R
 import com.example.ui.qr.analyzer.QrAnalyzer
 import com.study.compose.ui.common.components.ExpandableText
@@ -45,7 +44,8 @@ fun Scanner(
     size: Dp,
     currentCode: String,
     torchEnable: Boolean,
-    onQrDetect: (String) -> Unit = {}
+    onQrDetect: (String) -> Unit = {},
+    onTorchStateChange: (enabled: Boolean) -> Unit
 ) {
     val cameraOffsetWithBorder = 30.dp
     Column(
@@ -63,7 +63,8 @@ fun Scanner(
                     .padding(cameraOffsetWithBorder)
                     .fillMaxSize(),
                 onDetected = onQrDetect,
-                torchEnable = torchEnable
+                torchEnable = torchEnable,
+                onTorchStateChange = onTorchStateChange
             )
 
             ScannerOverlay(
@@ -91,6 +92,7 @@ fun Scanner(
 fun CameraPreview(
     modifier: Modifier,
     torchEnable: Boolean,
+    onTorchStateChange: (enabled: Boolean) -> Unit,
     onDetected: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -144,19 +146,35 @@ fun CameraPreview(
                     imageAnalysis,
                     preview,
                 )
+                observerTorchState(
+                    lifecycleOwner = lifecycleOwner,
+                    cameraInfo = cameraLoaded.cameraInfo,
+                    onTorchStateChange = onTorchStateChange
+                )
                 camera = cameraLoaded
             }, executor)
-
             previewView
         },
         modifier = modifier,
         update = {
+            Log.e("ANNX", "update Camera $camera")
             camera?.apply {
                 cameraControl.enableTorch(torchEnable)
             }
         }
     )
 }
+
+private fun observerTorchState(
+    lifecycleOwner: LifecycleOwner,
+    cameraInfo: CameraInfo,
+    onTorchStateChange: (enabled: Boolean) -> Unit
+) {
+    cameraInfo.torchState.observe(lifecycleOwner) { state ->
+        onTorchStateChange(state == TorchState.ON)
+    }
+}
+
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable

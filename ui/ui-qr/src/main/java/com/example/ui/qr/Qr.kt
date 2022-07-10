@@ -79,6 +79,11 @@ fun Qr(viewModel: QrViewModel, onClosed: () -> Unit) {
             coroutineScope.launch {
                 viewModel.processIntent(QrIntent.DetectCode(code))
             }
+        },
+        onTorchStateChange = { state ->
+            coroutineScope.launch {
+                viewModel.processIntent(QrIntent.NotifyTorchState(state))
+            }
         }
     )
 }
@@ -88,6 +93,7 @@ fun Qr(
     viewState: QrViewState,
     onFlashPressed: () -> Unit,
     onCodeDetected: (code: String) -> Unit,
+    onTorchStateChange: (enabled: Boolean) -> Unit,
     onClosed: () -> Unit
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
@@ -103,7 +109,8 @@ fun Qr(
             currentCode = viewState.currentCode,
             size = scannerSize,
             torchEnable = viewState.torchEnable,
-            onQrDetect = onCodeDetected
+            onQrDetect = onCodeDetected,
+            onTorchStateChange = onTorchStateChange
         )
         ScanAction(
             modifier = Modifier
