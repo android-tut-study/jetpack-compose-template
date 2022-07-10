@@ -1,7 +1,9 @@
 package com.example.ui.qr.components
 
+import android.util.Log
 import android.util.Size
 import androidx.camera.core.AspectRatio.RATIO_16_9
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.CameraSelector.LENS_FACING_BACK
 import androidx.camera.core.ImageAnalysis
@@ -38,7 +40,13 @@ import com.study.compose.ui.common.components.ExpandableText
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 
 @Composable
-fun Scanner(modifier: Modifier, size: Dp, currentCode: String, onQrDetect: (String) -> Unit = {}) {
+fun Scanner(
+    modifier: Modifier,
+    size: Dp,
+    currentCode: String,
+    torchEnable: Boolean,
+    onQrDetect: (String) -> Unit = {}
+) {
     val cameraOffsetWithBorder = 30.dp
     Column(
         modifier = modifier,
@@ -54,7 +62,8 @@ fun Scanner(modifier: Modifier, size: Dp, currentCode: String, onQrDetect: (Stri
                 modifier = Modifier
                     .padding(cameraOffsetWithBorder)
                     .fillMaxSize(),
-                onDetected = onQrDetect
+                onDetected = onQrDetect,
+                torchEnable = torchEnable
             )
 
             ScannerOverlay(
@@ -79,7 +88,11 @@ fun Scanner(modifier: Modifier, size: Dp, currentCode: String, onQrDetect: (Stri
 }
 
 @Composable
-fun CameraPreview(modifier: Modifier, onDetected: (String) -> Unit = {}) {
+fun CameraPreview(
+    modifier: Modifier,
+    torchEnable: Boolean,
+    onDetected: (String) -> Unit = {}
+) {
     val context = LocalContext.current
     var code by remember {
         mutableStateOf("")
@@ -87,15 +100,20 @@ fun CameraPreview(modifier: Modifier, onDetected: (String) -> Unit = {}) {
     val cameraProviderFuture = remember {
         ProcessCameraProvider.getInstance(context)
     }
+
+    var camera: Camera? by remember { mutableStateOf(null) }
+
     val lifecycleOwner = LocalLifecycleOwner.current
 
     AndroidView(
         factory = { ctx ->
+            Log.e("ANNX", "ReCreate Camera Instance")
             val executor = ContextCompat.getMainExecutor(ctx)
             val previewView = PreviewView(ctx)
 
             cameraProviderFuture.addListener({
                 val cameraProvider = cameraProviderFuture.get()
+                // TODO check device has at least 1 camera
                 val preview = androidx.camera.core.Preview.Builder()
                     .setTargetAspectRatio(RATIO_16_9)
                     .build().also {
@@ -120,17 +138,23 @@ fun CameraPreview(modifier: Modifier, onDetected: (String) -> Unit = {}) {
 
                 cameraProvider.unbindAll()
 
-                cameraProvider.bindToLifecycle(
+                val cameraLoaded = cameraProvider.bindToLifecycle(
                     lifecycleOwner,
                     selector,
                     imageAnalysis,
                     preview,
                 )
+                camera = cameraLoaded
             }, executor)
 
             previewView
         },
-        modifier = modifier
+        modifier = modifier,
+        update = {
+            camera?.apply {
+                cameraControl.enableTorch(torchEnable)
+            }
+        }
     )
 }
 
@@ -177,7 +201,9 @@ fun ConcealableCode(modifier: Modifier = Modifier, code: String) {
                 }) { targetState ->
 
                 ExpandableText(
-                    modifier = Modifier.padding(10.dp).fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .fillMaxWidth(),
                     text = targetState,
                     style = MaterialTheme.typography.subtitle1.copy(
                         fontStyle = FontStyle.Italic,
