@@ -15,8 +15,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -68,6 +70,8 @@ fun Qr(onClosed: () -> Unit, onImageSelectPressed: () -> Unit) {
 fun Qr(viewModel: QrViewModel, onClosed: () -> Unit, onImageSelectPressed: () -> Unit) {
     val viewState by viewModel.viewState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
+
+    val clipboardManager = LocalClipboardManager.current
     Qr(
         viewState = viewState,
         onFlashPressed = {
@@ -86,7 +90,11 @@ fun Qr(viewModel: QrViewModel, onClosed: () -> Unit, onImageSelectPressed: () ->
                 viewModel.processIntent(QrIntent.NotifyTorchState(state))
             }
         },
-        onImageSelectPressed = onImageSelectPressed
+        onImageSelectPressed = onImageSelectPressed,
+        onCodeCopied = { code ->
+            // TODO transform copy icon to copied + show toast
+            clipboardManager.setText(AnnotatedString(code))
+        }
     )
 }
 
@@ -97,7 +105,8 @@ fun Qr(
     onCodeDetected: (code: String) -> Unit,
     onTorchStateChange: (enabled: Boolean) -> Unit,
     onImageSelectPressed: () -> Unit,
-    onClosed: () -> Unit
+    onClosed: () -> Unit,
+    onCodeCopied: (String) -> Unit,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
@@ -113,7 +122,8 @@ fun Qr(
             size = scannerSize,
             torchEnable = viewState.torchEnable,
             onQrDetect = onCodeDetected,
-            onTorchStateChange = onTorchStateChange
+            onTorchStateChange = onTorchStateChange,
+            onCodeCopied = onCodeCopied
         )
         ScanAction(
             modifier = Modifier

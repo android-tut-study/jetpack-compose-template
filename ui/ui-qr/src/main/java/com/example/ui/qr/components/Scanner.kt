@@ -53,6 +53,7 @@ fun Scanner(
     currentCode: String,
     torchEnable: Boolean,
     onQrDetect: (String) -> Unit = {},
+    onCodeCopied: (String) -> Unit,
     onTorchStateChange: (enabled: Boolean) -> Unit
 ) {
     val cameraOffsetWithBorder = 30.dp
@@ -94,16 +95,17 @@ fun Scanner(
             modifier = Modifier
                 .padding(horizontal = cameraOffsetWithBorder)
                 .fillMaxWidth()
-                .wrapContentHeight()
+                .wrapContentHeight(),
+            onCodeCopied = onCodeCopied
         )
 
     }
 }
 
 @Composable
-fun CopyClipboard(modifier: Modifier = Modifier) {
+fun CopyClipboard(modifier: Modifier = Modifier, onCopyPressed: () -> Unit) {
     IconButton(
-        onClick = { /*TODO*/ }, modifier = modifier
+        onClick = onCopyPressed, modifier = modifier
     ) {
         Icon(
             modifier = Modifier.size(24.dp),
@@ -203,7 +205,7 @@ private fun observerTorchState(
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun ConcealableCode(modifier: Modifier = Modifier, code: String) {
+fun ConcealableCode(modifier: Modifier = Modifier, code: String, onCodeCopied: (String) -> Unit) {
     val density = LocalDensity.current
 
     AnimatedVisibility(
@@ -241,7 +243,8 @@ fun ConcealableCode(modifier: Modifier = Modifier, code: String) {
             contentAlignment = Alignment.CenterStart
         ) { targetState ->
             Row(modifier = Modifier.wrapContentHeight()) {
-                val selectionColor = textSelectionColors(MaterialTheme.colors.onSurface.copy(alpha = 0.8f))
+                val selectionColor =
+                    textSelectionColors(MaterialTheme.colors.onSurface.copy(alpha = 0.8f))
                 CompositionLocalProvider(LocalTextSelectionColors provides selectionColor) {
                     SelectionContainer(modifier = Modifier.weight(1f)) {
                         ExpandableText(
@@ -266,7 +269,10 @@ fun ConcealableCode(modifier: Modifier = Modifier, code: String) {
                 CopyClipboard(
                     modifier = Modifier
                         .padding(4.dp)
-                        .size(32.dp)
+                        .size(32.dp),
+                    onCopyPressed = {
+                        onCodeCopied(code)
+                    }
                 )
             }
         }
@@ -352,7 +358,8 @@ fun CodePreview() {
                     modifier = Modifier
                         .padding(horizontal = 30.dp)
                         .fillMaxWidth()
-                        .wrapContentHeight()
+                        .wrapContentHeight(),
+                    onCodeCopied = {}
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 ConcealableCode(
@@ -360,7 +367,8 @@ fun CodePreview() {
                     modifier = Modifier
                         .padding(horizontal = 30.dp)
                         .fillMaxWidth()
-                        .wrapContentHeight()
+                        .wrapContentHeight(),
+                    onCodeCopied = {}
                 )
             }
         }
