@@ -1,22 +1,16 @@
 package com.study.compose.ui.home
 
-import android.util.Log
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -30,24 +24,21 @@ import com.study.compose.ui.home.interactor.intent.HomeIntent
 import com.study.compose.ui.home.interactor.state.HomeViewState
 import com.study.compose.ui.home.view.ProductsContent
 import com.study.compose.ui.home.viewmodel.HomeViewModel
-import com.study.compose.ui.state.AppState
 import com.study.compose.ui.state.AppStateViewModel
 import com.study.compose.ui.state.AppViewAction
 import com.study.compose.ui.state.rememberAppState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
-    onFilterPressed: () -> Unit = {},
+    onQrPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
     onProductSelect: (Long) -> Unit
 ) {
     HomeScreen(
         viewModel = hiltViewModel(),
         appViewStateVM = viewModel(),
-        onFilterPressed = onFilterPressed,
+        onQrPressed = onQrPressed,
         onSearchPressed = onSearchPressed,
         onProductSelect = onProductSelect,
     )
@@ -58,7 +49,7 @@ fun HomeScreen(
 fun HomeScreen(
     viewModel: HomeViewModel,
     appViewStateVM: AppStateViewModel,
-    onFilterPressed: () -> Unit = {},
+    onQrPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
     onProductSelect: (Long) -> Unit
 ) {
@@ -76,7 +67,7 @@ fun HomeScreen(
         viewState = homeViewState.value,
         appViewStateVM = appViewStateVM,
         scaffoldState = scaffoldState,
-        onFilterPressed = onFilterPressed,
+        onQrPressed = onQrPressed,
         onSearchPressed = onSearchPressed,
         onProductSelect = onProductSelect,
         onAddedPress = { product, offset ->
@@ -103,7 +94,7 @@ fun Products(
     viewState: HomeViewState,
     appViewStateVM: AppStateViewModel,
     scaffoldState: BackdropScaffoldState,
-    onFilterPressed: () -> Unit = {},
+    onQrPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
     onProductSelect: (Long) -> Unit,
     onAddedPress: (Product, Offset) -> Unit,
@@ -145,8 +136,8 @@ fun Products(
                             onPressed = onSearchPressed
                         )
                         HomeActionIcon(
-                            com.study.compose.ui.common.R.drawable.shr_filter,
-                            onPressed = onFilterPressed
+                            com.study.compose.ui.common.R.drawable.ic_qr_scanner,
+                            onPressed = onQrPressed
                         )
                     },
                     title = { TopHeader(backdropRevealed = backdropRevealed) }

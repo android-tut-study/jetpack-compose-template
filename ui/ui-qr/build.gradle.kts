@@ -1,3 +1,4 @@
+import com.example.Libs
 plugins {
     id("app-plugin")
     id("hilt-plugin")
@@ -13,4 +14,6 @@ uiConfiguration {
 
 dependencies {
     implementation(project(":ui:ui-common"))
+    implementation(project(":android-core:android-core-camera"))
+    implementation(Libs.IO.Coil.COIL_COMPOSE)
 }
