@@ -5,6 +5,7 @@ digraph {
 
   # Projects
 
+  ":android-core:android-core-camera" [fillcolor="#baffc9"];
   ":android-core:android-core-logger" [fillcolor="#baffc9"];
   ":app" [shape=box, fillcolor="#baffc9"];
   ":core:core-dispatcher" [fillcolor="#baffc9"];
@@ -18,6 +19,7 @@ digraph {
   ":ui:ui-detail" [fillcolor="#baffc9"];
   ":ui:ui-home" [fillcolor="#baffc9"];
   ":ui:ui-landing" [fillcolor="#baffc9"];
+  ":ui:ui-qr" [fillcolor="#baffc9"];
   ":ui:ui-state" [fillcolor="#baffc9"];
   ":usecase:usecase-carts" [fillcolor="#baffc9"];
   ":usecase:usecase-products" [fillcolor="#baffc9"];
@@ -31,6 +33,7 @@ digraph {
   ":app" -> ":ui:ui-home" [style=dotted]
   ":app" -> ":ui:ui-detail" [style=dotted]
   ":app" -> ":ui:ui-cart" [style=dotted]
+  ":app" -> ":ui:ui-qr" [style=dotted]
   ":core:core-usecase" -> ":core:core-result" [style=dotted]
   ":domain:domain-carts" -> ":core:core-domain" [style=dotted]
   ":domain:domain-carts" -> ":core:core-dispatcher" [style=dotted]
@@ -47,6 +50,8 @@ digraph {
   ":ui:ui-home" -> ":usecase:usecase-products" [style=dotted]
   ":ui:ui-home" -> ":usecase:usecase-carts" [style=dotted]
   ":ui:ui-landing" -> ":ui:ui-common" [style=dotted]
+  ":ui:ui-qr" -> ":ui:ui-common" [style=dotted]
+  ":ui:ui-qr" -> ":android-core:android-core-camera" [style=dotted]
   ":usecase:usecase-carts" -> ":core:core-usecase"
   ":usecase:usecase-carts" -> ":core:core-result"
   ":usecase:usecase-carts" -> ":core:core-domain"
