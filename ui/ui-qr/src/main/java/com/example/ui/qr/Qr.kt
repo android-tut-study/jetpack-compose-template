@@ -30,7 +30,7 @@ import com.study.compose.ui.common.theme.ShrineComposeTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun Qr(onClosed: () -> Unit) {
+fun Qr(onClosed: () -> Unit, onImageSelectPressed: () -> Unit) {
     val context = LocalContext.current
     var hasCamPermission by remember {
         mutableStateOf(
@@ -54,6 +54,7 @@ fun Qr(onClosed: () -> Unit) {
                 Qr(
                     viewModel = hiltViewModel(),
                     onClosed = onClosed,
+                    onImageSelectPressed = onImageSelectPressed
                 )
             } else {
                 // TODO Show required camera permission UI
@@ -64,7 +65,7 @@ fun Qr(onClosed: () -> Unit) {
 }
 
 @Composable
-fun Qr(viewModel: QrViewModel, onClosed: () -> Unit) {
+fun Qr(viewModel: QrViewModel, onClosed: () -> Unit, onImageSelectPressed: () -> Unit) {
     val viewState by viewModel.viewState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     Qr(
@@ -84,7 +85,8 @@ fun Qr(viewModel: QrViewModel, onClosed: () -> Unit) {
             coroutineScope.launch {
                 viewModel.processIntent(QrIntent.NotifyTorchState(state))
             }
-        }
+        },
+        onImageSelectPressed = onImageSelectPressed
     )
 }
 
@@ -94,11 +96,12 @@ fun Qr(
     onFlashPressed: () -> Unit,
     onCodeDetected: (code: String) -> Unit,
     onTorchStateChange: (enabled: Boolean) -> Unit,
+    onImageSelectPressed: () -> Unit,
     onClosed: () -> Unit
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val scannerSize = screenWidth * 4 / 5
+    val scannerSize = screenWidth * 0.7f
     val actionHeight = 80.dp
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
@@ -120,7 +123,7 @@ fun Qr(
                 .height(actionHeight)
                 .align(Alignment.BottomCenter),
             onFlashPressed = onFlashPressed,
-            onImageSearched = {},
+            onImageSearched = onImageSelectPressed,
         )
         Header(modifier = Modifier.align(Alignment.TopStart)) {
             onClosed()

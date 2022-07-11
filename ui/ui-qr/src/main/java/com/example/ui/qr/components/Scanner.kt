@@ -13,9 +13,15 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -27,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -37,6 +44,7 @@ import com.example.ui.qr.R
 import com.example.ui.qr.analyzer.QrAnalyzer
 import com.study.compose.ui.common.components.ExpandableText
 import com.study.compose.ui.common.theme.ShrineComposeTheme
+import com.study.compose.ui.common.utils.textSelectionColors
 
 @Composable
 fun Scanner(
@@ -83,7 +91,24 @@ fun Scanner(
         }
         ConcealableCode(
             code = currentCode,
-            modifier = Modifier.padding(horizontal = cameraOffsetWithBorder)
+            modifier = Modifier
+                .padding(horizontal = cameraOffsetWithBorder)
+                .fillMaxWidth()
+                .wrapContentHeight()
+        )
+
+    }
+}
+
+@Composable
+fun CopyClipboard(modifier: Modifier = Modifier) {
+    IconButton(
+        onClick = { /*TODO*/ }, modifier = modifier
+    ) {
+        Icon(
+            modifier = Modifier.size(24.dp),
+            painter = painterResource(id = R.drawable.ic_copy_24),
+            contentDescription = "Copy to Clipboard"
         )
     }
 }
@@ -193,48 +218,55 @@ fun ConcealableCode(modifier: Modifier = Modifier, code: String) {
             initialAlpha = 0.3f
         ),
         exit = slideOutVertically() + shrinkVertically() + fadeOut(),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .then(modifier)
     ) {
-        Box(
+        AnimatedContent(
+            targetState = code,
+            transitionSpec = {
+                if (!targetState.contentEquals(initialState)) {
+                    slideInVertically { height -> height } + fadeIn(initialAlpha = 0.3f) with
+                            slideOutVertically { height -> -height } + fadeOut()
+                } else {
+                    slideInVertically { height -> -height } + fadeIn() with
+                            slideOutVertically { height -> height } + fadeOut()
+                }.using(
+                    SizeTransform(clip = true)
+                )
+            },
             modifier = Modifier
-                .fillMaxWidth()
+                .width(IntrinsicSize.Max)
                 .clip(MaterialTheme.shapes.small)
                 .background(color = MaterialTheme.colors.primary),
             contentAlignment = Alignment.CenterStart
-        ) {
-            AnimatedContent(
-                targetState = code,
-                transitionSpec = {
-                    if (!targetState.contentEquals(initialState)) {
-                        slideInVertically { height -> height } + fadeIn(initialAlpha = 0.3f) with
-                                slideOutVertically { height -> -height } + fadeOut()
-                    } else {
-                        slideInVertically { height -> -height } + fadeIn() with
-                                slideOutVertically { height -> height } + fadeOut()
-                    }.using(
-                        SizeTransform(clip = true)
-                    )
-                }) { targetState ->
-
-                ExpandableText(
+        ) { targetState ->
+            Row(modifier = Modifier.wrapContentHeight()) {
+                val selectionColor = textSelectionColors(MaterialTheme.colors.onSurface.copy(alpha = 0.8f))
+                CompositionLocalProvider(LocalTextSelectionColors provides selectionColor) {
+                    SelectionContainer(modifier = Modifier.weight(1f)) {
+                        ExpandableText(
+                            modifier = Modifier.padding(10.dp),
+                            text = targetState,
+                            style = MaterialTheme.typography.subtitle1.copy(
+                                fontStyle = FontStyle.Italic,
+                                color = MaterialTheme.colors.onPrimary
+                            ),
+                            collapsedMaxLine = 1,
+                            showMoreStyle = SpanStyle(
+                                fontWeight = FontWeight.Bold,
+                                fontStyle = FontStyle.Normal,
+                                color = MaterialTheme.colors.onPrimary,
+                                fontSize = MaterialTheme.typography.subtitle1.fontSize
+                            ),
+                            showMoreText = " ➘ more",
+                            showLessText = " ➚ less",
+                        )
+                    }
+                }
+                CopyClipboard(
                     modifier = Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth(),
-                    text = targetState,
-                    style = MaterialTheme.typography.subtitle1.copy(
-                        fontStyle = FontStyle.Italic,
-                        color = MaterialTheme.colors.onPrimary
-                    ),
-                    collapsedMaxLine = 1,
-                    showMoreStyle = SpanStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontStyle = FontStyle.Normal,
-                        color = MaterialTheme.colors.onPrimary,
-                        fontSize = MaterialTheme.typography.subtitle1.fontSize
-                    ),
-                    showMoreText = " ▼"
+                        .padding(4.dp)
+                        .size(32.dp)
                 )
             }
         }
@@ -297,12 +329,40 @@ fun ScannerOverlay(
     )
 }
 
-@Preview(widthDp = 360, heightDp = 640)
+@Preview
 @Composable
 fun LoadingPreview() {
     ShrineComposeTheme {
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             ScannerOverlay(Modifier.align(Alignment.Center), containerSize = 200.dp)
+        }
+    }
+}
+
+@Preview(widthDp = 360, heightDp = 640)
+@Composable
+fun CodePreview() {
+    ShrineComposeTheme {
+        Surface(color = MaterialTheme.colors.surface, modifier = Modifier.height(80.dp)) {
+
+            Column {
+
+                ConcealableCode(
+                    code = "Code",
+                    modifier = Modifier
+                        .padding(horizontal = 30.dp)
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                ConcealableCode(
+                    code = "code".repeat(10),
+                    modifier = Modifier
+                        .padding(horizontal = 30.dp)
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                )
+            }
         }
     }
 }

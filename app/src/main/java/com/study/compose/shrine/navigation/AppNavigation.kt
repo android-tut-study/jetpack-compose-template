@@ -47,7 +47,12 @@ fun AppNavigation(navController: NavHostController, viewModelStoreOwner: ViewMod
         addProductTopLevel(navController = navController, viewModelStoreOwner = viewModelStoreOwner)
 
         composable(Screen.Qr.route) {
-            Qr { navController.popBackStack() }
+            Qr(
+                onClosed = { navController.popBackStack() },
+                onImageSelectPressed = {
+                    // TODO create Image Select screen
+                }
+            )
         }
     }
 }

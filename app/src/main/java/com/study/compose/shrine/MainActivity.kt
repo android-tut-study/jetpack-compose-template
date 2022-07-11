@@ -1,7 +1,6 @@
 package com.study.compose.shrine
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -66,7 +65,6 @@ fun BottomCart(
 ) {
     val currentRoute =
         navController.currentBackStackEntryFlow.collectAsState(initial = navController.currentBackStackEntry)
-    Log.e("ANNX", "Des ${currentRoute.value?.destination?.route }")
     if (currentRoute.value?.destination?.route.orEmpty().contains(Screen.Products.route)) {
         BottomCart(
             modifier = modifier,
