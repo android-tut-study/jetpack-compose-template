@@ -37,7 +37,7 @@ project.extensions.configure(com.android.build.gradle.BaseExtension::class.java)
 
     kotlin {
         composeOptions {
-            kotlinCompilerExtensionVersion = com.example.SharedVersion.AndroidX.COMPOSE
+            kotlinCompilerExtensionVersion = androidx.versions.compose.get()
         }
     }
 
@@ -53,7 +53,6 @@ project.extensions.configure(com.android.build.gradle.BaseExtension::class.java)
     kapt {
         correctErrorTypes = true
     }
-
 
 }
 

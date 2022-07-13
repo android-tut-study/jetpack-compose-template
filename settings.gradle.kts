@@ -7,6 +7,7 @@ pluginManagement {
     }
 }
 
+// https://github.com/gradle/gradle/issues/20203
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {

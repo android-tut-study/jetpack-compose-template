@@ -7,12 +7,6 @@ plugins {
     checkstyle
 }
 
-buildscript {
-    dependencies {
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.41")
-    }
-}
-
 tasks.register("clean", type = Delete::class) {
     delete(rootProject.buildDir)
 }
