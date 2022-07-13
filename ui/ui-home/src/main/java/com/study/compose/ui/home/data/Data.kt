@@ -6,10 +6,14 @@ import com.study.compose.core.domain.model.ProductDomain
 
 sealed class HomeModel
 
-data class HomeProduct constructor (var products: List<Product>, val filteredProducts: List<Product> = products.toMutableList()) : HomeModel() {
+data class HomeProduct constructor(
+    var products: List<Product>,
+    val filteredProducts: List<Product> = products.toMutableList()
+) : HomeModel() {
 
     companion object {
-        fun generateFromDomain(domain: List<ProductDomain>) = HomeProduct(products = domain.map(::Product))
+        fun generateFromDomain(domain: List<ProductDomain>) =
+            HomeProduct(products = domain.map(::Product))
     }
 }
 
@@ -33,7 +37,7 @@ data class Product(
 
     fun toCart() = CartDomain(
         productId = this.id,
-        title=this.title,
+        title = this.title,
         price = this.price,
         description = this.description,
         category = this.category,

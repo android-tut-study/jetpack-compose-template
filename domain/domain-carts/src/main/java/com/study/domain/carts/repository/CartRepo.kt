@@ -1,10 +1,8 @@
 package com.study.domain.carts.repository
 
-import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import com.study.compose.core.domain.model.CartDomain
 import com.study.domain.carts.models.Cart
-import com.study.domain.carts.models.CartChange
 import com.study.domain.carts.models.CartRepoState
 import kotlinx.coroutines.flow.Flow
 

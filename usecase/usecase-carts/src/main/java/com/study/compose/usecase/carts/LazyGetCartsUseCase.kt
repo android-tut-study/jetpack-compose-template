@@ -8,7 +8,7 @@ import com.study.compose.core.domain.Mapper
 import com.study.compose.core.domain.model.CartDomain
 import com.study.domain.carts.models.Cart
 import com.study.domain.carts.repository.CartRepo
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.map
 
 class LazyGetCartsUseCase(
     private val cartRepo: CartRepo,

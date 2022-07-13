@@ -21,8 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.study.compose.ui.home.data.Product
 import com.study.compose.ui.common.R
+import com.study.compose.ui.home.data.Product
 
 @Composable
 fun ProductsContent(

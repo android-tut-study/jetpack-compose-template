@@ -3,10 +3,10 @@ package com.study.compose.usecase.carts
 import com.study.compose.core.dispatcher.CoroutineDispatchers
 import com.study.compose.core.domain.Mapper
 import com.study.compose.core.domain.model.CartDomain
+import com.study.compose.core.result.Result
 import com.study.compose.core.usecase.ResultUseCase
 import com.study.domain.carts.models.Cart
 import com.study.domain.carts.repository.CartRepo
-import com.study.compose.core.result.Result
 
 class AddCartUseCase(
     dispatchers: CoroutineDispatchers,

@@ -2,14 +2,10 @@ package com.example.ui.qr.analyzer
 
 import android.annotation.SuppressLint
 import android.graphics.ImageFormat
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.zxing.*
 import com.google.zxing.common.GlobalHistogramBinarizer
-import com.google.zxing.common.HybridBinarizer
 import java.nio.ByteBuffer
 
 @SuppressLint("InlinedApi")

@@ -21,8 +21,9 @@ object UseCaseModule {
         )
 
     @Provides
-    fun providesGetProductsUseCase(dispatchers: CoroutineDispatchers, productRepo: ProductRepo) = GetProductsUseCase(
-        dispatchers = dispatchers,
-        repo = productRepo
-    )
+    fun providesGetProductsUseCase(dispatchers: CoroutineDispatchers, productRepo: ProductRepo) =
+        GetProductsUseCase(
+            dispatchers = dispatchers,
+            repo = productRepo
+        )
 }

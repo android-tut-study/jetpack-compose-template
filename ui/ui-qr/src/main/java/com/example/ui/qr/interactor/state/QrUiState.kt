@@ -24,6 +24,6 @@ sealed interface CameraAction : QrPartialChange {
     object CameraSwitch : CameraAction
 }
 
-data class CodeDetected(val code: String): QrPartialChange {
+data class CodeDetected(val code: String) : QrPartialChange {
     override fun reduce(vs: QrViewState): QrViewState = vs.copy(currentCode = code)
 }

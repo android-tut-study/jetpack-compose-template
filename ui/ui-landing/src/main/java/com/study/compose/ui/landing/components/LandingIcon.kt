@@ -38,6 +38,8 @@ fun LandingIcon(
 
     AppIcon(
         resId = com.study.compose.ui.common.R.drawable.logo,
-        modifier = modifier.size(96.dp).scale(scale.value)
+        modifier = modifier
+            .size(96.dp)
+            .scale(scale.value)
     )
 }

@@ -15,5 +15,5 @@ dependencies {
     implementation(project(":ui:ui-common"))
     implementation(project(":usecase:usecase-products"))
     implementation(project(":usecase:usecase-carts"))
-    implementation(com.example.Libs.IO.Coil.COIL_COMPOSE)
+    implementation(io.coil.compose)
 }

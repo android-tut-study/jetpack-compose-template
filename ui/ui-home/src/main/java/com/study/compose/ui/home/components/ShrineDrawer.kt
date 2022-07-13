@@ -15,13 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 import com.study.compose.ui.home.R
-import com.study.compose.ui.home.data.Category
-import java.util.*
 
 const val MENU_ALL = "ALL"
 

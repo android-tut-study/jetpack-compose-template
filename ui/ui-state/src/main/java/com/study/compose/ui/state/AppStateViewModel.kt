@@ -1,12 +1,10 @@
 package com.study.compose.ui.state
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,9 +48,9 @@ data class AppViewState(
     val showBottomCart: Boolean = true
 )
 
-sealed class UiStateChange: UiStatePartialChange<AppViewState>
+sealed class UiStateChange : UiStatePartialChange<AppViewState>
 
-data class ShowBottomCart(val show: Boolean): UiStateChange() {
+data class ShowBottomCart(val show: Boolean) : UiStateChange() {
     override fun reduce(vs: AppViewState): AppViewState {
         return vs.copy(showBottomCart = show)
     }
