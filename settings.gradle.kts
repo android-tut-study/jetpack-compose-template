@@ -121,6 +121,13 @@ dependencyResolutionManagement {
                 "camera-qr",
                 listOf("camera-camera2", "camera-lifecycle", "camera-view", "zxing-core")
             )
+
+            library("customview-core", "androidx.customview:customview:1.2.0-alpha01")
+            library("customview-poolingcontainer", "androidx.customview:customview-poolingcontainer:1.0.0-rc01")
+            bundle(
+                "compose-customview",
+                listOf("customview-core", "customview-poolingcontainer")
+            )
         }
 
         create("hiltLibs") {
