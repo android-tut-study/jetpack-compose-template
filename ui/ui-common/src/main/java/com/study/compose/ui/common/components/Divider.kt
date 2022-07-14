@@ -37,7 +37,8 @@ private fun ShrineDividerPreview() {
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .height(10.dp)) {
+                    .height(10.dp)
+            ) {
                 ShrineDivider(Modifier.align(Alignment.Center))
             }
         }

@@ -2,7 +2,7 @@ package com.study.domain.carts.dao
 
 import androidx.paging.PagingSource
 import androidx.room.*
-import androidx.room.OnConflictStrategy.Companion.IGNORE
+import androidx.room.OnConflictStrategy.IGNORE
 import com.study.domain.carts.models.Cart
 import kotlinx.coroutines.flow.Flow
 

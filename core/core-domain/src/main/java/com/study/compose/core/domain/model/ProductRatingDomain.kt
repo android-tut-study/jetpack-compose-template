@@ -5,4 +5,4 @@ import com.study.compose.core.domain.DomainModel
 data class ProductRatingDomain(
     val rate: Float,
     val count: Int
-): DomainModel
+) : DomainModel

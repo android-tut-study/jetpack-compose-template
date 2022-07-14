@@ -9,7 +9,7 @@ import com.study.domain.carts.converter.DateConverter
 import com.study.domain.carts.dao.CartDao
 import com.study.domain.carts.models.Cart
 
-@Database(entities = [Cart::class], version = 1)
+@Database(entities = [Cart::class], version = 1, exportSchema = false)
 @TypeConverters(DateConverter::class)
 abstract class CartDatabase : RoomDatabase() {
     abstract fun cartDao(): CartDao

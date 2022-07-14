@@ -1,9 +1,6 @@
-import com.example.Libs
-
 plugins {
     id("app-plugin")
     id("hilt-plugin")
-    kotlin(com.example.GradlePlugins.Plugins.Kotlin.KAPT)
 }
 
 dependencies {
@@ -12,7 +9,7 @@ dependencies {
     api(project(":core:core-result"))
     api(project(":core:core-domain"))
     implementation(project(":domain:domain-products"))
-    implementation(Libs.Kotlinx.Coroutines.CORE)
-    implementation(Libs.Hilt.Core.ANDROID)
-    kapt(Libs.Hilt.Core.ANDROID_COMPILER)
+    implementation(kotlinx.coroutines.core)
+    implementation(hiltLibs.hilt.android)
+    kapt(hiltLibs.hilt.compiler)
 }

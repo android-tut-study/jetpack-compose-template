@@ -1,6 +1,5 @@
 package com.study.compose.ui.home.viewmodel
 
-import androidx.compose.animation.core.estimateAnimationDurationMillis
 import androidx.lifecycle.viewModelScope
 import com.study.compose.core.domain.model.CartChangeType
 import com.study.compose.ui.common.viewmodel.BaseViewModel

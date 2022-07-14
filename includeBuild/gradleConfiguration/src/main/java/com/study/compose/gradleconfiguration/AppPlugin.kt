@@ -22,10 +22,6 @@ class AppPlugin : Plugin<Project> {
                 consumerProguardFiles("consumer-rules.pro")
             }
 
-            composeOptions {
-                kotlinCompilerExtensionVersion = "1.2.0-alpha08"
-            }
-
             compileOptions {
                 sourceCompatibility = JavaVersion.VERSION_11
                 targetCompatibility = JavaVersion.VERSION_11

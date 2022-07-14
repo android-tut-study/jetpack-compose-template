@@ -21,7 +21,7 @@ data class DetailViewState(
     }
 }
 
-sealed interface DetailUIPartialChange: UiStatePartialChange<DetailViewState>
+sealed interface DetailUIPartialChange : UiStatePartialChange<DetailViewState>
 
 sealed class GetProducts : DetailUIPartialChange {
     override fun reduce(vs: DetailViewState): DetailViewState = when (this) {
@@ -35,19 +35,19 @@ sealed class GetProducts : DetailUIPartialChange {
     data class Error(val err: Throwable) : GetProducts()
 }
 
-sealed class AddCart: DetailUIPartialChange {
+sealed class AddCart : DetailUIPartialChange {
     override fun reduce(vs: DetailViewState): DetailViewState = when (this) {
         is Data -> vs.copy(addedToCart = added)
         is Error -> vs.copy(loading = false, error = err)
         Loading -> vs.copy(loading = true)
     }
 
-    object Loading: AddCart()
-    data class Data(val added: Boolean): AddCart()
+    object Loading : AddCart()
+    data class Data(val added: Boolean) : AddCart()
     data class Error(val err: Throwable) : AddCart()
 }
 
-data class CurrentProduct(val current: ProductDetail): DetailUIPartialChange {
+data class CurrentProduct(val current: ProductDetail) : DetailUIPartialChange {
     override fun reduce(vs: DetailViewState): DetailViewState {
         return vs.copy(currentProduct = current)
     }

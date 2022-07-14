@@ -35,7 +35,6 @@ import com.study.compose.ui.detail.components.MoreDetail
 import com.study.compose.ui.detail.components.ProductInfo
 import com.study.compose.ui.detail.data.ProductDetail
 import com.study.compose.ui.detail.interactor.intent.DetailIntent
-import com.study.compose.ui.detail.interactor.state.AddCart
 import com.study.compose.ui.detail.interactor.state.DetailViewState
 import com.study.compose.ui.detail.viewmodel.DetailViewModel
 import kotlinx.coroutines.launch

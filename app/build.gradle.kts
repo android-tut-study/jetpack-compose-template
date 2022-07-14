@@ -1,10 +1,9 @@
-import com.example.Libs
-
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id(com.example.GradlePlugins.Plugins.Android.APPLICATION)
-    id(com.example.GradlePlugins.Plugins.Jetbrains.Kotlin.ANDROID)
-    kotlin(com.example.GradlePlugins.Plugins.Kotlin.KAPT)
-    id(com.example.GradlePlugins.Plugins.Hilt.PLUGIN)
+    alias(gradlePlugins.plugins.application)
+    alias(gradlePlugins.plugins.kotlin)
+    kotlin("kapt")
+    id(gradlePlugins.hilt.app.plugin.get().module.name)
 }
 
 project.extensions.configure(com.android.build.gradle.BaseExtension::class.java) {
@@ -24,7 +23,10 @@ project.extensions.configure(com.android.build.gradle.BaseExtension::class.java)
     buildTypes {
         getByName("release") {
             minifyEnabled(false)
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -35,7 +37,7 @@ project.extensions.configure(com.android.build.gradle.BaseExtension::class.java)
 
     kotlin {
         composeOptions {
-            kotlinCompilerExtensionVersion = com.example.SharedVersion.AndroidX.COMPOSE
+            kotlinCompilerExtensionVersion = "1.2.0"
         }
     }
 
@@ -51,7 +53,6 @@ project.extensions.configure(com.android.build.gradle.BaseExtension::class.java)
     kapt {
         correctErrorTypes = true
     }
-
 
 }
 
@@ -70,27 +71,23 @@ dependencies {
     implementation(project(":ui:ui-qr"))
 
     // Core
-    implementation(Libs.AndroidX.Core.KTX)
-    implementation(Libs.AndroidX.Activity.ACTIVITY_COMPOSE)
-    implementation(Libs.AndroidX.Navigation.COMPOSE)
-    implementation(Libs.AndroidX.AppCompat.APPCOMPAT)
+    implementation(androidx.core.ktx)
+    implementation(androidx.activity.compose)
+    implementation(androidx.navigation.compose)
+    implementation(androidx.appcompat)
 
-    implementation("com.google.dagger:hilt-android:2.41")
-    kapt("com.google.dagger:hilt-android-compiler:2.41")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation(hiltLibs.hilt.android)
+    kapt(hiltLibs.hilt.android.compiler)
+    implementation(hiltLibs.hilt.navigation.compose)
 
     // LifeCycle
-    implementation(Libs.AndroidX.LifeCycle.VIEWMODEL_COMPOSE)
-    implementation(Libs.AndroidX.LifeCycle.LIVEDATA_KTX)
-//    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    implementation(androidx.lifecycle.viewmodel.compose)
+    implementation(androidx.lifecycle.livedata.ktx)
 
     // Hilt
-    implementation(Libs.Hilt.Core.ANDROID)
-    kapt(Libs.Hilt.Core.ANDROID_COMPILER)
+    implementation(hiltLibs.hilt.android)
+    kapt(hiltLibs.hilt.compiler)
 
-    implementation(Libs.IO.Coil.KT)
+    implementation(io.coil.core)
 
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    testImplementation("androidx.compose.ui:ui-test-junit4:1.1.1")
 }

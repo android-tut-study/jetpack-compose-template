@@ -7,7 +7,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RatingResponseToDomainMapper @Inject constructor(): Mapper<ProductRatingResponse, ProductRatingDomain> {
+class RatingResponseToDomainMapper @Inject constructor() :
+    Mapper<ProductRatingResponse, ProductRatingDomain> {
     override fun invoke(response: ProductRatingResponse): ProductRatingDomain {
         return ProductRatingDomain(
             count = response.count,

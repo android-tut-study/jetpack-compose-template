@@ -14,7 +14,7 @@ data class Cart(
     val size: Int = 1
 ) {
 
-    constructor(cartDomain: CartDomain): this(
+    constructor(cartDomain: CartDomain) : this(
         productId = cartDomain.productId,
         title = cartDomain.title,
         description = cartDomain.description,

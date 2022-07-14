@@ -1,11 +1,11 @@
 package com.study.domain.carts.di
 
 import android.content.Context
+import com.study.compose.core.dispatcher.CoroutineDispatchers
 import com.study.domain.carts.database.CartDatabase
 import com.study.domain.carts.mappers.CartEntityToDomainMapper
 import com.study.domain.carts.repository.CartRepo
 import com.study.domain.carts.repository.CartRepoImpl
-import com.study.compose.core.dispatcher.CoroutineDispatchers
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

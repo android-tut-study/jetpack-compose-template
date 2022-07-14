@@ -19,19 +19,20 @@ data class CartViewState(
 
 sealed interface CartUIPartialChange : UiStatePartialChange<CartViewState>
 
-sealed class CartsChange: CartUIPartialChange {
-    override fun reduce(vs: CartViewState): CartViewState = when(this) {
+sealed class CartsChange : CartUIPartialChange {
+    override fun reduce(vs: CartViewState): CartViewState = when (this) {
         is CartAdded -> vs.copy(cartsChange = vs.cartsChange + cart)
         is CartRemoved -> vs.copy(cartsChange = vs.cartsChange - cart)
         is CartUpdated -> {
-            val updatedCarts = vs.cartsChange.map { if (it.productId == cart.productId) cart else it }
+            val updatedCarts =
+                vs.cartsChange.map { if (it.productId == cart.productId) cart else it }
             vs.copy(cartsChange = updatedCarts)
         }
     }
 
-    data class CartAdded(val cart: Cart): CartsChange()
-    data class CartUpdated(val cart: Cart): CartsChange()
-    data class CartRemoved(val cart: Cart): CartsChange()
+    data class CartAdded(val cart: Cart) : CartsChange()
+    data class CartUpdated(val cart: Cart) : CartsChange()
+    data class CartRemoved(val cart: Cart) : CartsChange()
 }
 
 enum class CartState {

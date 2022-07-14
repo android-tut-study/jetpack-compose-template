@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -32,7 +31,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.AsyncImage
 import com.study.compose.ui.cart.data.Cart
-import com.study.compose.ui.cart.interactor.intent.CartIntent
 import com.study.compose.ui.cart.interactor.state.CartState
 import com.study.compose.ui.cart.interactor.state.CartViewState
 import com.study.compose.ui.cart.viewmodel.CartVM
@@ -214,9 +212,11 @@ fun CollapsedCart(
                     if (size < maxCartCount) size else maxCartCount
                 ).reversed()
             ) { cart ->
-                CollapseCartItem(cart = cart, modifier = Modifier.animateItemPlacement(
-                    tween(durationMillis = 250)
-                ))
+                CollapseCartItem(
+                    cart = cart, modifier = Modifier.animateItemPlacement(
+                        tween(durationMillis = 250)
+                    )
+                )
             }
         }
     }

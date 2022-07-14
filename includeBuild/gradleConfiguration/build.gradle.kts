@@ -1,8 +1,13 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    `java-gradle-plugin`
-    `kotlin-dsl`
+    `kotlin-dsl`.version("2.1.7")
+    checkstyle
 }
 
+checkstyle {
+    // will use the version declared in the catalog
+    toolVersion = gradleConfig.versions.checkstyle.get()
+}
 
 repositories {
     google()
@@ -24,6 +29,6 @@ gradlePlugin {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.20")
-    implementation("com.android.tools.build:gradle:7.1.2")
+    implementation(gradleConfig.kotlin.gradle.plugin)
+    implementation(gradleConfig.gradle.build.tool)
 }

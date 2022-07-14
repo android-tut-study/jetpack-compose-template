@@ -1,9 +1,12 @@
 package com.study.compose.ui.home
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.BackdropScaffoldState
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,7 +21,10 @@ import coil.compose.AsyncImage
 import com.study.compose.ui.common.components.ShrineScaffold
 import com.study.compose.ui.common.components.ShrineTopBar
 import com.study.compose.ui.common.utils.toIntOffset
-import com.study.compose.ui.home.components.*
+import com.study.compose.ui.home.components.HomeActionIcon
+import com.study.compose.ui.home.components.NavigationIcon
+import com.study.compose.ui.home.components.ShrineDrawer
+import com.study.compose.ui.home.components.TopHeader
 import com.study.compose.ui.home.data.Product
 import com.study.compose.ui.home.interactor.intent.HomeIntent
 import com.study.compose.ui.home.interactor.state.HomeViewState
@@ -156,7 +162,7 @@ fun Products(
 //                                appViewStateVM.process(AppViewAction.ShowBottomCart(true))
 //                                scaffoldState.conceal()
 //                            }
-                            onCategorySelected(category)
+                        onCategorySelected(category)
 //                        }
                     }
                 )

@@ -1,13 +1,13 @@
 package com.study.domain.carts.repository
 
-import androidx.paging.*
+import androidx.paging.PagingSource
+import com.study.compose.core.dispatcher.CoroutineDispatchers
+import com.study.compose.core.domain.Mapper
+import com.study.compose.core.domain.model.CartDomain
 import com.study.domain.carts.database.CartDatabase
 import com.study.domain.carts.models.Cart
 import com.study.domain.carts.models.CartRepoChange
 import com.study.domain.carts.models.CartRepoState
-import com.study.compose.core.dispatcher.CoroutineDispatchers
-import com.study.compose.core.domain.Mapper
-import com.study.compose.core.domain.model.CartDomain
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
@@ -73,6 +73,7 @@ class CartRepoImpl(
             .collect()
     }
 
-    override fun allCartsPagingSource(): PagingSource<Int, Cart> = cartDatabase.cartDao().lazyAllCarts()
+    override fun allCartsPagingSource(): PagingSource<Int, Cart> =
+        cartDatabase.cartDao().lazyAllCarts()
 }
 

@@ -1,8 +1,8 @@
 package com.study.compose.core.usecase
 
+import com.study.compose.core.result.Result
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import com.study.compose.core.result.Result
 
 abstract class ResultUseCase<in Params, Type>(private val dispatcher: CoroutineDispatcher) {
 

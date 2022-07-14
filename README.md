@@ -1,16 +1,18 @@
-
 ![](https://github.com/android-tut-study/jetpack-compose-template/workflows/Dependency%20Graph/badge.svg)
+
 # Shrine Compose
 
+The app based on [Shrine Material Design](https://material.io/design/material-studies/shrine.html)
+with some modifications.
 
-The app based on ![Shrine Material Design](https://material.io/design/material-studies/shrine.html) with some modifications.
-
-The main purpose of this project is a template structure for the Android project with my experience and studying Jetpack Compose. So some features may not be implemented yet.
+The main purpose of this project is a template structure for the Android project with my experience
+and studying Jetpack Compose. So some features may not be implemented yet.
 
 ## Development
 
 * UI written in [Jetpack Compose](https://developer.android.com/jetpack/compose).
-* Built 100% in Kotlin and uses [Kotlin Coroutines](https://kotlinlang.org/docs/reference/coroutines/coroutines-guide.html).
+* Built 100% in Kotlin and
+  uses [Kotlin Coroutines](https://kotlinlang.org/docs/reference/coroutines/coroutines-guide.html).
 * [Hilt](https://dagger.dev/hilt/) for dependency injection.
 * Images are shown using [Coil](https://coil-kt.github.io/coil/).
 * [Retrofit2 & OkHttp3](https://github.com/square/retrofit)
@@ -18,11 +20,12 @@ The main purpose of this project is a template structure for the Android project
 
 ## :camera_flash: Screenshots
 
-Home | Menu | Cart | Qr
---- | --- | --- | --- |
-<img src="/screenshots/home.png" width="260"> | <img src="/screenshots/menu.png" width="260"> |  <img src="/screenshots/cart.png" width="260"> | <img src="/screenshots/qr.png" width="260">
+| Home                                           | Menu                                           | Cart                                           | Qr                                           |
+|------------------------------------------------|------------------------------------------------|------------------------------------------------|----------------------------------------------|
+| <img src="./screenshots/home.png" width="260"> | <img src="./screenshots/menu.png" width="260"> | <img src="./screenshots/cart.png" width="260"> | <img src="./screenshots/qr.png" width="260"> |
 
 ## Gradle Dependencies Graph
+
 ![](gradle/dependency-graph/project.dot.png)
 
 * ui-xx modules: contain all App UI components

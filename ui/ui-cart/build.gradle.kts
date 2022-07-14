@@ -1,4 +1,3 @@
-import com.example.Libs
 plugins {
     id("app-plugin")
     id("hilt-plugin")
@@ -13,10 +12,10 @@ uiConfiguration {
 }
 
 dependencies {
-    implementation(Libs.IO.Coil.COIL_COMPOSE)
+    implementation(io.coil.compose)
     implementation(project(":ui:ui-common"))
     implementation(project(":usecase:usecase-carts"))
 
-    implementation(Libs.AndroidX.Paging.RUNTIME)
-    implementation(Libs.AndroidX.Paging.COMPOSE)
+    implementation(androidx.paging.runtime)
+    implementation(androidx.paging.compose)
 }
