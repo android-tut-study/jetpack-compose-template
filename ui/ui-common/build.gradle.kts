@@ -21,9 +21,8 @@ dependencies {
     api(androidx.compose.ui.tooling.preview)
     debugApi(androidx.compose.ui.tooling)
 
-    // TODO Remove them after jetpack compose stable
-    debugApi("androidx.customview:customview:1.2.0-alpha01")
-    debugApi("androidx.customview:customview-poolingcontainer:1.0.0-rc01")
+    debugApi(androidx.customview.core)
+    debugApi(androidx.customview.poolingcontainer)
 
     testApi(test.junit4)
     androidTestApi(test.bundles.test.android.ui)

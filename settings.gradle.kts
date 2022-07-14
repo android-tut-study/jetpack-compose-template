@@ -30,8 +30,6 @@ dependencyResolutionManagement {
         }
 
         create("androidx") {
-            version("checkstyle", "8.37")
-
             library("appcompat", "androidx.appcompat:appcompat:1.4.1")
 
             version("activity", "1.6.0-alpha03")

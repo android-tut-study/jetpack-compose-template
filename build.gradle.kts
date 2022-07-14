@@ -13,6 +13,6 @@ tasks.register("clean", type = Delete::class) {
 
 checkstyle {
     // will use the version declared in the catalog
-    toolVersion = androidx.versions.checkstyle.get()
+    toolVersion = gradlePlugins.versions.checkstyle.get()
 }
 apply(from = "gradle/projectDependencyGraph.gradle")

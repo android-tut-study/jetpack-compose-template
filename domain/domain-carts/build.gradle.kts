@@ -16,7 +16,6 @@ dependencies {
     implementation(androidx.room.ktx)
     kapt(androidx.room.compiler)
 
-//    implementation(Libs.AndroidX.Paging.RUNTIME)
     implementation(androidx.paging.runtime)
 
     testImplementation(androidx.room.testing)
