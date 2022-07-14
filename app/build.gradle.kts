@@ -37,7 +37,7 @@ project.extensions.configure(com.android.build.gradle.BaseExtension::class.java)
 
     kotlin {
         composeOptions {
-            kotlinCompilerExtensionVersion = androidx.versions.compose.get()
+            kotlinCompilerExtensionVersion = "1.2.0"
         }
     }
 

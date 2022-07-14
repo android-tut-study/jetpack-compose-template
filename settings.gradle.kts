@@ -17,13 +17,10 @@ dependencyResolutionManagement {
 
     versionCatalogs {
 
-        val hiltVersion = "2.41"
+        val hiltVersion = "2.42"
         create("gradlePlugins") {
-            plugin("application", "com.android.application").version("7.1.2")
-            plugin("library", "com.android.library").version("7.1.2")
-
+            from(files("./gradle/catalog/gradlePlugins.versions.toml"))
             plugin("hilt", "com.google.dagger.hilt.android").version(hiltVersion)
-            plugin("kotlin", "org.jetbrains.kotlin.android").version("1.6.20")
 
             library(
                 "hilt-app-plugin",
@@ -47,7 +44,7 @@ dependencyResolutionManagement {
                 "core-ktx", "androidx.core", "core-ktx"
             ).versionRef("core")
 
-            version("compose", "1.2.0-alpha08")
+            version("compose", "1.3.0-alpha01")
 
             library(
                 "compose-layout", "androidx.compose.foundation", "foundation-layout"
@@ -194,7 +191,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "ShrineCompose"
 includeBuild("includeBuild/gradleConfiguration")
-
 
 include(":app")
 include(":android-core:android-core-logger")

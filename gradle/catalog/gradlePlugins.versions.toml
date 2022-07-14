@@ -1,0 +1,14 @@
+[versions]
+gradle = "7.2.1"
+kotlin = "1.7.0"
+checkstyle = "8.37"
+
+[plugins]
+application = { id = "com.android.application", version.ref = "gradle" }
+library = { id = "com.android.library", version.ref = "gradle" }
+kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+[libraries]
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+gradle-build-tool = { group = "com.android.tools.build", name = "gradle", version.ref = "gradle" }
+
