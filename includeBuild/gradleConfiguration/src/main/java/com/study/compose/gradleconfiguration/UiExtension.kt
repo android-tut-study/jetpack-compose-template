@@ -11,6 +11,10 @@ open class UiExtension constructor(private val project: Project) {
                 compose = true
                 viewBinding = true
             }
+
+            composeOptions {
+                kotlinCompilerExtensionVersion = "1.2.0"
+            }
         }
     }
 }
