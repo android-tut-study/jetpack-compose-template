@@ -2,7 +2,7 @@
 
 # Shrine Compose
 
-The app based on ![Shrine Material Design](https://material.io/design/material-studies/shrine.html)
+The app based on [Shrine Material Design](https://material.io/design/material-studies/shrine.html)
 with some modifications.
 
 The main purpose of this project is a template structure for the Android project with my experience
@@ -20,9 +20,9 @@ and studying Jetpack Compose. So some features may not be implemented yet.
 
 ## :camera_flash: Screenshots
 
-Home | Menu | Cart | Qr
---- | --- | --- | --- |
-<img src="/screenshots/home.png" width="260"> | <img src="/screenshots/menu.png" width="260"> |  <img src="/screenshots/cart.png" width="260"> | <img src="/screenshots/qr.png" width="260">
+| Home                                           | Menu                                           | Cart                                           | Qr                                           |
+|------------------------------------------------|------------------------------------------------|------------------------------------------------|----------------------------------------------|
+| <img src="./screenshots/home.png" width="260"> | <img src="./screenshots/menu.png" width="260"> | <img src="./screenshots/cart.png" width="260"> | <img src="./screenshots/qr.png" width="260"> |
 
 ## Gradle Dependencies Graph
 
