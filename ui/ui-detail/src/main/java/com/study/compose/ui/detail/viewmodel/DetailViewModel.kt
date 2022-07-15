@@ -6,14 +6,32 @@ import com.study.compose.core.domain.model.CartDomain
 import com.study.compose.ui.common.viewmodel.BaseViewModel
 import com.study.compose.ui.detail.data.ProductDetail
 import com.study.compose.ui.detail.interactor.intent.DetailIntent
-import com.study.compose.ui.detail.interactor.state.*
+import com.study.compose.ui.detail.interactor.state.AddCart
+import com.study.compose.ui.detail.interactor.state.ClearIdProductAdded
+import com.study.compose.ui.detail.interactor.state.CurrentProduct
+import com.study.compose.ui.detail.interactor.state.DetailUIPartialChange
+import com.study.compose.ui.detail.interactor.state.DetailViewState
+import com.study.compose.ui.detail.interactor.state.GetProducts
 import com.study.compose.usecase.carts.AddCartUseCase
 import com.study.compose.usecase.carts.CartChangeUseCase
 import com.study.compose.usecase.products.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.scan
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,7 +64,7 @@ class DetailViewModel @Inject constructor(
         cartChangeUseCase()
             .onEach { result ->
                 val cartChange = result.getOrThrow()
-                cartChange.cartDomain?.let { cart ->
+                cartChange.cartDomain?.let { _ ->
                     val type = cartChange.type
                     viewState.value =
                         viewState.value.copy(addedToCart = type == CartChangeType.INSERT)

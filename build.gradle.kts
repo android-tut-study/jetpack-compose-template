@@ -5,6 +5,7 @@ plugins {
     alias(gradlePlugins.plugins.kotlin).apply(false)
     alias(gradlePlugins.plugins.hilt).apply(false)
     alias(gradlePlugins.plugins.ktlint)
+    alias(gradlePlugins.plugins.detekt)
     checkstyle
 }
 
@@ -15,6 +16,11 @@ tasks.register("clean", type = Delete::class) {
 subprojects {
     apply {
         plugin(rootProject.gradlePlugins.plugins.ktlint.get().pluginId)
+        plugin(rootProject.gradlePlugins.plugins.detekt.get().pluginId)
+    }
+
+    detekt {
+        config = rootProject.files("./config/detekt/detekt.yml")
     }
 }
 

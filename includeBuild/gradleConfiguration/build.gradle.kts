@@ -4,6 +4,7 @@ plugins {
     `kotlin-dsl`.version("2.1.7")
     checkstyle
     alias(gradleConfig.plugins.ktlint)
+    alias(gradleConfig.plugins.detekt)
 }
 
 checkstyle {
@@ -14,6 +15,11 @@ checkstyle {
 allprojects {
     apply {
         plugin(rootProject.gradleConfig.plugins.ktlint.get().pluginId)
+        plugin(rootProject.gradleConfig.plugins.detekt.get().pluginId)
+    }
+
+    detekt {
+        config = rootProject.files("../../config/detekt/detekt.yml")
     }
 }
 

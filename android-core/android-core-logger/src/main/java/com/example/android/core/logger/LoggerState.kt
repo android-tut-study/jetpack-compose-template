@@ -6,9 +6,9 @@ data class LoggerState(
     val msg: String
 )
 
-enum class LogLevel(s: String) {
-    D("d"),
-    W("w"),
-    E("e"),
-    I("i")
+enum class LogLevel {
+    D,
+    W,
+    E,
+    I
 }

@@ -7,6 +7,9 @@ import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import dagger.hilt.android.HiltAndroidApp
 
+const val MemoryCachePercent = 0.3
+const val DiskCachePercent = 0.03
+
 @HiltAndroidApp
 class MainApp : Application(), ImageLoaderFactory {
 
@@ -15,13 +18,13 @@ class MainApp : Application(), ImageLoaderFactory {
             .crossfade(true)
             .memoryCache {
                 MemoryCache.Builder(this)
-                    .maxSizePercent(0.3)
+                    .maxSizePercent(MemoryCachePercent)
                     .build()
             }
             .diskCache {
                 DiskCache.Builder()
                     .directory(cacheDir.resolve("image_cache"))
-                    .maxSizePercent(0.03)
+                    .maxSizePercent(DiskCachePercent)
                     .build()
             }
             .build()

@@ -8,7 +8,6 @@ import javax.inject.Singleton
 
 @Singleton
 class ProductResponseToDomainMapper @Inject constructor(
-    private val ratingMapper: RatingResponseToDomainMapper
 ) : Mapper<ProductsResponse, ProductDomain> {
     override fun invoke(response: ProductsResponse): ProductDomain {
         return ProductDomain(

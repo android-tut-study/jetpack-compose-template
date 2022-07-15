@@ -1,12 +1,19 @@
-package com.example.ui.qr.analyzer
+package com.example.android.core.camera.qr.analyzer
 
 import android.annotation.SuppressLint
 import android.graphics.ImageFormat
+import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import com.google.zxing.*
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.BinaryBitmap
+import com.google.zxing.DecodeHintType
+import com.google.zxing.MultiFormatReader
+import com.google.zxing.NotFoundException
+import com.google.zxing.PlanarYUVLuminanceSource
 import com.google.zxing.common.GlobalHistogramBinarizer
 import java.nio.ByteBuffer
+import kotlin.reflect.KClass
 
 @SuppressLint("InlinedApi")
 val IMAGE_SUPPORTS = listOf(
@@ -21,20 +28,21 @@ class QrAnalyzer(
 ) : ImageAnalysis.Analyzer {
 
     override fun analyze(image: ImageProxy) {
-        if (image.format in imageSupports) {
-            val bytes = image.planes.first().buffer.toByteArray()
-            val source = PlanarYUVLuminanceSource(
-                bytes,
-                image.width,
-                image.height,
-                0,
-                0,
-                image.width,
-                image.height,
-                false
-            )
-            val binaryBitmap = BinaryBitmap(GlobalHistogramBinarizer(source))
-            try {
+        runCatching {
+            if (image.format in imageSupports) {
+                val bytes = image.planes.first().buffer.toByteArray()
+                val source = PlanarYUVLuminanceSource(
+                    bytes,
+                    image.width,
+                    image.height,
+                    0,
+                    0,
+                    image.width,
+                    image.height,
+                    false
+                )
+
+                val binaryBitmap = BinaryBitmap(GlobalHistogramBinarizer(source))
                 val result = MultiFormatReader().apply {
                     setHints(
                         mapOf(
@@ -43,11 +51,14 @@ class QrAnalyzer(
                     )
                 }.decode(binaryBitmap)
                 onScanned(result.text)
-            } catch (e: Exception) {
-            } finally {
-                image.close()
             }
-        }
+        }.catching(NotFoundException::class, IllegalArgumentException::class) { e ->
+            if (e !is NotFoundException) {
+                Log.w(this::class.simpleName, ">>> QrAnalyzer error due to $e <<<")
+            }
+        }.also {
+            image.close()
+        }.getOrThrow()
     }
 
     private fun ByteBuffer.toByteArray(): ByteArray {
@@ -56,4 +67,13 @@ class QrAnalyzer(
             get(it)
         }
     }
+}
+
+inline fun <R> Result<R>.catching(
+    vararg exceptionClasses: KClass<out Throwable>,
+    transform: (exception: Throwable) -> R
+) = recoverCatching { exception ->
+    if (exceptionClasses.any { it.isInstance(exception) }) {
+        transform(exception)
+    } else throw exception
 }
