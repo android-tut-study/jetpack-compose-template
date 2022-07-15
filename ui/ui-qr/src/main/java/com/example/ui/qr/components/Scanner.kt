@@ -39,7 +39,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.example.ui.qr.R
-import com.example.ui.qr.analyzer.QrAnalyzer
+import com.example.android.core.camera.qr.analyzer.QrAnalyzer
 import com.study.compose.ui.common.components.ExpandableText
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 import com.study.compose.ui.common.utils.textSelectionColors
