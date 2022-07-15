@@ -9,5 +9,4 @@ open class HiltPluginExtension constructor(private val project: Project) {
             add("implementation", "androidx.hilt:hilt-navigation-compose:1.0.0")
         }
     }
-
 }

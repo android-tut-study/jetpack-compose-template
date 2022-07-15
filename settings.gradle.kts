@@ -141,7 +141,6 @@ dependencyResolutionManagement {
                 "androidx.hilt",
                 "hilt-navigation-compose"
             ).version("1.0.0")
-
         }
 
         create("kotlinx") {

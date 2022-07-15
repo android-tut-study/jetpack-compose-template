@@ -19,5 +19,4 @@ dependencies {
     implementation(androidx.paging.runtime)
 
     testImplementation(androidx.room.testing)
-
 }

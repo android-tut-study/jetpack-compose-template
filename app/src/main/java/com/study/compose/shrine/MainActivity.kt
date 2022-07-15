@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
             AppContent()
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterialApi::class)

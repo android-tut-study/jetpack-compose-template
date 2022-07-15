@@ -16,5 +16,4 @@ dependencies {
     implementation(square.okhttp.logging.interceptor)
     implementation(square.retrofit.core)
     implementation(square.retrofit.converter.moshi)
-
 }

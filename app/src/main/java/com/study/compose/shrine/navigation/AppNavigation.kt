@@ -32,16 +32,18 @@ sealed class ProductScreen(
     }
 }
 
-
 @Composable
 fun AppNavigation(navController: NavHostController, viewModelStoreOwner: ViewModelStoreOwner) {
     NavHost(navController = navController, startDestination = Screen.Landing.route) {
 
         composable(Screen.Landing.route) {
             LandingScreen {
-                navController.navigate(Screen.Products.route, navOptions {
-                    popUpTo(Screen.Landing.route) { inclusive = true }
-                })
+                navController.navigate(
+                    Screen.Products.route,
+                    navOptions {
+                        popUpTo(Screen.Landing.route) { inclusive = true }
+                    }
+                )
             }
         }
         addProductTopLevel(navController = navController, viewModelStoreOwner = viewModelStoreOwner)
@@ -102,7 +104,6 @@ fun NavGraphBuilder.addProducts(
                 }
             )
         }
-
     }
 }
 
@@ -125,4 +126,3 @@ fun NavGraphBuilder.addProductTopLevel(
         )
     }
 }
-
