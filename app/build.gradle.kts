@@ -53,7 +53,6 @@ project.extensions.configure(com.android.build.gradle.BaseExtension::class.java)
     kapt {
         correctErrorTypes = true
     }
-
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
@@ -89,5 +88,4 @@ dependencies {
     kapt(hiltLibs.hilt.compiler)
 
     implementation(io.coil.core)
-
 }

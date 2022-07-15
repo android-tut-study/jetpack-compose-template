@@ -26,7 +26,6 @@ class AppPlugin : Plugin<Project> {
                 sourceCompatibility = JavaVersion.VERSION_11
                 targetCompatibility = JavaVersion.VERSION_11
             }
-
         }
 
         target.tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

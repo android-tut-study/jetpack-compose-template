@@ -26,5 +26,4 @@ dependencies {
 
     testApi(test.junit4)
     androidTestApi(test.bundles.test.android.ui)
-
 }

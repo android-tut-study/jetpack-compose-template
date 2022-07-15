@@ -9,7 +9,6 @@ class HiltPlugin : Plugin<Project> {
         target.pluginManager.apply("kotlin-kapt")
         target.extensions.create("hiltConfiguration", HiltPluginExtension::class.java, target)
 
-
         target.dependencies.apply {
             add("implementation", "com.google.dagger:hilt-android:2.42")
             add("kapt", "com.google.dagger:hilt-android-compiler:2.42")

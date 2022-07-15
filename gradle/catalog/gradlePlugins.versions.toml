@@ -2,11 +2,13 @@
 gradle = "7.2.1"
 kotlin = "1.7.0"
 checkstyle = "8.37"
+ktlintGradle = "10.3.0"
 
 [plugins]
 application = { id = "com.android.application", version.ref = "gradle" }
 library = { id = "com.android.library", version.ref = "gradle" }
 kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintGradle" }
 
 [libraries]
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
