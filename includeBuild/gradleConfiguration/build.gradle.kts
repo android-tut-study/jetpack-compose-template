@@ -1,12 +1,20 @@
 @Suppress("DSL_SCOPE_VIOLATION")
+
 plugins {
     `kotlin-dsl`.version("2.1.7")
     checkstyle
+    alias(gradleConfig.plugins.ktlint)
 }
 
 checkstyle {
     // will use the version declared in the catalog
     toolVersion = gradleConfig.versions.checkstyle.get()
+}
+
+allprojects {
+    apply {
+        plugin(rootProject.gradleConfig.plugins.ktlint.get().pluginId)
+    }
 }
 
 repositories {

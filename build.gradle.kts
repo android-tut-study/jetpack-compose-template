@@ -4,11 +4,18 @@ plugins {
     alias(gradlePlugins.plugins.library).apply(false)
     alias(gradlePlugins.plugins.kotlin).apply(false)
     alias(gradlePlugins.plugins.hilt).apply(false)
+    alias(gradlePlugins.plugins.ktlint)
     checkstyle
 }
 
 tasks.register("clean", type = Delete::class) {
     delete(rootProject.buildDir)
+}
+
+subprojects {
+    apply {
+        plugin(rootProject.gradlePlugins.plugins.ktlint.get().pluginId)
+    }
 }
 
 checkstyle {
