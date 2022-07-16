@@ -6,6 +6,10 @@ uiConfiguration {
     applyCompose()
 }
 
+testFixtureConfiguration {
+    applyTestFixture(true)
+}
+
 dependencies {
     api(project(":ui:ui-state"))
     api(project(":android-core:android-core-logger"))
