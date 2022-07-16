@@ -12,6 +12,7 @@ class AppPlugin : Plugin<Project> {
         target.pluginManager.apply("com.android.library")
         target.pluginManager.apply("org.jetbrains.kotlin.android")
         target.extensions.create("uiConfiguration", UiExtension::class.java, target)
+        target.extensions.create("testFixtureConfiguration", TestFixtureExtension::class.java, target)
 
         target.extensions.configure(BaseExtension::class.java) {
             compileSdkVersion(32)
