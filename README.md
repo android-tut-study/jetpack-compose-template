@@ -33,3 +33,7 @@ and studying Jetpack Compose. So some features may not be implemented yet.
 * core-xx modules: contains auxiliary code required for several Ui and UseCase modules
 * usecase-xx modules: contains all app use cases to communicate between ui and domain modules
 * domain-xx modules: used to communicate to api endpoint, local storage...
+
+## MAD Score
+
+<img src="./screenshots/summary.png">
