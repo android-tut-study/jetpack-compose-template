@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import androidx.navigation.navOptions
 import com.example.ui.qr.Qr
 import com.study.compose.ui.detail.Detail
@@ -37,6 +38,9 @@ sealed class ProductScreen(
         }
     }
 }
+
+
+val uri = "http://study.compose.shrine"
 
 @Composable
 fun AppNavigation(navController: NavHostController, viewModelStoreOwner: ViewModelStoreOwner) {
@@ -68,22 +72,27 @@ fun AppNavigation(navController: NavHostController, viewModelStoreOwner: ViewMod
 fun NavGraphBuilder.addShowProductDetail(
     navController: NavController,
     root: Screen,
+    viewModelStoreOwner: ViewModelStoreOwner
 ) {
     composable(
         route = ProductScreen.ShowDetail.createRoute(root),
-        arguments = listOf(navArgument("productId") { type = NavType.LongType; defaultValue = -1 })
+        arguments = listOf(navArgument("productId") { type = NavType.LongType; defaultValue = -1 }),
+        deepLinks = listOf(navDeepLink { uriPattern = "$uri/{productId}" })
     ) { backStackEntry ->
-        val productId = backStackEntry.arguments?.getLong("productId", -1) ?: -1
-        Detail(
-            productId = productId,
-            onClosePressed = { navController.popBackStack() },
-            onOtherDetailPressed = { otherId ->
-                navController.navigate(
-                    ProductScreen.ShowDetail.createRoute(root, productId = otherId)
-                )
-            },
-            onFavoritePressed = { /* TODO Process Favorite */ }
-        )
+        CompositionLocalProvider(
+            LocalViewModelStoreOwner provides viewModelStoreOwner
+        ) {
+            val productId = backStackEntry.arguments?.getLong("productId", -1) ?: -1
+            Detail(
+                productId = productId,
+                onClosePressed = { navController.popBackStack() },
+                onOtherDetailPressed = { otherId ->
+                    navController.navigate(
+                        ProductScreen.ShowDetail.createRoute(root, productId = otherId)
+                    )
+                },
+            )
+        }
     }
 }
 
@@ -129,6 +138,7 @@ fun NavGraphBuilder.addProductTopLevel(
         addShowProductDetail(
             navController = navController,
             root = Screen.Products,
+            viewModelStoreOwner = viewModelStoreOwner
         )
     }
 }

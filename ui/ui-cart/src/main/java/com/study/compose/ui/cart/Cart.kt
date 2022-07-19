@@ -63,7 +63,7 @@ fun BottomCart(
     BottomCart(
         modifier = modifier,
         viewState = viewState,
-        hidden = !appViewState.showBottomCart,
+        hidden = !appViewState.showBottomCart || appViewState.showBottomSheet,
         carts = carts
     )
 }
@@ -117,7 +117,7 @@ fun BottomCart(
                     delayMillis = 150
                 )
                 CartState.Collapsed isTransitioningTo CartState.Expanded -> tween(200)
-                else -> tween(400)
+                else -> tween(200)
             }
         }) { state ->
             when (state) {

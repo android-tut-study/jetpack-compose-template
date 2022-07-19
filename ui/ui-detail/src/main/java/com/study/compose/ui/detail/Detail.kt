@@ -4,12 +4,42 @@ import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -25,6 +55,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.study.compose.ui.common.components.AppBottomSheet
 import com.study.compose.ui.common.components.ExpandableText
 import com.study.compose.ui.common.components.ShrineDivider
 import com.study.compose.ui.common.theme.ShrineComposeTheme
@@ -33,10 +64,13 @@ import com.study.compose.ui.detail.components.AlsoLikes
 import com.study.compose.ui.detail.components.DetailHeader
 import com.study.compose.ui.detail.components.MoreDetail
 import com.study.compose.ui.detail.components.ProductInfo
+import com.study.compose.ui.detail.components.ProductSharing
 import com.study.compose.ui.detail.data.ProductDetail
 import com.study.compose.ui.detail.interactor.intent.DetailIntent
 import com.study.compose.ui.detail.interactor.state.DetailViewState
 import com.study.compose.ui.detail.viewmodel.DetailViewModel
+import com.study.compose.ui.state.AppStateViewModel
+import com.study.compose.ui.state.AppViewAction
 import kotlinx.coroutines.launch
 
 private val MinTitleOffset = 56.dp
@@ -48,52 +82,108 @@ fun Detail(
     productId: Long,
     onOtherDetailPressed: (Long) -> Unit = {},
     onClosePressed: () -> Unit = {},
-    onFavoritePressed: () -> Unit = {}
 ) {
     val id = remember { productId }
     Detail(
         productId = id,
         viewModel = hiltViewModel(),
+        appViewStateVM = hiltViewModel(),
         onOtherDetailPressed = onOtherDetailPressed,
         onClosePressed = onClosePressed,
-        onFavoritePressed = onFavoritePressed
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Detail(
     productId: Long,
     viewModel: DetailViewModel,
+    appViewStateVM: AppStateViewModel,
     onOtherDetailPressed: (Long) -> Unit = {},
     onClosePressed: () -> Unit = {},
-    onFavoritePressed: () -> Unit = {}
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val bottomSheetState =
+        rememberModalBottomSheetState(
+            initialValue = ModalBottomSheetValue.Hidden,
+            skipHalfExpanded = true
+        )
     val viewState by viewModel.viewState.collectAsState()
+
     LaunchedEffect(Unit) {
         viewModel.processIntent(DetailIntent.Initial(productId = productId))
     }
+
+    LaunchedEffect(bottomSheetState.targetValue) {
+        appViewStateVM.process(AppViewAction.ShowBottomSheet(bottomSheetState.targetValue != ModalBottomSheetValue.Hidden))
+    }
+
     Detail(
         viewState = viewState,
-        onOtherDetailPressed = onOtherDetailPressed,
         onClosePressed = onClosePressed,
-        onFavoritePressed = onFavoritePressed,
-        onAddCart = { product, amount ->
+        bottomSheetState = bottomSheetState,
+        onFavoritePressed = {
+            coroutineScope.launch {
+                bottomSheetState.show()
+            }
+        },
+        onAddCart = { product: ProductDetail, amount: Int ->
             coroutineScope.launch {
                 viewModel.processIntent(DetailIntent.AddCart(product, amount))
+
             }
         },
         onCartAddedDone = {
             coroutineScope.launch {
                 viewModel.processIntent(DetailIntent.ClearCartAddedFlag)
             }
-        }
+        },
+        onOtherDetailPressed = onOtherDetailPressed,
     )
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun Detail(
+    viewState: DetailViewState,
+    bottomSheetState: ModalBottomSheetState,
+    onOtherDetailPressed: (Long) -> Unit,
+    onClosePressed: () -> Unit = {},
+    onFavoritePressed: () -> Unit = {},
+    onAddCart: (ProductDetail, Int) -> Unit,
+    onCartAddedDone: () -> Unit
+) {
+
+    ShrineComposeTheme {
+        Surface(color = MaterialTheme.colors.surface, modifier = Modifier.fillMaxSize()) {
+            AppBottomSheet(bottomSheetState = bottomSheetState, sheetContent = {
+                if (viewState.currentProduct != null) {
+                    ProductSharing(productDetail = viewState.currentProduct)
+                } else {
+                    // Fake anchor view
+                    Box(modifier = Modifier.padding(1.dp))
+                }
+            }, modifier = Modifier.fillMaxSize()) {
+                Detail(
+                    products = viewState.products,
+                    currentProduct = viewState.currentProduct,
+                    addedToCart = viewState.addedToCart,
+                    onOtherDetailPressed = onOtherDetailPressed,
+                    onClosePressed = onClosePressed,
+                    onFavoritePressed = onFavoritePressed,
+                    onAddCart = onAddCart,
+                    onCartAddedDone = onCartAddedDone
+                )
+            }
+        }
+    }
 }
 
 @Composable
 fun Detail(
-    viewState: DetailViewState,
+    products: List<ProductDetail>,
+    currentProduct: ProductDetail?,
+    addedToCart: Boolean,
     onOtherDetailPressed: (Long) -> Unit = {},
     onClosePressed: () -> Unit = {},
     onFavoritePressed: () -> Unit = {},
@@ -105,48 +195,45 @@ fun Detail(
         mutableStateOf(Offset.Unspecified)
     }
 
-    ShrineComposeTheme {
-        Surface(color = MaterialTheme.colors.surface) {
-            val scroll = scrollState.value
+    val scroll = scrollState.value
 
-            Box(modifier = Modifier.fillMaxSize()) {
-                ProductImage(
-                    scroll = scrollState.value,
-                    currentProduct = viewState.currentProduct
-                )
-                Body(
-                    scrollState,
-                    currentProduct = viewState.currentProduct,
-                    alsoLikes = viewState.products,
-                    onAlsoPressed = { also -> onOtherDetailPressed(also.id) },
-                    onAddCartPressed = { product ->
-                        positionAddButton = Offset.Unspecified
-                        onAddCart(product, 1)
-                    }
-                )
-                ConcealedTitle(scroll = scroll, currentProduct = viewState.currentProduct)
-                DetailHeader(
-                    scroll = scroll,
-                    onNavigationPressed = onClosePressed,
-                    onCartAddPressed = { position ->
-                        positionAddButton = position
-                        viewState.currentProduct?.let { product ->
-                            // TODO Modify amount later
-                            onAddCart(product, 1)
-                        }
-                    },
-                    onFavoritePressed = onFavoritePressed,
-                    currentProduct = viewState.currentProduct
-                )
-                if (viewState.currentProduct != null && positionAddButton != Offset.Unspecified && viewState.addedToCart) {
-                    AddedFlyableProduct(
-                        productAdded = viewState.currentProduct,
-                        beginCoordinate = positionAddButton,
-                        onAdded = onCartAddedDone
-                    )
-                }
+    Box(modifier = Modifier.fillMaxSize()) {
+        ProductImage(
+            scroll = scrollState.value,
+            currentProduct = currentProduct
+        )
+        Body(
+            scrollState,
+            currentProduct = currentProduct,
+            alsoLikes = products,
+            onAlsoPressed = { also -> onOtherDetailPressed(also.id) },
+            onAddCartPressed = { product ->
+                positionAddButton = Offset.Unspecified
+                onAddCart(product, 1)
             }
+        )
+        ConcealedTitle(scroll = scroll, currentProduct = currentProduct)
+        DetailHeader(
+            scroll = scroll,
+            onNavigationPressed = onClosePressed,
+            onCartAddPressed = { position ->
+                positionAddButton = position
+                currentProduct?.let { product ->
+                    // TODO Modify amount later
+                    onAddCart(product, 1)
+                }
+            },
+            onFavoritePressed = onFavoritePressed,
+            currentProduct = currentProduct
+        )
+        if (currentProduct != null && positionAddButton != Offset.Unspecified && addedToCart) {
+            AddedFlyableProduct(
+                productAdded = currentProduct,
+                beginCoordinate = positionAddButton,
+                onAdded = onCartAddedDone
+            )
         }
+
     }
 }
 
@@ -156,7 +243,6 @@ fun AddedFlyableProduct(
     beginCoordinate: Offset,
     onAdded: () -> Unit
 ) {
-    Log.e("ANNX", "Flyable")
     val productSize = 36.dp
     val screenWidth =
         with(LocalDensity.current) { LocalConfiguration.current.screenWidthDp.dp.toPx() - productSize.toPx() }
