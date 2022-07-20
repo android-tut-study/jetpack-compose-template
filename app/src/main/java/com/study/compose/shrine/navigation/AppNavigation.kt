@@ -40,7 +40,7 @@ sealed class ProductScreen(
 }
 
 
-val uri = "http://study.compose.shrine"
+val uri = "study.compose.shrine"
 
 @Composable
 fun AppNavigation(navController: NavHostController, viewModelStoreOwner: ViewModelStoreOwner) {
