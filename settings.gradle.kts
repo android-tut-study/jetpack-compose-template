@@ -111,10 +111,9 @@ dependencyResolutionManagement {
 
             version("zxing", "3.4.1")
             library("zxing-core", "com.google.zxing", "core").versionRef("zxing")
-
             bundle(
-                "camera-qr",
-                listOf("camera-camera2", "camera-lifecycle", "camera-view", "zxing-core")
+                "camera",
+                listOf("camera-camera2", "camera-lifecycle", "camera-view")
             )
 
             library("customview-core", "androidx.customview:customview:1.2.0-alpha01")
@@ -207,3 +206,4 @@ include(":ui:ui-home")
 include(":ui:ui-detail")
 include(":ui:ui-cart")
 include(":ui:ui-qr")
+include(":android-core:android-core-qr")
