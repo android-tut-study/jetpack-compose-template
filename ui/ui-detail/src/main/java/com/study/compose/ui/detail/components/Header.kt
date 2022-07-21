@@ -81,14 +81,7 @@ fun DetailProductImage(modifier: Modifier = Modifier, productDetail: ProductDeta
             model = productDetail.imageUrl,
             contentDescription = "Fake2",
             contentScale = ContentScale.Inside,
-        )
-    } else {
-        // TODO Change to PlaceHolder
-        Image(
-            modifier = titleImageModifier,
-            painter = painterResource(id = R.drawable.fake),
-            contentDescription = "Fake2",
-            contentScale = ContentScale.Inside,
+            placeholder = painterResource(id = R.drawable.logo)
         )
     }
 }

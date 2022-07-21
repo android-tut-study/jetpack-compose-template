@@ -3,7 +3,6 @@ package com.study.compose.ui.detail
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,9 +16,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
@@ -153,10 +152,18 @@ fun Detail(
     onAddCart: (ProductDetail, Int) -> Unit,
     onCartAddedDone: () -> Unit
 ) {
-    AppBottomSheet(bottomSheetState = bottomSheetState, sheetContent = {
-        ProductSharing(productDetail = viewState.currentProduct)
-        Box(modifier = Modifier.padding(1.dp))
-    }, modifier = Modifier.fillMaxSize()) {
+    AppBottomSheet(
+        bottomSheetState = bottomSheetState,
+        sheetShape = MaterialTheme.shapes.large.copy(
+            topStart = CornerSize(24.dp),
+            topEnd = CornerSize(24.dp)
+        ),
+        sheetContent = {
+            ProductSharing(productDetail = viewState.currentProduct)
+            Box(modifier = Modifier.padding(1.dp)) // Fake anchor view
+        },
+        modifier = Modifier.fillMaxSize()
+    ) {
         Detail(
             products = viewState.products,
             currentProduct = viewState.currentProduct,
@@ -224,7 +231,6 @@ fun Detail(
                 onAdded = onCartAddedDone
             )
         }
-
     }
 }
 
@@ -410,15 +416,7 @@ fun ProductImage(
                 contentDescription = null,
                 contentScale = ContentScale.FillHeight,
                 alignment = Alignment.Center,
-            )
-        } else {
-            // TODO Change to PlaceHolder
-            Image(
-                painter = painterResource(id = com.study.compose.ui.common.R.drawable.fake),
-                modifier = Modifier.fillMaxSize(),
-                contentDescription = "Place Holder",
-                contentScale = ContentScale.FillBounds,
-                alignment = Alignment.Center,
+                placeholder = painterResource(id = com.study.compose.ui.common.R.drawable.logo)
             )
         }
     }
