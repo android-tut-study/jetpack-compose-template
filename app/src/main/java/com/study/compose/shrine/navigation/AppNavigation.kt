@@ -1,9 +1,7 @@
 package com.study.compose.shrine.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -80,17 +78,17 @@ fun NavGraphBuilder.addShowProductDetail(
         arguments = listOf(navArgument("productId") { type = NavType.LongType; defaultValue = -1 }),
         deepLinks = listOf(navDeepLink { uriPattern = "$uri/{productId}" })
     ) { backStackEntry ->
-            val productId = backStackEntry.arguments?.getLong("productId", -1) ?: -1
-            Detail(
-                appViewStateVM = appStateViewModel,
-                productId = productId,
-                onClosePressed = { navController.popBackStack() },
-                onOtherDetailPressed = { otherId ->
-                    navController.navigate(
-                        ProductScreen.ShowDetail.createRoute(root, productId = otherId)
-                    )
-                },
-            )
+        val productId = backStackEntry.arguments?.getLong("productId", -1) ?: -1
+        Detail(
+            appViewStateVM = appStateViewModel,
+            productId = productId,
+            onClosePressed = { navController.popBackStack() },
+            onOtherDetailPressed = { otherId ->
+                navController.navigate(
+                    ProductScreen.ShowDetail.createRoute(root, productId = otherId)
+                )
+            },
+        )
     }
 }
 
@@ -100,20 +98,21 @@ fun NavGraphBuilder.addProducts(
     appStateViewModel: AppStateViewModel
 ) {
     composable(route = ProductScreen.Products.createRoute(root)) {
-            HomeScreen(
-                appStateViewModel = appStateViewModel,
-                onProductSelect = { productId ->
-                    navController.navigate(
-                        ProductScreen.ShowDetail.createRoute(
-                            root,
-                            productId = productId
-                        )
+        val scope = rememberCoroutineScope()
+        HomeScreen(
+            appStateViewModel = appStateViewModel,
+            onProductSelect = { productId ->
+                navController.navigate(
+                    ProductScreen.ShowDetail.createRoute(
+                        root,
+                        productId = productId
                     )
-                },
-                onQrPressed = {
-                    navController.navigate(Screen.Qr.route)
-                }
-            )
+                )
+            },
+            onQrPressed = {
+                navController.navigate(Screen.Qr.route)
+            }
+        )
     }
 }
 

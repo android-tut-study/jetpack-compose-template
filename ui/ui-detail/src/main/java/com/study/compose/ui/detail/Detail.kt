@@ -156,7 +156,6 @@ fun Detail(
     AppBottomSheet(bottomSheetState = bottomSheetState, sheetContent = {
         ProductSharing(productDetail = viewState.currentProduct)
         Box(modifier = Modifier.padding(1.dp))
-
     }, modifier = Modifier.fillMaxSize()) {
         Detail(
             products = viewState.products,

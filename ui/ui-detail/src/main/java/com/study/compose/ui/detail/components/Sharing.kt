@@ -1,6 +1,5 @@
 package com.study.compose.ui.detail.components
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,9 +15,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -29,62 +31,71 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.graphics.drawable.toBitmap
-import coil.compose.rememberAsyncImagePainter
-import com.example.android.core.qr.generateQrBitmap
 import com.example.android.core.qr.generateQrLogoBitmap
 import com.study.compose.ui.common.theme.ShrineComposeTheme
 import com.study.compose.ui.detail.data.ProductDetail
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 @Composable
 fun ProductSharing(modifier: Modifier = Modifier, productDetail: ProductDetail?) {
+    val scope = rememberCoroutineScope()
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val qrWidth = screenWidth * 0.7f
 
     val qrSize = with(LocalDensity.current) { qrWidth.roundToPx() }
     var qrBitmap by remember {
-        mutableStateOf<Bitmap?>(null)
+        mutableStateOf<ImageBitmap?>(null)
     }
     val valueColor = MaterialTheme.colors.onSurface.toArgb()
     val bgColor = MaterialTheme.colors.surface.toArgb()
     val logoColor = MaterialTheme.colors.primary.toArgb()
     val ctx = LocalContext.current
+    val productLink = "Fake Product Link!!!" //TODO generate Product Link
     if (productDetail != null) {
-        LaunchedEffect(productDetail) {
-            val productLink = "Fake Product Link!!!" //TODO generate Product Link
-            val logoBitmap =
-                ContextCompat.getDrawable(ctx, com.study.compose.ui.common.R.drawable.logo)?.apply {
-                    colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                        logoColor,
-                        BlendModeCompat.SRC_ATOP
-                    )
-                }?.toBitmap()
-            qrBitmap = logoBitmap?.let { logo ->
-                generateQrLogoBitmap(
-                    productLink,
-                    qrSize,
-                    logo,
-                    valueColor,
-                    bgColor,
-                )
-            } ?: generateQrBitmap(productLink, qrSize, valueColor, bgColor)
+        LaunchedEffect(Unit) {
+            withContext(Dispatchers.Default) {
+                val logoBitmap =
+                    ContextCompat.getDrawable(ctx, com.study.compose.ui.common.R.drawable.logo)
+                        ?.apply {
+                            colorFilter =
+                                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                                    logoColor,
+                                    BlendModeCompat.SRC_ATOP
+                                )
+                        }?.toBitmap()
+
+                if (logoBitmap != null) {
+                    qrBitmap = generateQrLogoBitmap(
+                        productLink,
+                        qrSize,
+                        logoBitmap,
+                        valueColor,
+                        bgColor,
+                    ).asImageBitmap()
+                }
+            }
         }
     }
-    Column(
-        modifier = Modifier
-            .padding(20.dp)
-            .width(screenWidth)
-            .wrapContentHeight()
-            .then(modifier),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            modifier = Modifier.size(qrWidth),
-            painter = rememberAsyncImagePainter(qrBitmap),
-            contentDescription = "Fake QR"
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(text = "Qr Code")
+    if (qrBitmap != null) {
+        Column(
+            modifier = Modifier
+                .padding(20.dp)
+                .width(screenWidth)
+                .wrapContentHeight()
+                .then(modifier),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                modifier = Modifier.size(qrWidth),
+                bitmap = qrBitmap!!,
+                contentDescription = "Fake QR"
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(text = "Qr Code")
+
+        }
     }
 }
 

@@ -3,11 +3,22 @@ package com.study.compose.ui.home
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.BackdropScaffoldState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -16,7 +27,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.study.compose.ui.common.components.ShrineScaffold
 import com.study.compose.ui.common.components.ShrineTopBar
@@ -42,12 +52,17 @@ fun HomeScreen(
     onSearchPressed: () -> Unit = {},
     onProductSelect: (Long) -> Unit
 ) {
+    val scope = rememberCoroutineScope()
     HomeScreen(
         viewModel = hiltViewModel(),
         onQrPressed = onQrPressed,
         onSearchPressed = onSearchPressed,
         onProductSelect = onProductSelect,
-        appViewStateVM = appStateViewModel
+        onBottomCartRevealed = { revealed ->
+            scope.launch {
+                appStateViewModel.process(AppViewAction.ShowBottomSheet(revealed))
+            }
+        }
     )
 }
 
@@ -55,24 +70,21 @@ fun HomeScreen(
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
-    appViewStateVM: AppStateViewModel,
     onQrPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
-    onProductSelect: (Long) -> Unit
+    onProductSelect: (Long) -> Unit,
+    onBottomCartRevealed: (Boolean) -> Unit
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.processIntent(HomeIntent.FetchProducts)
-    }
-
     val homeViewState = viewModel.viewState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val appState = rememberAppState()
 
     val scaffoldState = appState.scaffoldState
-
+    LaunchedEffect(Unit) {
+        viewModel.processIntent(HomeIntent.FetchProducts)
+    }
     Products(
         viewState = homeViewState.value,
-        appViewStateVM = appViewStateVM,
         scaffoldState = scaffoldState,
         onQrPressed = onQrPressed,
         onSearchPressed = onSearchPressed,
@@ -92,6 +104,7 @@ fun HomeScreen(
                 viewModel.processIntent(HomeIntent.SelectCategory(category))
             }
         },
+        onBottomCartRevealed = onBottomCartRevealed
     )
 }
 
@@ -99,7 +112,6 @@ fun HomeScreen(
 @Composable
 fun Products(
     viewState: HomeViewState,
-    appViewStateVM: AppStateViewModel,
     scaffoldState: BackdropScaffoldState,
     onQrPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
@@ -107,6 +119,7 @@ fun Products(
     onAddedPress: (Product, Offset) -> Unit,
     onProductAddedDone: () -> Unit,
     onCategorySelected: (String) -> Unit,
+    onBottomCartRevealed: (Boolean) -> Unit
 ) {
     var backdropRevealed by remember { mutableStateOf(scaffoldState.isRevealed) }
     val scope = rememberCoroutineScope()
@@ -127,7 +140,7 @@ fun Products(
                                 if (!scaffoldState.isAnimationRunning) {
                                     backdropRevealed = revealed
                                     scope.launch {
-                                        appViewStateVM.process(AppViewAction.ShowBottomCart(!revealed))
+                                        onBottomCartRevealed(revealed)
                                         if (scaffoldState.isConcealed) {
                                             scaffoldState.reveal()
                                         } else {
