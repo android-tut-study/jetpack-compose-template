@@ -34,7 +34,6 @@ fun MoreDetail(
 ) {
     var expandedState by remember { mutableStateOf(true) }
 
-    Surface(color = MaterialTheme.colors.surface) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -104,8 +103,6 @@ fun MoreDetail(
                 }
             }
         }
-
-    }
 }
 
 @OptIn(ExperimentalUnitApi::class)

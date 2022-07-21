@@ -5,12 +5,22 @@ import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,20 +59,18 @@ fun Qr(onClosed: () -> Unit, onImageSelectPressed: () -> Unit) {
         launcher.launch(Manifest.permission.CAMERA)
     }
 
-    ShrineComposeTheme {
-        Surface(color = MaterialTheme.colors.surface, modifier = Modifier.fillMaxSize()) {
-            if (hasCamPermission) {
-                Qr(
-                    viewModel = hiltViewModel(),
-                    onClosed = onClosed,
-                    onImageSelectPressed = onImageSelectPressed
-                )
-            } else {
-                // TODO Show required camera permission UI
-                Text(text = "Please Enable Camera Permission")
-            }
+//    ShrineComposeTheme {
+        if (hasCamPermission) {
+            Qr(
+                viewModel = hiltViewModel(),
+                onClosed = onClosed,
+                onImageSelectPressed = onImageSelectPressed
+            )
+        } else {
+            // TODO Show required camera permission UI
+            Text(text = "Please Enable Camera Permission")
         }
-    }
+//    }
 }
 
 @Composable

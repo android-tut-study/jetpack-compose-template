@@ -37,16 +37,17 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
+    appStateViewModel: AppStateViewModel,
     onQrPressed: () -> Unit = {},
     onSearchPressed: () -> Unit = {},
     onProductSelect: (Long) -> Unit
 ) {
     HomeScreen(
         viewModel = hiltViewModel(),
-        appViewStateVM = viewModel(),
         onQrPressed = onQrPressed,
         onSearchPressed = onSearchPressed,
         onProductSelect = onProductSelect,
+        appViewStateVM = appStateViewModel
     )
 }
 

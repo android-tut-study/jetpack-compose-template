@@ -37,7 +37,7 @@ import com.study.compose.ui.detail.data.ProductDetail
 
 
 @Composable
-fun ProductSharing(modifier: Modifier = Modifier, productDetail: ProductDetail) {
+fun ProductSharing(modifier: Modifier = Modifier, productDetail: ProductDetail?) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val qrWidth = screenWidth * 0.7f
 
@@ -49,24 +49,26 @@ fun ProductSharing(modifier: Modifier = Modifier, productDetail: ProductDetail) 
     val bgColor = MaterialTheme.colors.surface.toArgb()
     val logoColor = MaterialTheme.colors.primary.toArgb()
     val ctx = LocalContext.current
-    LaunchedEffect(Unit) {
-        val productLink = "Fake Product Link!!!" //TODO generate Product Link
-        val logoBitmap =
-            ContextCompat.getDrawable(ctx, com.study.compose.ui.common.R.drawable.logo)?.apply {
-                colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                    logoColor,
-                    BlendModeCompat.SRC_ATOP
+    if (productDetail != null) {
+        LaunchedEffect(productDetail) {
+            val productLink = "Fake Product Link!!!" //TODO generate Product Link
+            val logoBitmap =
+                ContextCompat.getDrawable(ctx, com.study.compose.ui.common.R.drawable.logo)?.apply {
+                    colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                        logoColor,
+                        BlendModeCompat.SRC_ATOP
+                    )
+                }?.toBitmap()
+            qrBitmap = logoBitmap?.let { logo ->
+                generateQrLogoBitmap(
+                    productLink,
+                    qrSize,
+                    logo,
+                    valueColor,
+                    bgColor,
                 )
-            }?.toBitmap()
-        qrBitmap = logoBitmap?.let { logo ->
-            generateQrLogoBitmap(
-                productLink,
-                qrSize,
-                logo,
-                valueColor,
-                bgColor,
-            )
-        } ?: generateQrBitmap(productLink, qrSize, valueColor, bgColor)
+            } ?: generateQrBitmap(productLink, qrSize, valueColor, bgColor)
+        }
     }
     Column(
         modifier = Modifier

@@ -1,6 +1,5 @@
 package com.study.compose.ui.detail
 
-import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.tween
@@ -18,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
@@ -58,7 +58,6 @@ import coil.compose.AsyncImage
 import com.study.compose.ui.common.components.AppBottomSheet
 import com.study.compose.ui.common.components.ExpandableText
 import com.study.compose.ui.common.components.ShrineDivider
-import com.study.compose.ui.common.theme.ShrineComposeTheme
 import com.study.compose.ui.common.utils.toIntOffset
 import com.study.compose.ui.detail.components.AlsoLikes
 import com.study.compose.ui.detail.components.DetailHeader
@@ -80,6 +79,7 @@ private val ScreenPadding = 12.dp
 @Composable
 fun Detail(
     productId: Long,
+    appViewStateVM: AppStateViewModel,
     onOtherDetailPressed: (Long) -> Unit = {},
     onClosePressed: () -> Unit = {},
 ) {
@@ -87,7 +87,7 @@ fun Detail(
     Detail(
         productId = id,
         viewModel = hiltViewModel(),
-        appViewStateVM = hiltViewModel(),
+        appViewStateVM = appViewStateVM,
         onOtherDetailPressed = onOtherDetailPressed,
         onClosePressed = onClosePressed,
     )
@@ -110,7 +110,7 @@ fun Detail(
         )
     val viewState by viewModel.viewState.collectAsState()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(productId) {
         viewModel.processIntent(DetailIntent.Initial(productId = productId))
     }
 
@@ -153,29 +153,21 @@ fun Detail(
     onAddCart: (ProductDetail, Int) -> Unit,
     onCartAddedDone: () -> Unit
 ) {
+    AppBottomSheet(bottomSheetState = bottomSheetState, sheetContent = {
+        ProductSharing(productDetail = viewState.currentProduct)
+        Box(modifier = Modifier.padding(1.dp))
 
-    ShrineComposeTheme {
-        Surface(color = MaterialTheme.colors.surface, modifier = Modifier.fillMaxSize()) {
-            AppBottomSheet(bottomSheetState = bottomSheetState, sheetContent = {
-                if (viewState.currentProduct != null) {
-                    ProductSharing(productDetail = viewState.currentProduct)
-                } else {
-                    // Fake anchor view
-                    Box(modifier = Modifier.padding(1.dp))
-                }
-            }, modifier = Modifier.fillMaxSize()) {
-                Detail(
-                    products = viewState.products,
-                    currentProduct = viewState.currentProduct,
-                    addedToCart = viewState.addedToCart,
-                    onOtherDetailPressed = onOtherDetailPressed,
-                    onClosePressed = onClosePressed,
-                    onFavoritePressed = onFavoritePressed,
-                    onAddCart = onAddCart,
-                    onCartAddedDone = onCartAddedDone
-                )
-            }
-        }
+    }, modifier = Modifier.fillMaxSize()) {
+        Detail(
+            products = viewState.products,
+            currentProduct = viewState.currentProduct,
+            addedToCart = viewState.addedToCart,
+            onOtherDetailPressed = onOtherDetailPressed,
+            onClosePressed = onClosePressed,
+            onFavoritePressed = onFavoritePressed,
+            onAddCart = onAddCart,
+            onCartAddedDone = onCartAddedDone
+        )
     }
 }
 
