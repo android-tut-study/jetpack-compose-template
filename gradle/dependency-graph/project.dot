@@ -7,6 +7,7 @@ digraph {
 
   ":android-core:android-core-camera" [fillcolor="#baffc9"];
   ":android-core:android-core-logger" [fillcolor="#baffc9"];
+  ":android-core:android-core-qr" [fillcolor="#baffc9"];
   ":app" [shape=box, fillcolor="#baffc9"];
   ":core:core-dispatcher" [fillcolor="#baffc9"];
   ":core:core-domain" [fillcolor="#baffc9"];
@@ -46,6 +47,7 @@ digraph {
   ":ui:ui-detail" -> ":ui:ui-common" [style=dotted]
   ":ui:ui-detail" -> ":usecase:usecase-products" [style=dotted]
   ":ui:ui-detail" -> ":usecase:usecase-carts" [style=dotted]
+  ":ui:ui-detail" -> ":android-core:android-core-qr" [style=dotted]
   ":ui:ui-home" -> ":ui:ui-common" [style=dotted]
   ":ui:ui-home" -> ":usecase:usecase-products" [style=dotted]
   ":ui:ui-home" -> ":usecase:usecase-carts" [style=dotted]
