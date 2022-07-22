@@ -3,6 +3,5 @@ plugins {
 }
 
 dependencies {
-    api(androidx.bundles.camera)
     implementation(androidx.zxing.core)
 }
