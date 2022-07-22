@@ -1,6 +1,8 @@
 package com.study.compose.ui.detail.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +27,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -32,13 +36,18 @@ import androidx.core.graphics.BlendModeCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.example.android.core.qr.generateQrLogoBitmap
 import com.study.compose.ui.common.theme.ShrineComposeTheme
+import com.study.compose.ui.common.utils.toUrlStyleAnnotatedString
 import com.study.compose.ui.detail.data.ProductDetail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 
 @Composable
-fun ProductSharing(modifier: Modifier = Modifier, productDetail: ProductDetail?) {
+fun ProductSharing(
+    modifier: Modifier = Modifier,
+    productDetail: ProductDetail?,
+    onQrLinkPressed: (String) -> Unit
+) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val qrWidth = screenWidth * 0.7f
 
@@ -46,11 +55,14 @@ fun ProductSharing(modifier: Modifier = Modifier, productDetail: ProductDetail?)
     var qrBitmap by remember {
         mutableStateOf<ImageBitmap?>(null)
     }
+
+    val productLink =
+        "http://study.compose.shrine/${productDetail?.id}" //TODO generate Product Link
+
     val valueColor = MaterialTheme.colors.onSurface.toArgb()
     val bgColor = MaterialTheme.colors.surface.toArgb()
     val logoColor = MaterialTheme.colors.primary.toArgb()
     val ctx = LocalContext.current
-    val productLink = "Fake Product Link!!!" //TODO generate Product Link
     if (productDetail != null) {
         LaunchedEffect(Unit) {
             withContext(Dispatchers.Default) {
@@ -88,11 +100,25 @@ fun ProductSharing(modifier: Modifier = Modifier, productDetail: ProductDetail?)
             Image(
                 modifier = Modifier.size(qrWidth),
                 bitmap = qrBitmap!!,
-                contentDescription = "Fake QR"
+                contentDescription = "QR Product link"
             )
             Spacer(modifier = Modifier.height(10.dp))
-            Text(text = "Qr Code")
 
+            Box(modifier = Modifier
+                .clickable { onQrLinkPressed(productLink) }
+                .then(modifier)
+            ) {
+                SelectionContainer {
+                    Text(
+                        text = productLink.toUrlStyleAnnotatedString(
+                            SpanStyle(
+                                color = MaterialTheme.colors.primaryVariant
+                            ),
+                        ),
+                        style = MaterialTheme.typography.caption
+                    )
+                }
+            }
         }
     }
 }
@@ -110,6 +136,6 @@ fun ProductSharingPreview() {
                 category = "men's clothing",
                 imageUrl = "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg"
             )
-        )
+        ) {}
     }
 }

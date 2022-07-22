@@ -1,7 +1,11 @@
 package com.study.compose.shrine.navigation
 
+import android.app.PendingIntent
+import android.content.Intent
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.TaskStackBuilder
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -13,6 +17,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navOptions
 import com.example.ui.qr.Qr
+import com.study.compose.shrine.MainActivity
 import com.study.compose.ui.detail.Detail
 import com.study.compose.ui.home.HomeScreen
 import com.study.compose.ui.landing.LandingScreen
@@ -79,6 +84,8 @@ fun NavGraphBuilder.addShowProductDetail(
         deepLinks = listOf(navDeepLink { uriPattern = "$uri/{productId}" })
     ) { backStackEntry ->
         val productId = backStackEntry.arguments?.getLong("productId", -1) ?: -1
+
+        val context = LocalContext.current
         Detail(
             appViewStateVM = appStateViewModel,
             productId = productId,
@@ -88,6 +95,17 @@ fun NavGraphBuilder.addShowProductDetail(
                     ProductScreen.ShowDetail.createRoute(root, productId = otherId)
                 )
             },
+            onQrLinkPressed = { link ->
+                val deepLinkIntent = Intent(
+                    Intent.ACTION_VIEW,
+                    link.toUri()
+                )
+                val deepLinkPendingIntent: PendingIntent? = TaskStackBuilder.create(context).run {
+                    addNextIntentWithParentStack(deepLinkIntent)
+                    getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+                }
+                deepLinkPendingIntent?.send()
+            }
         )
     }
 }
@@ -97,8 +115,10 @@ fun NavGraphBuilder.addProducts(
     root: Screen,
     appStateViewModel: AppStateViewModel
 ) {
-    composable(route = ProductScreen.Products.createRoute(root)) {
-        val scope = rememberCoroutineScope()
+    composable(
+        route = ProductScreen.Products.createRoute(root),
+        deepLinks = listOf(navDeepLink { uriPattern = uri })
+    ) {
         HomeScreen(
             appStateViewModel = appStateViewModel,
             onProductSelect = { productId ->
@@ -122,7 +142,7 @@ fun NavGraphBuilder.addProductTopLevel(
 ) {
     navigation(
         route = Screen.Products.route,
-        startDestination = ProductScreen.Products.createRoute(Screen.Products)
+        startDestination = ProductScreen.Products.createRoute(Screen.Products),
     ) {
         addProducts(
             navController = navController,

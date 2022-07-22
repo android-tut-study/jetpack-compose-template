@@ -81,6 +81,7 @@ fun Detail(
     appViewStateVM: AppStateViewModel,
     onOtherDetailPressed: (Long) -> Unit = {},
     onClosePressed: () -> Unit = {},
+    onQrLinkPressed: (String) -> Unit = {}
 ) {
     val id = remember { productId }
     Detail(
@@ -89,6 +90,7 @@ fun Detail(
         appViewStateVM = appViewStateVM,
         onOtherDetailPressed = onOtherDetailPressed,
         onClosePressed = onClosePressed,
+        onQrLinkPressed = onQrLinkPressed
     )
 }
 
@@ -100,6 +102,7 @@ fun Detail(
     appViewStateVM: AppStateViewModel,
     onOtherDetailPressed: (Long) -> Unit = {},
     onClosePressed: () -> Unit = {},
+    onQrLinkPressed: (String) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val bottomSheetState =
@@ -138,6 +141,7 @@ fun Detail(
             }
         },
         onOtherDetailPressed = onOtherDetailPressed,
+        onQrLinkPressed = onQrLinkPressed
     )
 }
 
@@ -150,7 +154,8 @@ fun Detail(
     onClosePressed: () -> Unit = {},
     onFavoritePressed: () -> Unit = {},
     onAddCart: (ProductDetail, Int) -> Unit,
-    onCartAddedDone: () -> Unit
+    onCartAddedDone: () -> Unit,
+    onQrLinkPressed: (String) -> Unit
 ) {
     AppBottomSheet(
         bottomSheetState = bottomSheetState,
@@ -159,7 +164,10 @@ fun Detail(
             topEnd = CornerSize(24.dp)
         ),
         sheetContent = {
-            ProductSharing(productDetail = viewState.currentProduct)
+            ProductSharing(
+                productDetail = viewState.currentProduct,
+                onQrLinkPressed = onQrLinkPressed
+            )
             Box(modifier = Modifier.padding(1.dp)) // Fake anchor view
         },
         modifier = Modifier.fillMaxSize()
