@@ -149,6 +149,12 @@ dependencyResolutionManagement {
                 "org.jetbrains.kotlinx",
                 "kotlinx-coroutines-core"
             ).versionRef("coroutines")
+
+            library(
+                "coroutines-test",
+                "org.jetbrains.kotlinx",
+                "kotlinx-coroutines-test"
+            ).versionRef("coroutines")
         }
 
         create("square") {
@@ -173,12 +179,18 @@ dependencyResolutionManagement {
             version("coil", "2.1.0")
             library("coil-core", "io.coil-kt", "coil").versionRef("coil")
             library("coil-compose", "io.coil-kt", "coil-compose").versionRef("coil")
+
+            version("mockk", "1.12.4")
+            library("mockk-core", "io.mockk", "mockk").versionRef("mockk")
+            library("mockk-android", "io.mockk", "mockk-android").versionRef("mockk")
+            library("mockk-agent-jvm", "io.mockk", "mockk-agent-jvm").versionRef("mockk")
         }
 
         create("test") {
             library("junit4", "junit:junit:4.13.2")
             library("espresso-core", "androidx.test.espresso:espresso-core:3.4.0")
             library("ui-junit4", "androidx.compose.ui:ui-test-junit4:1.1.1")
+            library("junit-ext", "androidx.test.ext:junit:1.1.3")
 
             bundle("test-android-ui", listOf("espresso-core", "ui-junit4"))
         }
