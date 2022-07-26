@@ -16,4 +16,9 @@ dependencies {
     implementation(square.okhttp.logging.interceptor)
     implementation(square.retrofit.core)
     implementation(square.retrofit.converter.moshi)
+
+    testImplementation(kotlinx.coroutines.test)
+    testImplementation(io.mockk.core)
+
+//    testImplementation(testFixtures(project(":core:core-dispatcher")))
 }
