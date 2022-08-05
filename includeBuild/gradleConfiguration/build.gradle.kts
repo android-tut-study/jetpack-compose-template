@@ -38,7 +38,7 @@ gradlePlugin {
 
     plugins.register("hilt-plugin") {
         id = "hilt-plugin"
-        implementationClass = "com.study.compose.gradleconfiguration.HiltPlugin"
+        implementationClass = "com.study.compose.gradleconfiguration.hilt.HiltPlugin"
     }
 }
 

@@ -4,7 +4,9 @@ plugins {
 }
 
 hiltConfiguration {
-    addNavigationDependency()
+    navigation {
+        composeVersion.set(hiltLibs.versions.navigationCompose)
+    }
 }
 
 uiConfiguration {

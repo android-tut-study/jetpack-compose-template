@@ -135,11 +135,12 @@ dependencyResolutionManagement {
                 "hilt-android-compiler"
             ).versionRef("hilt")
 
+            version("navigationCompose", "1.0.0")
             library(
                 "hilt-navigation-compose",
                 "androidx.hilt",
                 "hilt-navigation-compose"
-            ).version("1.0.0")
+            ).versionRef("navigationCompose")
         }
 
         create("kotlinx") {

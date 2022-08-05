@@ -9,7 +9,10 @@ uiConfiguration {
 }
 
 hiltConfiguration {
-    addNavigationDependency()
+    version.set(hiltLibs.versions.hilt)
+    navigation {
+        composeVersion.set(hiltLibs.versions.navigationCompose)
+    }
 }
 
 dependencies {
