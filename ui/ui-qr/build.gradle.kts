@@ -1,5 +1,8 @@
+import com.study.compose.gradleconfiguration.util.androidCoreModule
+import com.study.compose.gradleconfiguration.util.uiModule
+
 plugins {
-    id("app-plugin")
+    id("android-lib-plugin")
     id("hilt-plugin")
 }
 
@@ -16,7 +19,7 @@ uiConfiguration {
 }
 
 dependencies {
-    implementation(project(":ui:ui-common"))
-    implementation(project(":android-core:android-core-camera"))
+    implementation(uiModule("common"))
+    implementation(androidCoreModule("camera"))
     implementation(io.coil.compose)
 }

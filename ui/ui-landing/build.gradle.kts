@@ -1,5 +1,7 @@
+import com.study.compose.gradleconfiguration.util.uiModule
+
 plugins {
-    id("app-plugin")
+    id("android-lib-plugin")
     id("hilt-plugin")
 }
 
@@ -15,5 +17,5 @@ uiConfiguration {
 }
 
 dependencies {
-    implementation(project(":ui:ui-common"))
+    implementation(uiModule("common"))
 }

@@ -1,5 +1,8 @@
+import com.study.compose.gradleconfiguration.util.uiModule
+import com.study.compose.gradleconfiguration.util.useCaseModule
+
 plugins {
-    id("app-plugin")
+    id("android-lib-plugin")
     id("hilt-plugin")
 }
 
@@ -17,7 +20,7 @@ uiConfiguration {
 
 dependencies {
     implementation(io.coil.compose)
-    implementation(project(":ui:ui-common"))
-    implementation(project(":usecase:usecase-products"))
-    implementation(project(":usecase:usecase-carts"))
+    implementation(uiModule("common"))
+    implementation(useCaseModule("products"))
+    implementation(useCaseModule("carts"))
 }

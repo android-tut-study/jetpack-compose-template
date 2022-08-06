@@ -1,11 +1,13 @@
+import com.study.compose.gradleconfiguration.util.coreModule
+
 plugins {
-    id("app-plugin")
+    id("android-lib-plugin")
     id("hilt-plugin")
 }
 
 dependencies {
-    implementation(project(":core:core-domain"))
-    implementation(project(":core:core-dispatcher"))
+    implementation(coreModule("domain"))
+    implementation(coreModule("dispatcher"))
 
     implementation(kotlinx.coroutines.core)
     implementation(hiltLibs.hilt.android)
