@@ -17,16 +17,8 @@ dependencyResolutionManagement {
 
     versionCatalogs {
 
-        val hiltVersion = "2.42"
         create("gradlePlugins") {
             from(files("./gradle/catalog/gradlePlugins.versions.toml"))
-            plugin("hilt", "com.google.dagger.hilt.android").version(hiltVersion)
-
-            library(
-                "hilt-app-plugin",
-                "com.google.dagger",
-                "dagger.hilt.android.plugin",
-            ).withoutVersion()
         }
 
         create("androidx") {
@@ -125,22 +117,7 @@ dependencyResolutionManagement {
         }
 
         create("hiltLibs") {
-            version("hilt", hiltVersion)
-
-            library("hilt-compiler", "com.google.dagger", "hilt-compiler").versionRef("hilt")
-            library("hilt-android", "com.google.dagger", "hilt-android").versionRef("hilt")
-            library(
-                "hilt-android-compiler",
-                "com.google.dagger",
-                "hilt-android-compiler"
-            ).versionRef("hilt")
-
-            version("navigationCompose", "1.0.0")
-            library(
-                "hilt-navigation-compose",
-                "androidx.hilt",
-                "hilt-navigation-compose"
-            ).versionRef("navigationCompose")
+            from(files("./gradle/catalog/hilt.versions.toml"))
         }
 
         create("kotlinx") {
