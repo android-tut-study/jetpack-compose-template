@@ -33,12 +33,22 @@ repositories {
 gradlePlugin {
     plugins.register("app-plugin") {
         id = "app-plugin"
-        implementationClass = "com.study.compose.gradleconfiguration.AppPlugin"
+        implementationClass = "com.study.compose.gradleconfiguration.app.AppPlugin"
     }
 
     plugins.register("hilt-plugin") {
         id = "hilt-plugin"
         implementationClass = "com.study.compose.gradleconfiguration.hilt.HiltPlugin"
+    }
+
+    plugins.register("app-base-plugin") {
+        id = "app-base-plugin"
+        implementationClass = "com.study.compose.gradleconfiguration.app.BaseAppPlugin"
+    }
+
+    plugins.register("android-lib-plugin") {
+        id = "android-lib-plugin"
+        implementationClass = "com.study.compose.gradleconfiguration.app.AndroidLibPlugin"
     }
 }
 

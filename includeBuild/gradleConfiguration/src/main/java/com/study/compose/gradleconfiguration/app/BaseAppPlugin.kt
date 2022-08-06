@@ -1,7 +1,7 @@
 package com.study.compose.gradleconfiguration.app
 
 import com.android.build.gradle.BaseExtension
-import com.study.compose.gradleconfiguration.test.TestFixtureExtension
+import com.study.compose.gradleconfiguration.app.ext.LibraryConfigurationExtension
 import com.study.compose.gradleconfiguration.app.ext.UiExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
@@ -15,7 +15,7 @@ class BaseAppPlugin: Plugin<Project> {
         target.pluginManager.apply("org.jetbrains.kotlin.android")
 
         target.extensions.create("uiConfiguration", UiExtension::class.java, target)
-        target.extensions.create("libraryConfiguration", LibraryConfiguration::class.java, target)
+        target.extensions.create("libraryConfiguration", LibraryConfigurationExtension::class.java, target)
 
         target.extensions.configure(BaseExtension::class.java) {
             compileSdkVersion(32)

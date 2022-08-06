@@ -1,4 +1,4 @@
-package com.study.compose.gradleconfiguration
+package com.study.compose.gradleconfiguration.app.ext
 
 import com.android.build.gradle.BaseExtension
 import org.gradle.api.Project
