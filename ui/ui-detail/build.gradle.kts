@@ -5,6 +5,7 @@ plugins {
 
 uiConfiguration {
     applyCompose()
+    applyUiTest()
 }
 
 hiltConfiguration {

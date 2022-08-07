@@ -17,4 +17,13 @@ open class UiExtension constructor(private val project: Project) {
             }
         }
     }
+
+    fun applyUiTest() {
+        project.extensions.configure(BaseExtension::class.java) {
+            project.dependencies.apply {
+                add("androidTestImplementation", "androidx.compose.ui:ui-test-junit4:1.1.1")
+                add("androidTestImplementation", "androidx.test.ext:junit:1.1.3")
+            }
+        }
+    }
 }

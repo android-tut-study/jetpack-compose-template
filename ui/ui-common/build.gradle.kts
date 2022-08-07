@@ -4,10 +4,7 @@ plugins {
 
 uiConfiguration {
     applyCompose()
-}
-
-testFixtureConfiguration {
-    applyTestFixture(true)
+    applyUiTest()
 }
 
 dependencies {

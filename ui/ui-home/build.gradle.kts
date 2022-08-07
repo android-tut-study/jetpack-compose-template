@@ -9,6 +9,7 @@ hiltConfiguration {
 
 uiConfiguration {
     applyCompose()
+    applyUiTest()
 }
 
 dependencies {

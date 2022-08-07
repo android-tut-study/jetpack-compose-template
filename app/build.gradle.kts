@@ -6,7 +6,7 @@ plugins {
     id(gradlePlugins.hilt.app.plugin.get().module.name)
 }
 
-project.extensions.configure(com.android.build.gradle.BaseExtension::class.java) {
+project.extensions.configure(com.android.build.gradle.AppExtension::class.java) {
     compileSdkVersion(32)
     defaultConfig {
         applicationId = "com.study.compose.shrine"
@@ -88,4 +88,8 @@ dependencies {
     kapt(hiltLibs.hilt.compiler)
 
     implementation(io.coil.core)
+
+    testImplementation(test.junit4)
+    androidTestImplementation(test.junit.ext)
+    androidTestImplementation(test.espresso.core)
 }
