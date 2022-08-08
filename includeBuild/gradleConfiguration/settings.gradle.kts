@@ -22,5 +22,9 @@ dependencyResolutionManagement {
         create("gradleConfig") {
             from(files("../../gradle/catalog/gradlePlugins.versions.toml"))
         }
+
+        create("hiltLibs") {
+            from(files("../../gradle/catalog/hilt.versions.toml"))
+        }
     }
 }

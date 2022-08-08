@@ -6,9 +6,7 @@ plugins {
 }
 
 hiltConfiguration {
-    navigation {
-        composeVersion.set(hiltLibs.versions.navigationCompose)
-    }
+    navigation { applied.set(true) }
 }
 
 uiConfiguration {

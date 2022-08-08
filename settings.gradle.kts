@@ -21,6 +21,10 @@ dependencyResolutionManagement {
             from(files("./gradle/catalog/gradlePlugins.versions.toml"))
         }
 
+        create("hiltLibs") {
+            from(files("./gradle/catalog/hilt.versions.toml"))
+        }
+
         create("androidx") {
             library("appcompat", "androidx.appcompat:appcompat:1.4.1")
 
@@ -114,10 +118,6 @@ dependencyResolutionManagement {
                 "compose-customview",
                 listOf("customview-core", "customview-poolingcontainer")
             )
-        }
-
-        create("hiltLibs") {
-            from(files("./gradle/catalog/hilt.versions.toml"))
         }
 
         create("kotlinx") {
