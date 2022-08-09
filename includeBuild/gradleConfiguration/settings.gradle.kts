@@ -19,12 +19,17 @@ dependencyResolutionManagement {
 
     versionCatalogs {
 
+        val catalogPath = "../../gradle/catalog"
         create("gradleConfig") {
-            from(files("../../gradle/catalog/gradlePlugins.versions.toml"))
+            from(files("${catalogPath}/gradlePlugins.versions.toml"))
         }
 
         create("hiltLibs") {
-            from(files("../../gradle/catalog/hilt.versions.toml"))
+            from(files("${catalogPath}/hilt.versions.toml"))
+        }
+
+        create("androidxLibs") {
+            from(files("${catalogPath}/androidx.versions.toml"))
         }
     }
 }
