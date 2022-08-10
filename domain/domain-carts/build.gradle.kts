@@ -9,7 +9,7 @@ dependencies {
     implementation(coreModule("domain"))
     implementation(coreModule("dispatcher"))
 
-    implementation(kotlinx.coroutines.core)
+    implementation(kotlinxLibs.coroutines.core)
     implementation(hiltLibs.hilt.android)
     kapt(hiltLibs.hilt.compiler)
 

@@ -18,6 +18,6 @@ dependencies {
     implementation(androidxLibs.compose.material)
     implementation(androidxLibs.compose.ui)
 
-    testApi(test.junit4)
-    androidTestApi(test.bundles.test.android.ui)
+    testApi(testLibs.junit4)
+    androidTestApi(testLibs.bundles.test.android.ui)
 }

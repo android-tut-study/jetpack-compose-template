@@ -8,10 +8,10 @@ libraryConfiguration {
 }
 
 dependencies {
-    implementation(kotlinx.coroutines.core)
+    implementation(kotlinxLibs.coroutines.core)
     implementation(hiltLibs.hilt.android)
     kapt(hiltLibs.hilt.compiler)
 
-    testFixturesApi(kotlinx.coroutines.test)
-    testFixturesApi(test.junit4)
+    testFixturesApi(kotlinxLibs.coroutines.test)
+    testFixturesApi(testLibs.junit4)
 }

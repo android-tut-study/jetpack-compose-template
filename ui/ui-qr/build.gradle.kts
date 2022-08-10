@@ -18,5 +18,5 @@ uiConfiguration {
 dependencies {
     implementation(uiModule("common"))
     implementation(androidCoreModule("camera"))
-    implementation(io.coil.compose)
+    implementation(ioLibs.coil.compose)
 }

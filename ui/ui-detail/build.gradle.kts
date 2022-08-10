@@ -21,5 +21,5 @@ dependencies {
     implementation(useCaseModule("products"))
     implementation(useCaseModule("carts"))
     implementation(androidCoreModule("qr"))
-    implementation(io.coil.compose)
+    implementation(ioLibs.coil.compose)
 }

@@ -28,6 +28,6 @@ dependencies {
     debugApi(androidxLibs.customview.core)
     debugApi(androidxLibs.customview.poolingcontainer)
 
-    testApi(test.junit4)
-    androidTestApi(test.bundles.test.android.ui)
+    testApi(testLibs.junit4)
+    androidTestApi(testLibs.bundles.test.android.ui)
 }

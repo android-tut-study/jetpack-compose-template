@@ -12,7 +12,7 @@ dependencies {
     api(coreModule("result"))
     api(coreModule("domain"))
     implementation(domainModule("carts"))
-    implementation(kotlinx.coroutines.core)
+    implementation(kotlinxLibs.coroutines.core)
     implementation(hiltLibs.hilt.android)
     kapt(hiltLibs.hilt.compiler)
 

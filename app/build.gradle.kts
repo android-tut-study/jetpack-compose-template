@@ -35,5 +35,5 @@ dependencies {
     implementation(androidxLibs.lifecycle.viewmodel.compose)
     implementation(androidxLibs.lifecycle.livedata.ktx)
 
-    implementation(io.coil.core)
+    implementation(ioLibs.coil.core)
 }

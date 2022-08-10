@@ -16,7 +16,7 @@ uiConfiguration {
 }
 
 dependencies {
-    implementation(io.coil.compose)
+    implementation(ioLibs.coil.compose)
     implementation(uiModule("common"))
     implementation(useCaseModule("products"))
     implementation(useCaseModule("carts"))
