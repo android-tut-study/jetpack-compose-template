@@ -1,4 +1,5 @@
-enableFeaturePreview("VERSION_CATALOGS")
+import org.gradle.kotlin.dsl.accessors.runtime.addDependencyTo
+includeBuild("includeBuild/gradleConfiguration")
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -9,115 +10,25 @@ pluginManagement {
 
 // https://github.com/gradle/gradle/issues/20203
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
         google()
         mavenCentral()
     }
+    val catalogPath = "./gradle/catalog"
 
     versionCatalogs {
 
         create("gradlePlugins") {
-            from(files("./gradle/catalog/gradlePlugins.versions.toml"))
+            from(files("$catalogPath/gradlePlugins.versions.toml"))
         }
 
         create("hiltLibs") {
-            from(files("./gradle/catalog/hilt.versions.toml"))
+            from(files("$catalogPath/hilt.versions.toml"))
         }
 
-        create("androidx") {
-            library("appcompat", "androidx.appcompat:appcompat:1.4.1")
-
-            version("activity", "1.6.0-alpha03")
-            library(
-                "activity-compose", "androidx.activity", "activity-compose"
-            ).versionRef("activity")
-
-            version("core", "1.7.0")
-            library(
-                "core-ktx", "androidx.core", "core-ktx"
-            ).versionRef("core")
-
-            version("compose", "1.3.0-alpha01")
-
-            library(
-                "compose-layout", "androidx.compose.foundation", "foundation-layout"
-            ).versionRef("compose")
-
-            library(
-                "compose-material", "androidx.compose.material", "material"
-            ).versionRef("compose")
-            library(
-                "compose-material-icons-extended",
-                "androidx.compose.material",
-                "material-icons-extended"
-            ).versionRef("compose")
-
-            library(
-                "compose-ui", "androidx.compose.ui", "ui"
-            ).versionRef("compose")
-            library(
-                "compose-ui-tooling", "androidx.compose.ui", "ui-tooling"
-            ).versionRef("compose")
-            library(
-                "compose-ui-tooling-preview", "androidx.compose.ui", "ui-tooling-preview"
-            ).versionRef("compose")
-            library(
-                "compose-ui-viewbinding", "androidx.compose.ui", "ui-viewbinding"
-            ).versionRef("compose")
-            library(
-                "compose-ui-util", "androidx.compose.ui", "ui-util"
-            ).versionRef("compose")
-
-            version("navigation", "2.4.2")
-            library(
-                "navigation-compose",
-                "androidx.navigation",
-                "navigation-compose"
-            ).versionRef("navigation")
-
-            version("lifecycle", "2.4.1")
-            library(
-                "lifecycle-livedata-ktx",
-                "androidx.lifecycle",
-                "lifecycle-livedata-ktx"
-            ).versionRef("lifecycle")
-            library(
-                "lifecycle-viewmodel-compose",
-                "androidx.lifecycle",
-                "lifecycle-viewmodel-compose"
-            ).versionRef("lifecycle")
-
-            version("room", "2.5.0-alpha02")
-            library("room-runtime", "androidx.room", "room-runtime").versionRef("lifecycle")
-            library("room-compiler", "androidx.room", "room-compiler").versionRef("lifecycle")
-            library("room-testing", "androidx.room", "room-testing").versionRef("lifecycle")
-            library("room-ktx", "androidx.room", "room-ktx").versionRef("lifecycle")
-            library("room-paging", "androidx.room", "room-paging").versionRef("lifecycle")
-
-            version("paging", "3.1.1")
-            library("paging-runtime", "androidx.paging", "paging-runtime").versionRef("paging")
-            library("paging-compose", "androidx.paging", "paging-compose").version("1.0.0-alpha15")
-
-            version("camera", "1.2.0-alpha03")
-            library("camera-core", "androidx.camera", "camera-core").versionRef("camera")
-            library("camera-camera2", "androidx.camera", "camera-camera2").versionRef("camera")
-            library("camera-lifecycle", "androidx.camera", "camera-lifecycle").versionRef("camera")
-            library("camera-view", "androidx.camera", "camera-view").versionRef("camera")
-
-            version("zxing", "3.4.1")
-            library("zxing-core", "com.google.zxing", "core").versionRef("zxing")
-            bundle(
-                "camera",
-                listOf("camera-camera2", "camera-lifecycle", "camera-view")
-            )
-
-            library("customview-core", "androidx.customview:customview:1.2.0-alpha01")
-            library("customview-poolingcontainer", "androidx.customview:customview-poolingcontainer:1.0.0-rc01")
-            bundle(
-                "compose-customview",
-                listOf("customview-core", "customview-poolingcontainer")
-            )
+        create("androidxLibs") {
+            from(files("$catalogPath/androidx.versions.toml"))
         }
 
         create("kotlinx") {
@@ -176,7 +87,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "ShrineCompose"
-includeBuild("includeBuild/gradleConfiguration")
 
 include(":app")
 include(":android-core:android-core-logger")

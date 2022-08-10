@@ -13,10 +13,10 @@ uiConfiguration {
 }
 
 dependencies {
-    implementation(androidx.navigation.compose)
-    implementation(androidx.compose.layout)
-    implementation(androidx.compose.material)
-    implementation(androidx.compose.ui)
+    implementation(androidxLibs.navigation.compose)
+    implementation(androidxLibs.compose.layout)
+    implementation(androidxLibs.compose.material)
+    implementation(androidxLibs.compose.ui)
 
     testApi(test.junit4)
     androidTestApi(test.bundles.test.android.ui)

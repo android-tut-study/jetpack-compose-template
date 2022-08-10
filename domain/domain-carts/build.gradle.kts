@@ -13,12 +13,12 @@ dependencies {
     implementation(hiltLibs.hilt.android)
     kapt(hiltLibs.hilt.compiler)
 
-    implementation(androidx.room.runtime)
-    implementation(androidx.room.paging)
-    implementation(androidx.room.ktx)
-    kapt(androidx.room.compiler)
+    implementation(androidxLibs.room.runtime)
+    implementation(androidxLibs.room.paging)
+    implementation(androidxLibs.room.ktx)
+    kapt(androidxLibs.room.compiler)
 
-    implementation(androidx.paging.runtime)
+    implementation(androidxLibs.paging.runtime)
 
-    testImplementation(androidx.room.testing)
+    testImplementation(androidxLibs.room.testing)
 }

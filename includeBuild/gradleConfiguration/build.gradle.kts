@@ -1,21 +1,20 @@
 @Suppress("DSL_SCOPE_VIOLATION")
-
 plugins {
     `kotlin-dsl`.version("2.1.7")
     checkstyle
-    alias(gradleConfig.plugins.ktlint)
-    alias(gradleConfig.plugins.detekt)
+    alias(gradlePlugins.plugins.ktlint)
+    alias(gradlePlugins.plugins.detekt)
 }
 
 checkstyle {
     // will use the version declared in the catalog
-    toolVersion = gradleConfig.versions.checkstyle.get()
+    toolVersion = gradlePlugins.versions.checkstyle.get()
 }
 
 allprojects {
     apply {
-        plugin(rootProject.gradleConfig.plugins.ktlint.get().pluginId)
-        plugin(rootProject.gradleConfig.plugins.detekt.get().pluginId)
+        plugin(rootProject.gradlePlugins.plugins.ktlint.get().pluginId)
+        plugin(rootProject.gradlePlugins.plugins.detekt.get().pluginId)
     }
 
     detekt {
@@ -53,6 +52,6 @@ gradlePlugin {
 }
 
 dependencies {
-    implementation(gradleConfig.kotlin.gradle.plugin)
-    implementation(gradleConfig.gradle.build.tool)
+    implementation(gradlePlugins.kotlin.gradle.plugin)
+    implementation(gradlePlugins.gradle.build.tool)
 }

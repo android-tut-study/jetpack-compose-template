@@ -20,6 +20,6 @@ dependencies {
     implementation(uiModule("common"))
     implementation(useCaseModule("carts"))
 
-    implementation(androidx.paging.runtime)
-    implementation(androidx.paging.compose)
+    implementation(androidxLibs.paging.runtime)
+    implementation(androidxLibs.paging.compose)
 }

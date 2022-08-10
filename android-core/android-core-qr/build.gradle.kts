@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    implementation(androidx.zxing.core)
+    implementation(androidxLibs.zxing.core)
 }

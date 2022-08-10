@@ -11,9 +11,9 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.withType
 import java.util.*
 
-const val Default_Min_SDK = 21
-const val Default_Target_SDK = 32
-const val Default_Compile_SDK = 32
+const val Default_Min_Sdk = 21
+const val Default_Target_Sdk = 32
+const val Default_Compile_Sdk = 32
 const val Default_Test_Instrumentation_Runner = "androidx.test.runner.AndroidJUnitRunner"
 
 class BaseAppPlugin : Plugin<Project> {
@@ -43,9 +43,9 @@ class BaseAppPlugin : Plugin<Project> {
     private fun applyDefaultConfig(project: Project) {
         val configProperties = Properties()
         val configPropertyFile = project.rootProject.file("./gradle/config/app.properties")
-        var targetSdk = Default_Target_SDK
-        var minSdk = Default_Min_SDK
-        var compileSdk = Default_Compile_SDK
+        var targetSdk = Default_Target_Sdk
+        var minSdk = Default_Min_Sdk
+        var compileSdk = Default_Compile_Sdk
         var testInstrumentationRunner = Default_Test_Instrumentation_Runner
         if (configPropertyFile.exists()) {
             configProperties.load(configPropertyFile.inputStream())

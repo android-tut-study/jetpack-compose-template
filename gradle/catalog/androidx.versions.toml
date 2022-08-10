@@ -13,6 +13,7 @@ zxing = "3.4.1"
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+appcompat =  "androidx.appcompat:appcompat:1.4.1"
 
 # Compose
 compose-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "compose" }

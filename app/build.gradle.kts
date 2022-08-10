@@ -26,14 +26,14 @@ dependencies {
     implementation(uiModule("qr"))
 
     // Core
-    implementation(androidx.core.ktx)
-    implementation(androidx.activity.compose)
-    implementation(androidx.navigation.compose)
-    implementation(androidx.appcompat)
+    implementation(androidxLibs.core.ktx)
+    implementation(androidxLibs.activity.compose)
+    implementation(androidxLibs.navigation.compose)
+    implementation(androidxLibs.appcompat)
 
     // LifeCycle
-    implementation(androidx.lifecycle.viewmodel.compose)
-    implementation(androidx.lifecycle.livedata.ktx)
+    implementation(androidxLibs.lifecycle.viewmodel.compose)
+    implementation(androidxLibs.lifecycle.livedata.ktx)
 
     implementation(io.coil.core)
 }
