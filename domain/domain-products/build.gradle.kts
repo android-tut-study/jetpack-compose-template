@@ -1,24 +1,26 @@
+import com.study.compose.gradleconfiguration.util.coreModule
+
 plugins {
-    id("app-plugin")
+    id("android-lib-plugin")
     id("hilt-plugin")
 }
 
 dependencies {
-    implementation(project(":core:core-domain"))
-    implementation(project(":core:core-dispatcher"))
+    implementation(coreModule("domain"))
+    implementation(coreModule("dispatcher"))
 
-    implementation(kotlinx.coroutines.core)
+    implementation(kotlinxLibs.coroutines.core)
     implementation(hiltLibs.hilt.android)
     kapt(hiltLibs.hilt.compiler)
 
     // Retrofit
-    implementation(square.okhttp.core)
-    implementation(square.okhttp.logging.interceptor)
-    implementation(square.retrofit.core)
-    implementation(square.retrofit.converter.moshi)
+    implementation(squareLibs.okhttp.core)
+    implementation(squareLibs.okhttp.logging.interceptor)
+    implementation(squareLibs.retrofit.core)
+    implementation(squareLibs.retrofit.converter.moshi)
 
-    testImplementation(kotlinx.coroutines.test)
-    testImplementation(io.mockk.core)
+    testImplementation(kotlinxLibs.coroutines.test)
+    testImplementation(ioLibs.mockk.core)
 
 //    testImplementation(testFixtures(project(":core:core-dispatcher")))
 }

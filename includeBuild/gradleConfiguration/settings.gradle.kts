@@ -19,8 +19,14 @@ dependencyResolutionManagement {
 
     versionCatalogs {
 
-        create("gradleConfig") {
-            from(files("../../gradle/catalog/gradlePlugins.versions.toml"))
+        val catalogPath = "../../gradle/catalog"
+        create("gradlePlugins") {
+            from(files("${catalogPath}/gradlePlugins.versions.toml"))
         }
+
+        create("hiltLibs") {
+            from(files("${catalogPath}/hilt.versions.toml"))
+        }
+
     }
 }

@@ -1,5 +1,9 @@
+import com.study.compose.gradleconfiguration.util.androidCoreModule
+import com.study.compose.gradleconfiguration.util.uiModule
+import com.study.compose.gradleconfiguration.util.useCaseModule
+
 plugins {
-    id("app-plugin")
+    id("android-lib-plugin")
     id("hilt-plugin")
 }
 
@@ -9,13 +13,13 @@ uiConfiguration {
 }
 
 hiltConfiguration {
-    addNavigationDependency()
+    navigation { applied.set(true) }
 }
 
 dependencies {
-    implementation(project(":ui:ui-common"))
-    implementation(project(":usecase:usecase-products"))
-    implementation(project(":usecase:usecase-carts"))
-    implementation(project(":android-core:android-core-qr"))
-    implementation(io.coil.compose)
+    implementation(uiModule("common"))
+    implementation(useCaseModule("products"))
+    implementation(useCaseModule("carts"))
+    implementation(androidCoreModule("qr"))
+    implementation(ioLibs.coil.compose)
 }

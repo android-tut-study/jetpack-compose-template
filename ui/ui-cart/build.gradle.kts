@@ -1,10 +1,13 @@
+import com.study.compose.gradleconfiguration.util.uiModule
+import com.study.compose.gradleconfiguration.util.useCaseModule
+
 plugins {
-    id("app-plugin")
+    id("android-lib-plugin")
     id("hilt-plugin")
 }
 
 hiltConfiguration {
-    addNavigationDependency()
+    navigation { applied.set(true) }
 }
 
 uiConfiguration {
@@ -13,10 +16,10 @@ uiConfiguration {
 }
 
 dependencies {
-    implementation(io.coil.compose)
-    implementation(project(":ui:ui-common"))
-    implementation(project(":usecase:usecase-carts"))
+    implementation(ioLibs.coil.compose)
+    implementation(uiModule("common"))
+    implementation(useCaseModule("carts"))
 
-    implementation(androidx.paging.runtime)
-    implementation(androidx.paging.compose)
+    implementation(androidxLibs.paging.runtime)
+    implementation(androidxLibs.paging.compose)
 }

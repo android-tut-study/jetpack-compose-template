@@ -1,7 +1,7 @@
 plugins {
-    id("app-plugin")
+    id("android-lib-plugin")
 }
 
 dependencies {
-    implementation(androidx.zxing.core)
+    implementation(androidxLibs.zxing.core)
 }

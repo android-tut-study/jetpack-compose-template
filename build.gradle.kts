@@ -3,7 +3,7 @@ plugins {
     alias(gradlePlugins.plugins.application).apply(false)
     alias(gradlePlugins.plugins.library).apply(false)
     alias(gradlePlugins.plugins.kotlin).apply(false)
-    alias(gradlePlugins.plugins.hilt).apply(false)
+    alias(hiltLibs.plugins.hilt.android).apply(false)
     alias(gradlePlugins.plugins.ktlint)
     alias(gradlePlugins.plugins.detekt)
     alias(gradlePlugins.plugins.kover)

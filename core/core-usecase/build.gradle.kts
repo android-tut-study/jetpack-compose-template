@@ -1,8 +1,10 @@
+import com.study.compose.gradleconfiguration.util.coreModule
+
 plugins {
-    id("app-plugin")
+    id("android-lib-plugin")
 }
 
 dependencies {
-    implementation(kotlinx.coroutines.core)
-    implementation(project(":core:core-result"))
+    implementation(kotlinxLibs.coroutines.core)
+    implementation(coreModule("result"))
 }

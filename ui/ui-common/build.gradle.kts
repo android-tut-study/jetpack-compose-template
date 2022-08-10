@@ -1,5 +1,8 @@
+import com.study.compose.gradleconfiguration.util.androidCoreModule
+import com.study.compose.gradleconfiguration.util.uiModule
+
 plugins {
-    id("app-plugin")
+    id("android-lib-plugin")
 }
 
 uiConfiguration {
@@ -8,23 +11,23 @@ uiConfiguration {
 }
 
 dependencies {
-    api(project(":ui:ui-state"))
-    api(project(":android-core:android-core-logger"))
-    api(androidx.core.ktx)
-    api(androidx.appcompat)
-    api(androidx.compose.layout)
-    api(androidx.compose.material)
+    api(uiModule("state"))
+    api(androidCoreModule("logger"))
+    api(androidxLibs.core.ktx)
+    api(androidxLibs.appcompat)
+    api(androidxLibs.compose.layout)
+    api(androidxLibs.compose.material)
     // TODO add R8 config to optimize apk size by icon extension
-    api(androidx.compose.material.icons.extended)
-    api(androidx.compose.ui)
-    api(androidx.compose.ui.viewbinding)
-    api(androidx.compose.ui.util)
-    api(androidx.compose.ui.tooling.preview)
-    debugApi(androidx.compose.ui.tooling)
+    api(androidxLibs.compose.material.icons.extended)
+    api(androidxLibs.compose.ui)
+    api(androidxLibs.compose.ui.viewbinding)
+    api(androidxLibs.compose.ui.util)
+    api(androidxLibs.compose.ui.tooling.preview)
+    debugApi(androidxLibs.compose.ui.tooling)
 
-    debugApi(androidx.customview.core)
-    debugApi(androidx.customview.poolingcontainer)
+    debugApi(androidxLibs.customview.core)
+    debugApi(androidxLibs.customview.poolingcontainer)
 
-    testApi(test.junit4)
-    androidTestApi(test.bundles.test.android.ui)
+    testApi(testLibs.junit4)
+    androidTestApi(testLibs.bundles.test.android.ui)
 }

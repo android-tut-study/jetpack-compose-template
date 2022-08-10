@@ -1,0 +1,8 @@
+[libraries]
+junit4 = "junit:junit:4.13.2"
+espresso-core = "androidx.test.espresso:espresso-core:3.4.0"
+ui-junit4 = "androidx.compose.ui:ui-test-junit4:1.1.1"
+junit-ext = "androidx.test.ext:junit:1.1.3"
+
+[bundles]
+test-android-ui = ["espresso-core", "ui-junit4"]

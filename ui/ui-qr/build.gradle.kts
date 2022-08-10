@@ -1,10 +1,13 @@
+import com.study.compose.gradleconfiguration.util.androidCoreModule
+import com.study.compose.gradleconfiguration.util.uiModule
+
 plugins {
-    id("app-plugin")
+    id("android-lib-plugin")
     id("hilt-plugin")
 }
 
 hiltConfiguration {
-    addNavigationDependency()
+    navigation { applied.set(true) }
 }
 
 uiConfiguration {
@@ -13,7 +16,7 @@ uiConfiguration {
 }
 
 dependencies {
-    implementation(project(":ui:ui-common"))
-    implementation(project(":android-core:android-core-camera"))
-    implementation(io.coil.compose)
+    implementation(uiModule("common"))
+    implementation(androidCoreModule("camera"))
+    implementation(ioLibs.coil.compose)
 }

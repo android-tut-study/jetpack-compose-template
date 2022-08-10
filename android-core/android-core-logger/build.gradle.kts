@@ -1,7 +1,7 @@
 plugins {
-    id("app-plugin")
+    id("android-lib-plugin")
 }
 
 dependencies {
-    implementation(kotlinx.coroutines.core)
+    implementation(kotlinxLibs.coroutines.core)
 }
