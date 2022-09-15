@@ -20,8 +20,6 @@ import javax.inject.Singleton
 object ApiModule {
 
     private const val BASE_URL = "https://fakestoreapi.com"
-    private const val OKHTTP_TIMEOUT = 30L
-    private const val OKHTTP_CALL_TIMEOUT_MINUTES = 1L
 
     @Singleton
     @Provides
@@ -34,9 +32,6 @@ object ApiModule {
     fun providesOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
         OkHttpClient()
             .newBuilder()
-            .callTimeout(OKHTTP_CALL_TIMEOUT_MINUTES, TimeUnit.MINUTES)
-            .readTimeout(OKHTTP_TIMEOUT, TimeUnit.SECONDS)
-            .connectTimeout(OKHTTP_TIMEOUT, TimeUnit.SECONDS)
             .addInterceptor(httpLoggingInterceptor)
             .build()
 
