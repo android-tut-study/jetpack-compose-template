@@ -1,5 +1,5 @@
 ![](https://github.com/android-tut-study/jetpack-compose-template/workflows/Dependency%20Graph/badge.svg)
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fandroid-tut-study%2Fjetpack-compose-template%2Fhit-counter&count_bg=%23442C2E&title_bg=%23555555&icon=android.svg&icon_color=%23FEDBD0&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
+[![Hits](https://hitscounter.dev/api/hit?url=https%3A%2F%2Fgithub.com%2Fandroid-tut-study%2Fjetpack-compose-template&label=&icon=github&color=%23198754&message=&style=flat&tz=UTC)](https://hitscounter.dev)
 
 # Shrine Compose
 
